@@ -118,8 +118,8 @@ const authController = {
       // xoa di token cu va add newRefreshToken
       // refreshTokensArr = refreshTokensArr.filter((token) => refreshToken !== token )
 
-     const  result = await refreshTokens.deleteOne({ token: refreshToken }); 
-     
+      const result = await refreshTokens.deleteOne({ token: refreshToken });
+
       if (result.deletedCount === 1) {
         console.log("Token deleted successfully");
       } else {
@@ -145,7 +145,6 @@ const authController = {
     });
   },
   logout: async (req, res) => {},
-  
 };
 
 module.exports = authController;

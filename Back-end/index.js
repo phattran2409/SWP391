@@ -7,7 +7,7 @@ const connection = require("./config/database");
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
 const { default: mongoose } = require("mongoose");
-
+const signInRouter = require("./routes/oauth")
 const app = express();
 const port = process.env.PORT || 8888;
 
@@ -19,7 +19,8 @@ app.use(express.json());
 app.use("/v1/auth", authRouter);
 // user ROUTER 
 app.use("/v1/user" , userRouter);
- 
+//  Sign in google
+app.use("/v1/Oauth" , signInRouter);
 (async () => {
    try {
       await connection();

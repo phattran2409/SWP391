@@ -48,10 +48,7 @@ const userSchema = new mongoose.Schema(
     birthDate : {
       type : Date,
     },
-    freshToken : {
-      type : String,
-    }
-    , 
+
     provider :  {
       type : String,
     }
