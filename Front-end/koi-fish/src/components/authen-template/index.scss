@@ -1,7 +1,6 @@
 /* Chia đôi chiều rộng của trang */
-.container {
-  display: flex;
-  min-height: 100vh;
+.container-image {
+  @apply flex min-h-full w-full
 }
 
 /* Phần chứa hình ảnh */

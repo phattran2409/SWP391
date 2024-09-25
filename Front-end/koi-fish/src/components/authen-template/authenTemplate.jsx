@@ -5,7 +5,7 @@ import "./index.scss";
 // eslint-disable-next-line react/prop-types
 function AuthenTemplate({ children }) {
   return (
-    <div className="container">
+    <div className="container-image">
       {/* Phần hình ảnh */}
       <div className="image-section">
         <img

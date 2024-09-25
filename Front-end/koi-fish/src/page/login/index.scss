@@ -1,41 +1,18 @@
 .auth-template {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f0f2f5;
+  @apply flex justify-center items-center min-h-screen bg-[#f0f2f5];
 }
 .form-section-child {
-  background-color: white;
-  padding: 2rem;
-  // border-radius: 8px;
-  // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 70%;
+  @apply bg-white p-8 w-[70%];
 }
 .google-button {
-  background-color: white; /* Màu nền trắng */
-  border: 1px solid black; /* Viền đen */
-  color: black; /* Màu chữ đen */
-  font-weight: 600; /* Độ dày chữ */
-  border-radius: 9999px; /* Đường viền tròn */
-  width: 100%; /* Chiếm toàn bộ chiều rộng */
-  display: flex; /* Sử dụng flexbox */
-  align-items: center; /* Căn giữa theo chiều dọc */
-  justify-content: center; /* Căn giữa theo chiều ngang */
-  padding: 0.75rem; /* Khoảng cách bên trong */
-  margin-bottom: 2.75rem; /* Khoảng cách phía dưới */
-  transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu nền */
-
-  /* Hiệu ứng hover */
-  &:hover {
-    background-color: #f7f7f7; /* Màu nền khi hover */
-  }
-
+  @apply  flex w-full items-center justify-center p-6 mb-10
+        bg-white
+        text-black font-normal
+          border-solid border-2 border-black rounded-full hover:bg-[#f7f7f7]
+          ;
   /* Định dạng SVG bên trong */
   svg {
-    width: 24px; /* Chiều rộng của SVG */
-    height: 24px; /* Chiều cao của SVG */
-    fill: #4285f4; /* Màu fill mặc định của SVG */
+    @apply w-6 h-6 fill-[#4285f4];
   }
 
   /* Khoảng cách bên trái cho chữ */
@@ -71,5 +48,5 @@
 }
 
 .form-section-child h1 {
-  margin-bottom: 70px;
+  margin-bottom: 50px;
 }
