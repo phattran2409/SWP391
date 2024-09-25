@@ -7,6 +7,8 @@ import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import dotenv from "dotenv";
 function App() {
+   const  [ elementID, setElement ] = useState(0);
+
   const [count, setCount] = useState(0);
   const handleLoginSuccess = (response) => {
     const token = jwtDecode(response.credential);
@@ -26,7 +28,7 @@ function App() {
       const response = await axios.post(import.meta.env.VITE_SIGNIN, {
         token: token, // Gửi token trong body của request
       });
-
+    
       console.log("API Response:", response.data);
       
     } catch (error) {
@@ -34,6 +36,25 @@ function App() {
     }
   };
 
+  const getKoiElement  = async () => { 
+    try {
+    
+        
+        const response = await axios.get(
+        `http://localhost:8081/v1/fish/getKoiElement?elementID=${elementID}`
+        );
+      
+      
+      console.log("API DATA "+JSON.stringify(response.data));
+      
+       
+    } catch (err) {
+      console.log(err);
+      
+    }
+  }
+ 
+ 
  
   
   return (
@@ -50,6 +71,16 @@ function App() {
 
       <div>
         <h1>{import.meta.env.VITE_CLIENT_ID}</h1>
+      </div>
+
+      <div>
+        <form action="">
+          <input type="text" 
+          value={elementID == 0  ? '' : elementID}
+          onChange={(e) => {setElement(e.target.value)}}
+          />
+          <button type="submit" onClick={() => getKoiElement()}>get koi</button>
+        </form>
       </div>
     </>
   );

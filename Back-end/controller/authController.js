@@ -2,15 +2,16 @@ const { json } = require("express");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const refreshTokens = require("../models/refreshToken");
 
-let refreshTokensArr = [];
+//npm install nodemailer
+const nodemailer = require("nodemailer");
+
 const authController = {
   accessToken: (user) => {
     return jwt.sign(
       { id: user.id, admin: user.admin },
       process.env.JWT_ACCESS_KEY,
-      { expiresIn: "30s" }
+      { expiresIn: "2m" }
     );
   },
   refreshToken: (user) => {
@@ -25,6 +26,8 @@ const authController = {
       }
     );
   },
+  
+  
   registerUser: async (req, res) => {
     try {
       const salt = await bcrypt.genSalt(10);
@@ -50,34 +53,26 @@ const authController = {
       res.status(500).json(error);
     }
   },
+  
+  
   loginUser: async (req, res) => {
     try {
-      const user = await User.findOne({ UserName: req.body.name });
+      const user = await User.findOne({ UserName: req.body.UserName });
       if (!user) {
-        res.status(401).json("Wrong UserName");
+        return res.status(401).json("Wrong UserName");
       }
       const ValidPassword = await bcrypt.compare(
         req.body.password,
         user.password
       );
       if (!ValidPassword) {
-        res.status(401).json("wrong password");
+        return res.status(401).json("wrong password");
       }
 
       if (user && ValidPassword) {
         // create JWT
         const accessToken = authController.accessToken(user);
         const refreshToken = authController.refreshToken(user);
-
-        //add refreshToken in array
-        refreshTokensArr.push(refreshToken);
-        const newRefreshToken = await new refreshTokens({
-          token: refreshToken,
-        });
-        console.log(newRefreshToken);
-        console.log(refreshTokensArr);
-
-        await newRefreshToken.save();
 
         res.cookie("refreshToken", refreshToken, {
           httpOnly: true,
@@ -95,6 +90,8 @@ const authController = {
       res.status(500).json(error);
     }
   },
+  
+  
   reqRefreshToken: async (req, res) => {
     // lay cookies tu req
     const refreshToken = req.cookies.refreshToken;
@@ -102,13 +99,10 @@ const authController = {
     //
     if (!refreshToken) return res.status(404).json("you're not authenticated");
     // if (!refreshTokensArr.includes(refreshToken)) return res.sendStatus(403);
-    const refreshTokenDB = await refreshTokens.find({ token: refreshToken });
-
-    // check refreshTokenDb
-    if (!refreshTokenDB) return res.status(404).json("not found refresh token");
 
     //  verify refreshToken
     jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY, async (err, user) => {
+      if (err) return res.status(403).json("Invalid refresh token");
       const newAccessToken = authController.accessToken(user);
       const newRefreshToken = authController.refreshToken(user);
 
