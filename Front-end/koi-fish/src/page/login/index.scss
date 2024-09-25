@@ -1,0 +1,75 @@
+.auth-template {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f2f5;
+}
+.form-section-child {
+  background-color: white;
+  padding: 2rem;
+  // border-radius: 8px;
+  // box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 70%;
+}
+.google-button {
+  background-color: white; /* Màu nền trắng */
+  border: 1px solid black; /* Viền đen */
+  color: black; /* Màu chữ đen */
+  font-weight: 600; /* Độ dày chữ */
+  border-radius: 9999px; /* Đường viền tròn */
+  width: 100%; /* Chiếm toàn bộ chiều rộng */
+  display: flex; /* Sử dụng flexbox */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  justify-content: center; /* Căn giữa theo chiều ngang */
+  padding: 0.75rem; /* Khoảng cách bên trong */
+  margin-bottom: 2.75rem; /* Khoảng cách phía dưới */
+  transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu nền */
+
+  /* Hiệu ứng hover */
+  &:hover {
+    background-color: #f7f7f7; /* Màu nền khi hover */
+  }
+
+  /* Định dạng SVG bên trong */
+  svg {
+    width: 24px; /* Chiều rộng của SVG */
+    height: 24px; /* Chiều cao của SVG */
+    fill: #4285f4; /* Màu fill mặc định của SVG */
+  }
+
+  /* Khoảng cách bên trái cho chữ */
+  h2 {
+    margin-left: 0.5rem; /* Khoảng cách bên trái cho chữ */
+  }
+}
+.footer-links {
+  display: flex; /* Sử dụng Flexbox */
+  justify-content: space-between; /* Căn giữa và chia khoảng cách đều */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  margin-top: 1rem; /* Khoảng cách phía trên nếu cần */
+
+  .account-info {
+    display: flex; /* Sử dụng Flexbox cho các phần tử bên trong */
+    align-items: center; /* Căn giữa theo chiều dọc */
+
+    label {
+      margin-right: 0.5rem; /* Khoảng cách bên phải cho label */
+    }
+  }
+}
+.custom-button {
+  // background-color: red; /* Màu nền đỏ */
+  color: white; /* Màu chữ trắng */
+  // border: 1px solid transparent; /* Viền trong suốt */
+  border-radius: 9999px; /* Đường viền tròn */
+  height: 14.5%;
+  width: 50%; /* Chiếm toàn bộ chiều rộng */
+  padding: 12px 0; /* Điều chỉnh padding */
+  margin-bottom: 20px; /* Khoảng cách phía dưới */
+  margin-top: 10px;
+}
+
+.form-section-child h1 {
+  margin-bottom: 70px;
+}
