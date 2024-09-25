@@ -6,6 +6,7 @@ const dotenv = require("dotenv");
 const connection = require("./config/database");
 const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
+const fishRouter = require("./routes/fish");
 const { default: mongoose } = require("mongoose");
 const signInRouter = require("./routes/oauth")
 const app = express();
@@ -21,6 +22,9 @@ app.use("/v1/auth", authRouter);
 app.use("/v1/user" , userRouter);
 //  Sign in google
 app.use("/v1/Oauth" , signInRouter);
+// 
+app.use("/v1/fish" , fishRouter);
+
 (async () => {
    try {
       await connection();

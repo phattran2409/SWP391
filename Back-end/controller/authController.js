@@ -144,7 +144,13 @@ const authController = {
       res.status(200).json({ accessToken: newAccessToken });
     });
   },
-  logout: async (req, res) => {},
+  logout: async (req, res) => {
+    const token = req.headers.token
+    if (!token)  { 
+      return res.status(400).json({message :  "No token provideds"});
+    }
+     
+  },
 };
 
 module.exports = authController;
