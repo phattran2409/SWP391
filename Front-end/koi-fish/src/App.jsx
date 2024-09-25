@@ -7,15 +7,15 @@ import RegisterPage from "./page/register/register";
 function App() {
   const router = createBrowserRouter([
     {
-      path: "",
+      path: "/",
       element: <div>Hello world!</div>,
     },
     {
-      path: "login",
+      path: "/login",
       element: <LoginPage />,
     },
     {
-      path: "register",
+      path: "/register",
       element: <RegisterPage />,
     },
   ]);

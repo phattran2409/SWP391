@@ -75,7 +75,7 @@ function LoginPage() {
   return (
     <AuthenTemplate className="auth-template">
       <div className="form-section-child">
-        <h1>Sign in</h1>
+        <h1 className="font-medium text-3xl">Sign in</h1>
 
         <Button className="google-button" onClick={handleLoginGoogle}>
           <svg width="24" height="24" viewBox="0 0 18 18">
@@ -100,12 +100,16 @@ function LoginPage() {
         </Button>
 
         <Divider>
-          <span>OR</span>
+          <span className="text-gray-400 font-normal">OR</span>
         </Divider>
 
         <Form labelCol={{ span: 24 }}>
           <Form.Item
-            label="User name or email address"
+            label={
+              <label className="text-gray-500 mb-1 block">
+                User name or email address
+              </label>
+            }
             name="username"
             rules={[
               {
@@ -118,10 +122,15 @@ function LoginPage() {
               },
             ]}
           >
-            <Input />
+            <Input className="py-2" />
           </Form.Item>
+
           <Form.Item
-            label="Your password"
+            label={
+              <label className="text-gray-500 mb-1 block">
+                Your password
+              </label>
+            }
             name="password"
             rules={[
               {
@@ -134,15 +143,16 @@ function LoginPage() {
               },
             ]}
           >
-            <Input.Password />
+            <Input.Password className="py-2" />
           </Form.Item>
 
           <div className="footer-links">
             <div className="account-info">
               <label>Do not have an account?</label>
-              <Typography.Link onClick={handleSignUp}>Sign up</Typography.Link>
+              <Typography.Link onClick={handleSignUp} style={{ color: 'black', textDecoration: 'underline' }}>
+                Sign up</Typography.Link>
             </div>
-            <Typography.Link>Forgot Password?</Typography.Link>
+            <Typography.Link style={{ color: 'black', textDecoration: 'underline' }}>Forgot Password?</Typography.Link>
           </div>
 
           <Button color="danger" variant="solid" className="custom-button">
