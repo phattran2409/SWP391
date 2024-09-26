@@ -25,36 +25,6 @@ function LoginPage() {
         console.log("User info:", user);
         // IdP data available using getAdditionalUserInfo(result)
         // ...
-        const userData = {
-          email: user.email,
-          name: user.displayName,
-          photoUrl: user.photoURL,
-          // Thêm các thông tin khác nếu cần
-        };
-
-        fetch("https://your-backend-api.com/api/auth/login", {
-          // Thay đường link của bạn ở đây
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(userData),
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
-            return response.json();
-          })
-          .then((data) => {
-            console.log("Server response:", data);
-            // Điều hướng đến trang chính sau khi đăng nhập thành công
-            navigate("/home"); // Hoặc đường dẫn đến trang chính của bạn
-          })
-          .catch((error) => {
-            console.error("Error during fetch:", error);
-            message.error("Login failed. Please try again.");
-          });
       })
       .catch((error) => {
         console.error("Login error:", error);
@@ -81,6 +51,8 @@ function LoginPage() {
       const { role } = response.data;
       if (role === "ADMIN") {
         navigate("/dashboard");
+      } else {
+        navigate("/home");
       }
     } catch (err) {
       toast.err(err.response.data);
