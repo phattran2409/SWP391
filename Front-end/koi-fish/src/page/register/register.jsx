@@ -4,7 +4,7 @@ import React from "react";
 import { useState } from "react";
 import { Button, Divider, Form, Input, Select } from "antd";
 // import Link from "antd/es/typography/Link";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../../config/axios";
 import { toast } from "react-toastify";
 
@@ -18,14 +18,17 @@ function RegisterPage() {
   const [Phone, setPhone] = useState();
   const [password, setPassword] = useState();
 
+  const navigate = useNavigate();
+
   const handleRegister = async (values) => {
     //submit xuong backend
     try {
       const response = await api.post("register", values);
       toast.success("Successfully register new account!");
+      navigate("/login");
     } catch (err) {
       // console.log
-      toast.error("Error register new account!");
+      toast.error(err.response.data);
     }
   };
 
