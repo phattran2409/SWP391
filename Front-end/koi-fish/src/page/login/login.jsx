@@ -72,6 +72,15 @@ function LoginPage() {
     navigate("/register");
   };
 
+  const handleLogin = async () => {
+    try {
+      const response = await api.post("login", values);
+      console.log(response);
+    } catch (err) {
+      toast.err(err.response.data);
+    }
+  };
+
   return (
     <AuthenTemplate className="auth-template">
       <div className="form-section-child">
@@ -103,7 +112,8 @@ function LoginPage() {
           <span className="text-gray-400 font-normal">OR</span>
         </Divider>
 
-        <Form labelCol={{ span: 24 }}>
+        <Form labelCol={{ span: 24 }}, 
+        onFinish{handleLogin}>
           <Form.Item
             label={
               <label className="text-gray-500 mb-1 block">
