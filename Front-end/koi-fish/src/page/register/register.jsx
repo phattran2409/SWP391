@@ -4,7 +4,9 @@ import React from "react";
 import { useState } from "react";
 import { Button, Divider, Form, Input, Select } from "antd";
 // import Link from "antd/es/typography/Link";
-import { Link, NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
+import api from "../../config/axios";
+import { toast } from "react-toastify";
 
 const { Option } = Select; // Thay đổi ở đây
 
@@ -15,6 +17,17 @@ function RegisterPage() {
   const [email, setEmail] = useState();
   const [Phone, setPhone] = useState();
   const [password, setPassword] = useState();
+
+  const handleRegister = async (values) => {
+    //submit xuong backend
+    try {
+      const response = await api.post("register", values);
+      toast.success("Successfully register new account!");
+    } catch (err) {
+      // console.log
+      toast.error("Error register new account!");
+    }
+  };
 
   return (
     <div className="w-full h-full flex items-center min-h-screen bg-cover bg-center bg-no-repeat bg-[url('https://res.cloudinary.com/ddqgjy50x/image/upload/v1726740184/live-koi-fish-mtvpcoc3yknxrj5g_fsuwik.jpg')]">
@@ -49,7 +62,7 @@ function RegisterPage() {
           </Divider>
         </div>
         <div className="px-28 ">
-          <Form labelCol={{ span: 24 }}>
+          <Form labelCol={{ span: 24 }} onFinish={handleRegister}>
             <Form.Item
               name="username"
               label={<span className="text-[#716767] pb-0">Username</span>}
