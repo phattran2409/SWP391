@@ -125,7 +125,7 @@ function LoginPage() {
                 User name or email address
               </label>
             }
-            name="phone"
+            name="phone" // cho nay dang de phone de test xong se doi lai member
             rules={[
               {
                 required: true,
