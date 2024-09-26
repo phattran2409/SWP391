@@ -20,7 +20,7 @@ function RegisterPage() {
 
   return (
     <div className="w-full h-full flex items-center min-h-screen bg-cover bg-center bg-no-repeat bg-[url('https://res.cloudinary.com/ddqgjy50x/image/upload/v1726740184/live-koi-fish-mtvpcoc3yknxrj5g_fsuwik.jpg')]">
-      <div className="min-w-[700px] h-[85vh] bg-white mx-auto rounded-3xl">
+      <div className="w-full max-w-2xl lg:max-w-3xl bg-white mx-auto rounded-3xl my-14">
         <div className="px-20">
           <h1 className="text-3xl font-normal mb-4 text-center mt-7">Sign up</h1>
           <Button className="google-button h-14 mb-0" >
@@ -126,28 +126,17 @@ function RegisterPage() {
                   message: 'Please Input Your Phone Number!',
                 },
                 {
-                  type: "number",
-                  message: 'Please enter a valid phone number!',
-                },
-                {
                   validator: (_, value) => {
-                    // Kiểm tra độ dài của số điện thoại
-                    if (value.length < 10 || value.length > 10) {
-                      return Promise.reject(new Error('Phone number must be 10 digits!'));
+                    const phoneRegex = /^[0-9]{10}$/;
+                    if (!phoneRegex.test(value)) {
+                      return Promise.reject(new Error('Please enter a valid phone number with 10 digits!'));
                     }
 
                     // Nếu tất cả các điều kiện đều hợp lệ
                     return Promise.resolve();
                   },
                 },
-                // ]}
               ]}
-              // rules={[
-              //   {
-              //     required: true,
-              //     message: 'Please input your phone number!',
-              //   },
-
               validateTrigger={['onBlur', 'onPressEnter']}
             >
               <Input
@@ -161,10 +150,39 @@ function RegisterPage() {
                 {
                   required: true,
                   message: 'Please input your password!',
+
+                },
+
+                {
+                  min: 6,
+                  max: 20,
+                  message: 'Password must be between 6 and 20 characters!',
                 },
               ]}
               hasFeedback
-
+            >
+              <Input.Password
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </Form.Item>
+            <Form.Item
+              name="c-password"
+              label={<span className="custom-label ">Confirm password</span>}
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input your Confirm password!',
+                },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue('password') === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(new Error('The two passwords do not match!'));
+                  },
+                }),
+              ]}
+              hasFeedback
             >
               <Input.Password
                 onChange={(e) => setPassword(e.target.value)}
