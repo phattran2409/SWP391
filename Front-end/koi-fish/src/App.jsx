@@ -8,7 +8,7 @@ import Dashboard from "./components/dashboard/dashboard";
 function App() {
   const router = createBrowserRouter([
     {
-      path: "",
+      path: "/home",
       element: <div>Hello world!</div>,
     },
     {
