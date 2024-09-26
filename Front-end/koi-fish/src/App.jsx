@@ -4,11 +4,12 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LoginPage from "./page/login/login";
 import RegisterPage from "./page/register/register";
 import Dashboard from "./components/dashboard/dashboard";
+import ManageMember from "./page/admin/manage-member/manageMember";
 
 function App() {
   const router = createBrowserRouter([
     {
-      path: "",
+      path: "/home",
       element: <div>Hello world!</div>,
     },
     {
@@ -22,6 +23,12 @@ function App() {
     {
       path: "/dashboard",
       element: <Dashboard />,
+      children: [
+        {
+          path: "member",
+          element: <ManageMember />,
+        },
+      ],
     },
   ]);
 
