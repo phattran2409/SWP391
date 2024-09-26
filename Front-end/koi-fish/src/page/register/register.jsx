@@ -23,7 +23,7 @@ function RegisterPage() {
   const handleRegister = async (values) => {
     //submit xuong backend
     try {
-      values.role = "MEMMBER";
+      values.role = "CUSTOMER";
       const response = await api.post("register", values);
       toast.success("Successfully register new account!");
       navigate("/login");
