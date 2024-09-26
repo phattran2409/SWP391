@@ -76,6 +76,10 @@ function LoginPage() {
     try {
       const response = await api.post("login", values);
       console.log(response);
+      const { role } = response.data;
+      if (role === "ADMIN") {
+        navigate("/dashboard");
+      }
     } catch (err) {
       toast.err(err.response.data);
     }
@@ -112,8 +116,7 @@ function LoginPage() {
           <span className="text-gray-400 font-normal">OR</span>
         </Divider>
 
-        <Form labelCol={{ span: 24 }}, 
-        onFinish{handleLogin}>
+        <Form labelCol={{ span: 24 }} onFinish={handleLogin}>
           <Form.Item
             label={
               <label className="text-gray-500 mb-1 block">
@@ -137,9 +140,7 @@ function LoginPage() {
 
           <Form.Item
             label={
-              <label className="text-gray-500 mb-1 block">
-                Your password
-              </label>
+              <label className="text-gray-500 mb-1 block">Your password</label>
             }
             name="password"
             rules={[
@@ -159,10 +160,18 @@ function LoginPage() {
           <div className="footer-links">
             <div className="account-info">
               <label>Do not have an account?</label>
-              <Typography.Link onClick={handleSignUp} style={{ color: 'black', textDecoration: 'underline' }}>
-                Sign up</Typography.Link>
+              <Typography.Link
+                onClick={handleSignUp}
+                style={{ color: "black", textDecoration: "underline" }}
+              >
+                Sign up
+              </Typography.Link>
             </div>
-            <Typography.Link style={{ color: 'black', textDecoration: 'underline' }}>Forgot Password?</Typography.Link>
+            <Typography.Link
+              style={{ color: "black", textDecoration: "underline" }}
+            >
+              Forgot Password?
+            </Typography.Link>
           </div>
 
           <Button color="danger" variant="solid" className="custom-button">
