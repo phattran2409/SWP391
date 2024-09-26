@@ -6,6 +6,8 @@ import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { googleProvider } from "../../config/firebase";
 import "./index.scss";
 import { useNavigate } from "react-router-dom";
+import api from "../../config/axios";
+import { toast } from "react-toastify";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -72,7 +74,7 @@ function LoginPage() {
     navigate("/register");
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (values) => {
     try {
       const response = await api.post("login", values);
       console.log(response);
@@ -123,15 +125,11 @@ function LoginPage() {
                 User name or email address
               </label>
             }
-            name="username"
+            name="phone"
             rules={[
               {
                 required: true,
                 message: "Please input your username or email!",
-              },
-              {
-                type: "email",
-                message: "The input is not valid E-mail!",
               },
             ]}
           >
@@ -147,10 +145,6 @@ function LoginPage() {
               {
                 required: true,
                 message: "Please input your password!",
-              },
-              {
-                min: 6,
-                message: "Password must be at least 6 characters long!",
               },
             ]}
           >
@@ -174,7 +168,13 @@ function LoginPage() {
             </Typography.Link>
           </div>
 
-          <Button color="danger" variant="solid" className="custom-button">
+          <Button
+            color="danger"
+            variant="solid"
+            className="custom-button"
+            type="primary"
+            htmlType="submit"
+          >
             Sign in
           </Button>
         </Form>

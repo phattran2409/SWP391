@@ -12,15 +12,15 @@ function App() {
       element: <div>Hello world!</div>,
     },
     {
-      path: "login",
+      path: "/login",
       element: <LoginPage />,
     },
     {
-      path: "register",
+      path: "/register",
       element: <RegisterPage />,
     },
     {
-      path: "dashboard",
+      path: "/dashboard",
       element: <Dashboard />,
     },
   ]);
