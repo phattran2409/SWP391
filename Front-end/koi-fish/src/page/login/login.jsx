@@ -78,7 +78,9 @@ function LoginPage() {
     try {
       const response = await api.post("login", values);
       console.log(response);
-      const { role } = response.data;
+      const { role, token } = response.data;
+
+      localStorage.setItem("token", token);
       if (role === "ADMIN") {
         navigate("/dashboard");
       }
