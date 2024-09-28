@@ -24,9 +24,10 @@ function RegisterPage() {
     //submit xuong backend
     try {
       values.role = "CUSTOMER"; //cho nay dang de tam la customer de test
-      const response = await api.post("register", values);
+      const response = await api.post("/v1/auth/register", values);
       toast.success("Successfully register new account!");
       navigate("/login");
+
     } catch (err) {
       // console.log
       toast.error(err.response.data);
@@ -68,7 +69,7 @@ function RegisterPage() {
         <div className="px-28 ">
           <Form labelCol={{ span: 24 }} onFinish={handleRegister}>
             <Form.Item
-              name="username"
+              name="userName"
               label={<span className="text-[#716767] pb-0">Username</span>}
               rules={[
                 { required: true, message: "Please input your username!" },
@@ -96,12 +97,12 @@ function RegisterPage() {
                   placeholder="Select"
                   onChange={(value) => setGender(value)}
                 >
-                  <Option value="male">Male</Option>
-                  <Option value="female">Female</Option>
+                  <Option value="0">Male</Option>
+                  <Option value="1">Female</Option>
                 </Select>
               </Form.Item>
               <Form.Item
-                name="yearOfBirth"
+                name="birthDate"
                 label={<span className="custom-label">Year of birth</span>}
                 className="w-1/2"
                 rules={[
@@ -199,7 +200,7 @@ function RegisterPage() {
               <Input.Password onChange={(e) => setPassword(e.target.value)} />
             </Form.Item>
             <Form.Item
-              name="c-password"
+              name="c_password"
               label={<span className="custom-label ">Confirm password</span>}
               rules={[
                 {
