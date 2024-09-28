@@ -46,7 +46,7 @@ function LoginPage() {
 
   const handleLogin = async (values) => {
     try {
-      const response = await api.post("login", values);
+      const response = await api.post("/v1/auth/login", values);
       console.log(response);
       const { role, token } = response.data;
 
@@ -99,7 +99,7 @@ function LoginPage() {
                 User name or email address
               </label>
             }
-            name="phone" // cho nay dang de phone de test xong se doi lai member
+            name="userName" // cho nay dang de phone de test xong se doi lai member
             rules={[
               {
                 required: true,
