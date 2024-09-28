@@ -76,6 +76,15 @@ function RegisterPage() {
             >
               <Input onChange={(e) => setName(e.target.value)} />
             </Form.Item>
+            <Form.Item
+              name="name"
+              label={<span className="text-[#716767] pb-0">Full Name</span>}
+              rules={[
+                { required: true, message: "Please input your full name!" },
+              ]}
+            >
+              <Input onChange={(e) => setName(e.target.value)} />
+            </Form.Item>
             <div className="flex space-x-4">
               <Form.Item
                 name="gender"
@@ -235,7 +244,6 @@ function RegisterPage() {
                 Sign up
               </Button>
             </Form.Item>
-
             <Link to="/login">Already have Account? Go to Login!</Link>
           </Form>
         </div>
