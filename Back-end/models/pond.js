@@ -7,7 +7,7 @@ const pondSchema =  mongoose.Schema( {
   shape :  { 
     type : String 
   },
-  desciption : {
+  description : {
     type : String
   },
   trees : {
@@ -20,7 +20,7 @@ const pondSchema =  mongoose.Schema( {
     type  : String
   }
   ,direction : {
-    type : [String]
+    type : String
   }, 
   image : {
     type : String

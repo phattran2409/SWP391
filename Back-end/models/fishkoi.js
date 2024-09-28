@@ -1,7 +1,7 @@
 const { default: mongoose } = require("mongoose");
 
 const  fishKoiSchema = mongoose.Schema( {
-    elementsID : {
+    elementID : {
         type : String
     },
     koiName : {

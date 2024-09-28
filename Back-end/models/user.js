@@ -2,14 +2,14 @@ const { default: mongoose } = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
-    UserName: {
+    userName: {
       type: String,
       require: true,
       minlength: 6,
       maxlength: 20,
       unique: true,
     },
-    Name  : { 
+    name  : { 
       type : String, 
       
     } , 
@@ -41,13 +41,15 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
-    // gender : {
-    //   type: Number,
-    //   enum: [0, 1, 2], // Ví dụ: 0 - Nam, 1 - Nữ, 2 - Khác
-    // }
-    // ,
-    birthDate : {
-      type : Date,
+   
+    gender : {
+      type: Number,
+      enum: [0, 1,], // Ví dụ: 0 - Nam, 1 - Nữ, 
+    }
+    ,
+
+    yearOfBirth : {
+      type : String,
     },
 
     provider :  {

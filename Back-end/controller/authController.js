@@ -11,7 +11,7 @@ const authController = {
     return jwt.sign(
       { id: user.id, admin: user.admin },
       process.env.JWT_ACCESS_KEY,
-      { expiresIn: "2m" }
+      { expiresIn: "15m" }
     );
   },
   refreshToken: (user) => {
@@ -35,14 +35,14 @@ const authController = {
       const gender = Number.parseInt(req.body.birthDate);
       // create  a new user
       const newUser = await new User({
-        UserName: req.body.UserName,
+        userName: req.body.userName,
         email: req.body.email,
         password: hashed,
         avatar: "",
         birthDate: req.body.birthDate,
         gender: gender,
-        phoneNumber: req.body.phonenumber,
-        Name: req.body.fullName,
+        phoneNumber: req.body.phoneNumber,
+        name: req.body.fullName,
       });
 
       // save to database
@@ -55,7 +55,7 @@ const authController = {
 
   loginUser: async (req, res) => {
     try {
-      const user = await User.findOne({ UserName: req.body.UserName });
+      const user = await User.findOne({ userName: req.body.userName });
       if (!user) {
         return res.status(401).json("Wrong UserName");
       }
@@ -135,6 +135,8 @@ const authController = {
       res.status(200).json({ accessToken: newAccessToken });
     });
   },
+
+  //Logout
   logout: async (req, res) => {
     const token = req.headers.token;
     if (!token) {
