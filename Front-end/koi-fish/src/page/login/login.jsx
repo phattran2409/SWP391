@@ -8,6 +8,7 @@ import "./index.scss";
 import { useNavigate } from "react-router-dom";
 import api from "../../config/axios";
 import { toast } from "react-toastify";
+import { jwtDecode } from "jwt-decode";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ function LoginPage() {
         // This gives you a Google Access Token. You can use it to access the Google API.
         const credential = googleProvider.credentialFromResult(result);
         const token = credential.accessToken;
+        console.log("TOKEN google "+token)
         // The signed-in user info.
         const user = result.user;
         console.log("User info:", user);
