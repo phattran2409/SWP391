@@ -1,13 +1,15 @@
 import React, { useEffect } from "react";
 import { Button, Modal, Table, Form, Input, Select } from "antd";
 import axios from "axios";
+import { useForm } from "antd/es/form/Form";
 
 const { Option } = Select;
 
 function ManageMember() {
   const [openModal, setOpenModal] = React.useState(false);
   const [members, setMembers] = React.useState([]);
-  const [form] = Form.useForm();
+  const [submitting, setSubmitting] = React.useState(false);
+  const [form] = useForm();
 
   const api = "https://66f75283b5d85f31a3427688.mockapi.io/Member";
 
@@ -71,8 +73,26 @@ function ManageMember() {
     );
   }
 
-  const handleSubmitMember = () => {
+  const handleSubmitMember = async (values) => {
     //post xuong api
+    console.log(values);
+    //dua xuong back-end
+    try {
+      setSubmitting(true);
+      const response = await axios.post(api, values);
+      // thanh cong
+      alert("Successfully create new student");
+      setOpenModal(false);
+      setSubmitting(false);
+      //clear du lieu cu
+      form.resetFields();
+      //lay lai du lieu moi
+      fetchMember();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -80,6 +100,7 @@ function ManageMember() {
       <Button onClick={handleOpenModal}>Create new member</Button>
       <Table columns={columns} dataSource={members}></Table>
       <Modal
+        confirmLoading={submitting}
         onOk={() => form.submit()}
         title="Create new member"
         open={openModal}
@@ -97,8 +118,9 @@ function ManageMember() {
                 message: "Please input member's name!",
               },
               {
-                pattern: /^[a-zA-Z\s]+$/,
-                message: "Name should only contain alphabets and spaces!",
+                pattern:
+                  /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÂÊÔƠƯ \s]+$/,
+                message: "Name should only contain letters, spaces!",
               },
             ]}
           >
