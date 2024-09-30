@@ -97,9 +97,17 @@ function ManageMember() {
       title: "Action",
       dataIndex: "id",
       key: "id",
-      render: (id) => {
+      render: (id, member) => {
         <>
-          <Button type="primary">Edit</Button>
+          <Button
+            type="primary"
+            onClick={() => {
+              setShowModal(true);
+              form.setFieldValue(member);
+            }}
+          >
+            Edit
+          </Button>
 
           <Popconfirm
             title="Delete"
@@ -122,7 +130,7 @@ function ManageMember() {
 
       <Modal
         open={showModal}
-        onClose={() => setShowModal(false)}
+        onCancel={() => setShowModal(false)}
         title="Create a new member"
         onOk={() => form.submit()}
         confirmLoading={loading}
