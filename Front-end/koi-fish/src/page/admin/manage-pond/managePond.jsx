@@ -121,10 +121,10 @@ function ManagePond() {
         columns={columns}
         formItems={formItems}
         path="v1/pond"
-        createPath="v1/pond/createPond"
-        updatePath="v1/pond/updatePond"
-        deletePath="v1/pond/deletePond"
-        searchPath="v1/pond/searchPond"
+        createPath="/v1/pond/createPond"
+        updatePath="/v1/pond/updatePond"
+        deletePath="/v1/pond/deletePond"
+        searchPath="/v1/pond/searchPond"
       />
     </div>
   );

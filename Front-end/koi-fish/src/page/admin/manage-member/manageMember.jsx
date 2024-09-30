@@ -219,10 +219,10 @@ function ManageMember() {
         columns={columns}
         formItems={formItems}
         path="v1/user"
-        createPath="v1/user/create"
-        updatePath="v1/user/update"
-        deletePath="v1/user"
-        searchPath="v1/user/search"
+        createPath="/v1/user/create"
+        updatePath="/v1/user/update"
+        deletePath="/v1/user"
+        searchPath="/v1/user/search"
       />
     </div>
   );
