@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import { Button, Input, Modal, Table, Form } from "antd";
+import { Button, Input, Modal, Table, Form, Select, DatePicker } from "antd";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import api from "../../../config/axios";
@@ -7,6 +7,8 @@ import api from "../../../config/axios";
 function ManageMember() {
   const [dataMembers, setDataMembers] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
   //GET
   const fetchDataMember = async () => {
     try {
@@ -18,7 +20,19 @@ function ManageMember() {
   };
 
   //CREATE OR UPDATE
-  const handleSubmit = () => {};
+  const handleSubmit = async (values) => {
+    try {
+      setLoading(true);
+      const response = await api.post("v1/user/create", values);
+      fetchDataMember();
+      form.resetFields();
+      setShowModal(false);
+    } catch (err) {
+      toast.error(err.response.data);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   //DELETE
   const handleDelete = (id) => {};
@@ -27,17 +41,46 @@ function ManageMember() {
     fetchDataMember();
   }, []);
 
+  //handle birth Year
+  const years = Array.from({ length: 125 }, (_, index) => 2024 - index);
+
+  const columns = [
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+    },
+    {
+      title: "UserName",
+      dataIndex: "userName",
+      key: "userName",
+    },
+    {
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
+    },
+  ];
+
   return (
     <div>
-      <Button onClick={() => setShowModal(true)}>Add</Button>
+      <Button onClick={() => setShowModal(true)}>Add Member</Button>
       <Table dataSource={dataMembers}></Table>
 
       <Modal
         open={showModal}
         onClose={() => setShowModal(false)}
-        title="member"
+        title="Create a new member"
+        onOk={() => form.submit()}
+        confirmLoading={loading}
       >
-        <Form>
+        <Form
+          form={form}
+          labelCol={{
+            span: 24,
+          }}
+          onFinish={handleSubmit}
+        >
           <Form.Item
             name="userName"
             label="UserName"
@@ -57,7 +100,7 @@ function ManageMember() {
               },
             ]}
           >
-            <Input />
+            <Input placeholder="Enter member's UserName" />
           </Form.Item>
 
           <Form.Item
@@ -65,9 +108,21 @@ function ManageMember() {
             label="Full Name"
             rules={[
               { required: true, message: "Please enter your full name!" },
+              { min: 2, message: "Name must be at least 2 characters long!" },
+              { max: 50, message: "Name cannot be longer than 50 characters!" },
+              {
+                pattern:
+                  /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơưƯĂắằẳẵặÂấầẩẫậÊếềểễệÔốồổỗộƠớờởỡợỲỵỷỹÝýỴýỶỹ ]+$/,
+                message:
+                  "Please enter a valid name (letters, including Vietnamese characters only)!",
+              },
+              {
+                pattern: /^[^\d!@#\$%\^\&*\)\(+=._-]+$/,
+                message: "Name cannot contain numbers or special characters!",
+              },
             ]}
           >
-            <Input />
+            <Input placeholder="Enter member's full name" />
           </Form.Item>
 
           <Form.Item
@@ -75,10 +130,14 @@ function ManageMember() {
             label="Email"
             rules={[
               { required: true, message: "Please enter your email!" },
-              { type: "email", message: "Please enter a valid email!" },
+              { type: "email", message: "Please enter a valid email address!" },
+              {
+                max: 100,
+                message: "Email cannot be longer than 100 characters!",
+              },
             ]}
           >
-            <Input />
+            <Input placeholder="Enter member's email" />
           </Form.Item>
 
           <Form.Item
@@ -90,9 +149,20 @@ function ManageMember() {
                 min: 6,
                 message: "Password must be at least 6 characters long!",
               },
+              {
+                max: 20,
+                message: "Password cannot be longer than 20 characters!",
+              },
+              {
+                pattern:
+                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
+                message:
+                  "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character!",
+              },
+              { pattern: /^\S*$/, message: "Password cannot contain spaces!" },
             ]}
           >
-            <Input.Password />
+            <Input.Password placeholder="Enter member's password" />
           </Form.Item>
 
           <Form.Item
@@ -100,14 +170,14 @@ function ManageMember() {
             label="Phone Number"
             rules={[
               { required: true, message: "Please enter your phone number!" },
-              { pattern: /^[0-9]+$/, message: "Phone number must be numeric!" },
+              {
+                pattern: /^(0|\+84)[3-9][0-9]{8}$/,
+                message: "Please enter a valid phone number!",
+              },
+              { len: 10, message: "Phone number must be exactly 10 digits!" },
             ]}
           >
-            <Input />
-          </Form.Item>
-
-          <Form.Item name="avatar" label="Avatar" rules={[{ required: false }]}>
-            <Input />
+            <Input placeholder="Enter member's phone number" />
           </Form.Item>
 
           <Form.Item
@@ -115,18 +185,26 @@ function ManageMember() {
             label="Gender"
             rules={[{ required: true, message: "Please specify your gender!" }]}
           >
-            <Input />
+            <Select placeholder="Select member's gender">
+              <Select.Option value="male">Male</Select.Option>
+              <Select.Option value="female">Female</Select.Option>
+            </Select>
           </Form.Item>
 
           <Form.Item
-            name="birthDate"
-            label="Birth Date"
+            name="birthYear"
+            label="Birth Year"
             rules={[
-              { required: true, message: "Please enter your birth date!" },
-              { type: "date", message: "Please enter a valid birth date!" },
+              { required: true, message: "Please select your birth year!" },
             ]}
           >
-            <Input />
+            <Select placeholder="Select member's birth year">
+              {years.map((year) => (
+                <Select.Option key={year} value={year}>
+                  {year}
+                </Select.Option>
+              ))}
+            </Select>
           </Form.Item>
         </Form>
       </Modal>
