@@ -5,6 +5,9 @@ import LoginPage from "./page/login/login";
 import RegisterPage from "./page/register/register";
 import Dashboard from "./components/dashboard/dashboard";
 import ManageMember from "./page/admin/manage-member/manageMember";
+import ManagePond from "./page/admin/manage-pond/managePond";
+import ManageKoi from "./page/admin/manage-koi/manageKoi";
+import ManageService from "./page/admin/manage-service/manageService";
 
 function App() {
   const router = createBrowserRouter([
@@ -27,6 +30,18 @@ function App() {
         {
           path: "member",
           element: <ManageMember />,
+        },
+        {
+          path: "pond",
+          element: <ManagePond />,
+        },
+        {
+          path: "koi",
+          element: <ManageKoi />,
+        },
+        {
+          path: "service",
+          element: <ManageService />,
         },
       ],
     },
