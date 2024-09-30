@@ -1,5 +1,14 @@
 // eslint-disable-next-line no-unused-vars
-import { Button, Input, Modal, Table, Form, Select, DatePicker } from "antd";
+import {
+  Button,
+  Input,
+  Modal,
+  Table,
+  Form,
+  Select,
+  DatePicker,
+  Popconfirm,
+} from "antd";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import api from "../../../config/axios";
@@ -56,16 +65,61 @@ function ManageMember() {
       key: "userName",
     },
     {
-      title: "ID",
+      title: "Password",
+      dataIndex: "password",
+      key: "password",
+    },
+    {
+      title: "Full name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "Phone Number",
+      dataIndex: "phoneNumber",
+      key: "phoneNumber",
+    },
+    {
+      title: "Gender",
+      dataIndex: "gender",
+      key: "gender",
+    },
+    {
+      title: "Birth Date",
+      dataIndex: "birthDate",
+      key: "birthDate",
+    },
+    {
+      title: "Action",
       dataIndex: "id",
       key: "id",
+      render: (id) => {
+        <>
+          <Button type="primary">Edit</Button>
+
+          <Popconfirm
+            title="Delete"
+            description="Do you want to delete this member?"
+            onConfirm={() => handleDelete(id)}
+          >
+            <Button type="primary" danger>
+              Delete
+            </Button>
+          </Popconfirm>
+        </>;
+      },
     },
   ];
 
   return (
     <div>
       <Button onClick={() => setShowModal(true)}>Add Member</Button>
-      <Table dataSource={dataMembers}></Table>
+      <Table dataSource={dataMembers} columns={columns}></Table>
 
       <Modal
         open={showModal}
