@@ -23,7 +23,14 @@ function ManageMember() {
   const handleSubmit = async (values) => {
     try {
       setLoading(true);
-      const response = await api.post("v1/user/create", values);
+      if (values.id) {
+        // => update
+        const response = await api.put(`v1/user/${values.id}`, values);
+      } else {
+        // => create
+        const response = await api.post("v1/user/create", values);
+      }
+
       fetchDataMember();
       form.resetFields();
       setShowModal(false);
@@ -142,6 +149,9 @@ function ManageMember() {
           }}
           onFinish={handleSubmit}
         >
+          <Form.Item name="id" hidden>
+            <Input />
+          </Form.Item>
           <Form.Item
             name="userName"
             label="UserName"
