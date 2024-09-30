@@ -1,194 +1,132 @@
-import React, { useEffect } from "react";
-import { Button, Modal, Table, Form, Input, Select } from "antd";
-import axios from "axios";
-import { useForm } from "antd/es/form/Form";
-
-const { Option } = Select;
+// eslint-disable-next-line no-unused-vars
+import { Button, Input, Modal, Table, Form } from "antd";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import api from "../../../config/axios";
 
 function ManageMember() {
-  const [openModal, setOpenModal] = React.useState(false);
-  const [members, setMembers] = React.useState([]);
-  const [submitting, setSubmitting] = React.useState(false);
-  const [form] = useForm();
-
-  const api = "https://66f75283b5d85f31a3427688.mockapi.io/Member";
-
-  const fetchMember = async () => {
-    const response = await axios.get(api);
-    console.log(response);
-    setMembers(response.data);
-  };
-
-  useEffect(() => {
-    fetchMember();
-  }, []);
-
-  const columns = [
-    {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
-    },
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Gender",
-      dataIndex: "gender",
-      key: "gender",
-    },
-    {
-      title: "Birth Year",
-      dataIndex: "birthYear",
-      key: "birthYear",
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-    },
-    {
-      title: "Phone",
-      dataIndex: "phone",
-      key: "phone",
-    },
-  ];
-
-  const handleOpenModal = () => {
-    setOpenModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
-  };
-
-  const yearOptions = [];
-  for (let i = 1920; i <= 2024; i++) {
-    yearOptions.push(
-      <Option key={i} value={i}>
-        {i}
-      </Option>
-    );
-  }
-
-  const handleSubmitMember = async (values) => {
-    //post xuong api
-    console.log(values);
-    //dua xuong back-end
+  const [dataMembers, setDataMembers] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  //GET
+  const fetchDataMember = async () => {
     try {
-      setSubmitting(true);
-      const response = await axios.post(api, values);
-      // thanh cong
-      alert("Successfully create new student");
-      setOpenModal(false);
-      setSubmitting(false);
-      //clear du lieu cu
-      form.resetFields();
-      //lay lai du lieu moi
-      fetchMember();
+      const response = await api.get("v1/user");
+      setDataMembers(response.data);
     } catch (err) {
-      console.error(err);
-    } finally {
-      setSubmitting(false);
+      toast.error(err.response.data);
     }
   };
 
+  //CREATE OR UPDATE
+  const handleSubmit = () => {};
+
+  //DELETE
+  const handleDelete = (id) => {};
+
+  useEffect(() => {
+    fetchDataMember();
+  }, []);
+
   return (
     <div>
-      <Button onClick={handleOpenModal}>Create new member</Button>
-      <Table columns={columns} dataSource={members}></Table>
+      <Button onClick={() => setShowModal(true)}>Add</Button>
+      <Table dataSource={dataMembers}></Table>
+
       <Modal
-        confirmLoading={submitting}
-        onOk={() => form.submit()}
-        title="Create new member"
-        open={openModal}
-        onCancel={handleCloseModal}
-        footer={null} // Để ẩn nút footer mặc định
+        open={showModal}
+        onClose={() => setShowModal(false)}
+        title="member"
       >
-        {/* form: dai dien cho nguyen cai form */}
-        <Form form={form} layout="vertical" onFinish={handleSubmitMember}>
+        <Form>
           <Form.Item
-            label="Member name"
+            name="userName"
+            label="UserName"
+            rules={[
+              { required: true, message: "Please enter your username!" },
+              {
+                min: 6,
+                message: "Username must be at least 6 characters long!",
+              },
+              {
+                max: 20,
+                message: "Username cannot be longer than 20 characters!",
+              },
+              {
+                pattern: /^[a-zA-Z0-9]+$/,
+                message: "Username can only contain letters and numbers!",
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
             name="name"
+            label="Full Name"
             rules={[
-              {
-                required: true,
-                message: "Please input member's name!",
-              },
-              {
-                pattern:
-                  /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂÂÊÔƠƯ \s]+$/,
-                message: "Name should only contain letters, spaces!",
-              },
+              { required: true, message: "Please enter your full name!" },
             ]}
           >
             <Input />
           </Form.Item>
+
           <Form.Item
-            label="Member gender"
-            name="gender"
-            rules={[
-              {
-                required: true,
-                message: "Please select member's gender!",
-              },
-            ]}
-          >
-            <Select placeholder="Select gender">
-              <Option value="male">Male</Option>
-              <Option value="female">Female</Option>
-            </Select>
-          </Form.Item>
-          <Form.Item
-            label="Member birth year"
-            name="birthYear"
-            rules={[
-              {
-                required: true,
-                message: "Please select member's birth year!",
-              },
-            ]}
-          >
-            <Select placeholder="Select birth year">{yearOptions}</Select>
-          </Form.Item>
-          <Form.Item
-            label="Member email"
             name="email"
+            label="Email"
             rules={[
-              {
-                required: true,
-                message: "Please input member's email!",
-              },
-              {
-                type: "email",
-                message: "Please enter a valid email address!",
-              },
+              { required: true, message: "Please enter your email!" },
+              { type: "email", message: "Please enter a valid email!" },
             ]}
           >
             <Input />
           </Form.Item>
+
           <Form.Item
-            label="Member phone"
-            name="phone"
+            name="password"
+            label="Password"
             rules={[
+              { required: true, message: "Please enter your password!" },
               {
-                required: true,
-                message: "Please input member's phone!",
+                min: 6,
+                message: "Password must be at least 6 characters long!",
               },
-              {
-                pattern: /^[0-9]{10}$/,
-                message: "Phone number should be 10 digits!",
-              },
+            ]}
+          >
+            <Input.Password />
+          </Form.Item>
+
+          <Form.Item
+            name="phoneNumber"
+            label="Phone Number"
+            rules={[
+              { required: true, message: "Please enter your phone number!" },
+              { pattern: /^[0-9]+$/, message: "Phone number must be numeric!" },
             ]}
           >
             <Input />
           </Form.Item>
-          <Form.Item>
-            <Button type="primary" htmlType="submit">
-              Submit
-            </Button>
+
+          <Form.Item name="avatar" label="Avatar" rules={[{ required: false }]}>
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="gender"
+            label="Gender"
+            rules={[{ required: true, message: "Please specify your gender!" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="birthDate"
+            label="Birth Date"
+            rules={[
+              { required: true, message: "Please enter your birth date!" },
+              { type: "date", message: "Please enter a valid birth date!" },
+            ]}
+          >
+            <Input />
           </Form.Item>
         </Form>
       </Modal>
@@ -197,4 +135,3 @@ function ManageMember() {
 }
 
 export default ManageMember;
-

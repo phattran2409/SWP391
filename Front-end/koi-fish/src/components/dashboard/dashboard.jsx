@@ -7,18 +7,18 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Breadcrumb, Layout, Menu, theme } from "antd";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
   return {
     key,
     icon,
     children,
-    label,
+    label: <Link to={`/dashboard/${key}`}>{label}</Link>,
   };
 }
 const items = [
-  getItem("Member", "1", <PieChartOutlined />),
+  getItem("Manage Member", "member", <PieChartOutlined />),
   getItem("Option 2", "2", <DesktopOutlined />),
   getItem("User", "sub1", <UserOutlined />, [
     getItem("Tom", "3"),
