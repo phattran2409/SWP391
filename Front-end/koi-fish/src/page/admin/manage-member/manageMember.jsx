@@ -1,14 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import {
-  Button,
-  Input,
-  Modal,
-  Table,
-  Form,
-  Select,
-  DatePicker,
-  Popconfirm,
-} from "antd";
+import { Button, Input, Modal, Table, Form, Select, Popconfirm } from "antd";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import api from "../../../config/axios";
@@ -44,7 +35,15 @@ function ManageMember() {
   };
 
   //DELETE
-  const handleDelete = (id) => {};
+  const handleDelete = async (id) => {
+    try {
+      await api.delete(`v1/user/${id}`);
+      toast.success("Successfully deleted");
+      fetchDataMember();
+    } catch (err) {
+      toast.error(err.response.data);
+    }
+  };
 
   useEffect(() => {
     fetchDataMember();
