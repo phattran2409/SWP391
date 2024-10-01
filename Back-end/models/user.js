@@ -48,8 +48,8 @@ const userSchema = new mongoose.Schema(
     }
     ,
 
-    yearOfBirth : {
-      type : String,
+    birthDate : {
+      type : Date,
     },
 
     provider :  {

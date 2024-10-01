@@ -1,3 +1,4 @@
+const pond = require("../models/pond");
 const ponds = require("../models/pond");
 
 const pondController = {
@@ -78,12 +79,12 @@ const pondController = {
   //GET POND BY ELEMENT
   getByElement: async (req, res) => {
     try {
-      const data = req.body;
-      const pond = await ponds.find({ elementID: parseInt(data.elementID) });
-      if (pond.length === 0) {
+      const elementID = req.query.elementID;
+      const pond = await ponds.find({elementID});
+      if (!pond || pond.length === 0) {
         return res.status(403).json("data is not found");
       }
-      return res.status(200).json({ ponds: pond });
+      res.status(200).json(pond);
     } catch (error) {
       return res.status(500).json(error);
     }
@@ -93,7 +94,7 @@ const pondController = {
   getById: async (req, res) => {
     try {
       const pond = await ponds.findById(req.params.id);
-      if (!pond) {
+      if (!pond || pond.length === 0) {
         return res.status(403).json("data is not found");
       }
       return res.status(200).json(pond);
@@ -106,7 +107,7 @@ const pondController = {
   deletePond: async (req, res) => {
     try {
       await ponds.findByIdAndDelete(req.params.id);
-      res.status(200).json("Pond has been deleted...");
+      res.status(200).json(ponds);
     } catch (error) {
       return res.status(500).json(error);
     }
@@ -115,9 +116,16 @@ const pondController = {
   //UPDATE POND
   updatePond: async (req, res) => {
     try {
-      const pond = await ponds.findById(req.params.id);
-      await pond.updateOne({ $set: req.body });
-      res.status(200).json("Update successfully");
+      const pondId = req.params.id;
+      const updateData = req.body;
+      const update = await ponds.findByIdAndUpdate(
+        pondId,
+        {$set: updateData},
+        {new: true, runValidators: true}
+      );
+      if (!update) {
+        return res.status(404).json({ error: "Pond Not found" })};
+      res.status(200).json(update);
     } catch (error) {
       return res.status(500).json(error);
     }

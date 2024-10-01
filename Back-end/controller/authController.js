@@ -32,7 +32,7 @@ const authController = {
       const salt = await bcrypt.genSalt(10);
       const hashed = await bcrypt.hash(req.body.password, salt);
 
-      const gender = Number.parseInt(req.body.birthDate);
+      const gender = Number.parseInt(req.body.gender);
       // create  a new user
       const newUser = await new User({
         userName: req.body.userName,
@@ -171,8 +171,9 @@ const authController = {
       const mailOptions = {
         to: user.email,
         subject: "Reset Password",
-        text: `You requested a password reset. Click the link to reset: 
-        http://localhost:${process.env.PORT}/v1/auth/reset-password/${resetToken}`,
+        html: `<p>You requested a password reset. Click the link below to reset your password:</p>` +
+        `<p><a href="http://localhost:${process.env.PORT}/v1/auth/reset-password/${resetToken}">Click Here To Reset Your Password</a></p>` +
+        `<p>This link will expire in 15 minutes. If you didn't request a reset, please ignore this email.</p>`
       };
 
       transporter.sendMail(mailOptions, (error, info) => {

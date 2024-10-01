@@ -4,27 +4,27 @@ const middlewareController = require("../controller/middlewareController");
 
 //Get all pond
 
-router.get('/getAllPond', pondController.getAllPond);
+router.get('/getAllPond', middlewareController.verifyTokenAdminAuth , pondController.getAllPond);
 
 //Get pond by element
-router.get('/getByElement', pondController.getByElement);
+router.get('/getByElement', middlewareController.verifyTokenAdminAuth, pondController.getByElement);
 
 //Get pond by id
-router.get('/getById/:id', pondController.getById);
+router.get('/getById/:id', middlewareController.verifyTokenAdminAuth, pondController.getById);
 
 //Create new pond
-router.post('/createPond', pondController.createPond);
+router.post('/createPond', middlewareController.verifyTokenAdminAuth ,pondController.createPond);
 
 
 //Update pond 
-router.put('/updatePond/:id', pondController.updatePond);
+router.put('/updatePond/:id',middlewareController.verifyTokenAdminAuth, pondController.updatePond);
 
 
 //Delete pond
-router.delete('/deletePond/:id', pondController.deletePond);
+router.delete('/deletePond/:id', middlewareController.verifyTokenAdminAuth ,  pondController.deletePond);
 
 //Search pond
-router.get('/searchPond', pondController.searchPond);
+router.get('/searchPond', middlewareController.verifyTokenAdminAuth, pondController.searchPond);
 
 
 module.exports = router;

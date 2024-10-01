@@ -8,6 +8,7 @@ const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
 const fishRouter = require("./routes/fish");
 const pondRouter = require("./routes/pond");
+const postRouter = require("./routes/post");
 const { default: mongoose } = require("mongoose");
 const signInRouter = require("./routes/oauth")
 const app = express();
@@ -27,6 +28,8 @@ app.use("/v1/Oauth" , signInRouter);
 app.use("/v1/fish" , fishRouter);
 
 app.use("/v1/pond" , pondRouter);
+
+app.use("/v1/post" , postRouter);
 
 (async () => {
    try {
