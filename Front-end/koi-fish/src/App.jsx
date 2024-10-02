@@ -12,7 +12,7 @@ import ManageService from "./page/admin/manage-service/manageService";
 function App() {
   const router = createBrowserRouter([
     {
-      path: "/home",
+      path: "",
       element: <div>Hello world!</div>,
     },
     {
