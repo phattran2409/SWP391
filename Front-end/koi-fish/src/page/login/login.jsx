@@ -50,10 +50,10 @@ function LoginPage() {
     try {
       const response = await api.post("/v1/auth/login", values);
       console.log(response);
-      const { role, token } = response.data;
+      const { admin, accessToken } = response.data;
 
-      localStorage.setItem("token", token);
-      if (role === "ADMIN") {
+      localStorage.setItem("token", accessToken);
+      if (admin) {
         navigate("/dashboard");
       } else {
         navigate("");
