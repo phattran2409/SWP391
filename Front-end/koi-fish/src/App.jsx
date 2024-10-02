@@ -4,10 +4,10 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LoginPage from "./page/login/login";
 import RegisterPage from "./page/register/register";
 import Dashboard from "./components/dashboard/dashboard";
-import ManageMember from "./page/admin/manage-member/manageMember";
 import ManagePond from "./page/admin/manage-pond/managePond";
 import ManageKoi from "./page/admin/manage-koi/manageKoi";
 import ManageService from "./page/admin/manage-service/manageService";
+import ManageMembers from "./page/admin/manage-member/manageMembers";
 
 function App() {
   const router = createBrowserRouter([
@@ -29,7 +29,7 @@ function App() {
       children: [
         {
           path: "member",
-          element: <ManageMember />,
+          element: <ManageMembers />,
         },
         {
           path: "pond",
