@@ -21,7 +21,7 @@ function LoginPage() {
         // This gives you a Google Access Token. You can use it to access the Google API.
         const credential = googleProvider.credentialFromResult(result);
         const token = credential.accessToken;
-        console.log("TOKEN google "+token)
+        console.log("TOKEN google " + token);
         // The signed-in user info.
         const user = result.user;
         console.log("User info:", user);
@@ -56,7 +56,7 @@ function LoginPage() {
       if (role === "ADMIN") {
         navigate("/dashboard");
       } else {
-        navigate("/home");
+        navigate("");
       }
     } catch (err) {
       toast.err(err.response.data);
