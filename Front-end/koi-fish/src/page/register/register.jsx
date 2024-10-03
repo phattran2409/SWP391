@@ -20,7 +20,7 @@ function RegisterPage() {
 
 
   return (
-    <div className="w-full h-full flex items-center min-h-screen bg-cover bg-center bg-no-repeat bg-[url('https://res.cloudinary.com/ddqgjy50x/image/upload/v1726740184/live-koi-fish-mtvpcoc3yknxrj5g_fsuwik.jpg')]">
+    <div className="w-full h-full flex items-center min-h-screen bg-cover bg-center bg-no-repeat sm:bg-[url('https://res.cloudinary.com/ddqgjy50x/image/upload/v1726740184/live-koi-fish-mtvpcoc3yknxrj5g_fsuwik.jpg')]">
       <div className="w-full max-w-2xl lg:max-w-3xl bg-white mx-auto rounded-3xl my-14">
         <div className="px-20">
           <h1 className="text-3xl font-normal mb-4 text-center mt-7">Sign up</h1>
@@ -45,8 +45,8 @@ function RegisterPage() {
             </svg>
             <h2 className="font-normal text-base">Continue with Google</h2>
           </Button>
-          <Divider style={{ marginTop: '0' }}>
-            <span className="font-light">OR</span>
+          <Divider style={{ borderColor: 'gray' }}>
+            <span className="mt-4 font-light">OR</span>
           </Divider >
         </div>
         <div className="px-28 ">
@@ -209,9 +209,11 @@ function RegisterPage() {
               </Button>
             </Form.Item>
             <div className="my-[10px] text-center">
-              <span className="text-gray-600">
-                Already have an account?{" "}
-                <Link to="/login">Login here</Link>
+              <span className="text-gray-600 block sm:inline">
+                Already have an account?
+              </span>
+              <span className="ml-2 text-gray-600 block sm:inline">
+                <Link to="/login" className="underline">Login here</Link>
               </span>
             </div>
           </Form>
