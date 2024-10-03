@@ -132,7 +132,7 @@ function ManagePonds() {
           </Button>
           <Popconfirm
             title="Delete"
-            description="Do you want to delete this category?"
+            description="Do you want to delete this pond?"
             onConfirm={() => handleDelete(_id)}
           >
             <Button type="primary" danger>
