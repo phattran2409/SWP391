@@ -12,7 +12,7 @@ function ManageMembers() {
   const fetchData = async () => {
     try {
       const response = await api.get("/v1/user");
-      // Chuyển đổi giá trị gender từ 0, 1 thành "Nam", "Nữ"
+      // đổi gender từ 0, 1 thành "Nam", "Nữ"
       const modifiedData = response.data.data.map((member) => ({
         ...member,
         gender: member.gender === 0 ? "Male" : "Female",

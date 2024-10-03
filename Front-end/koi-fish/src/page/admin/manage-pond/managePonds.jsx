@@ -160,6 +160,7 @@ function ManagePonds() {
         onCancel={() => setShowModal(false)}
         title="Create Pond"
         onOk={() => form.submit()}
+        confirmLoading={loading}
       >
         <Form form={form} labelCol={{ span: 24 }} onFinish={handleSubmit}>
           <Form.Item name="_id" hidden>
