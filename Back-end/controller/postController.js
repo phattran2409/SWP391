@@ -1,4 +1,11 @@
 const posts = require("../models/post");
+const cloudinary = require("../config/cloudinary");
+const upload = require("../middleware/multerConfig");
+const { UploadStream } = require("cloudinary");
+const fs = require('fs').promises; // Use promises for cleaner async code
+
+
+
 
 const postController = {
   //Get all post and author
@@ -62,16 +69,87 @@ const postController = {
     }
   },
 
-  //Create new post
-  createPost: async (req, res) => {
-    try {
-      const newPost = new posts(req.body);
-      const post = await newPost.save();
-      res.status(200).json(post);
-    } catch (error) {
-      return res.status(500).json(error);
+
+ // Create a new post
+ createPost: async (req, res) => {
+  try {
+    const newPost = new posts(req.body);
+    const savePost = await newPost.save();
+    res.status(200).json(savePost);
+  } catch (error) {
+    return res.status(500).json(error);
+  }
+},
+
+uploadImages : async (req ,res ) => {
+  try { 
+     console.log(req.files);
+    // kiem tra xem các file có được upload
+     if (!req.files || req.files.length === 0) {
+       return res.status(400).json({
+         success: false,
+         message: "No files uploaded",
+       });
+     }
+  //
+
+    const uploadPromises = req.files.map((file) => {
+      return cloudinary.uploader.upload(file.path, {  
+        folder: "postArticle_photos",
+      });
+    });
+
+    const results = await Promise.all(uploadPromises);
+    console.log(" RESULT AFTER UPLOAD  CLOUDINARY  : "+ results);
+    
+    // lam trong thu muc upload sau khi  được upload lên cloud
+       req.files.forEach((file) => {
+         fs.unlink(file.path, (err) => {
+           if (err) {
+             console.error("Error deleting file:", err);
+           }
+         });
+       });
+ 
+     const urls = results.map((result) => result.secure_url);
+    
+    return res.status(200).json(
+      {
+        success : true, 
+        data : urls
+      }
+    )
+   
+  }catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while uploading the images",
+    });
+  }
+},
+
+
+uploadImage: async (req, res) => {
+  console.log(req.file);
+  cloudinary.uploader.upload(
+    req.file.path,
+    { folder: "postArticle_Thumbnail" },
+    function (err, result) {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({
+          success: false,
+          message: "Error",
+        });
+      }
+
+      return res.status(200).json({ data: result.secure_url });
     }
-  },
+  );
+},
+
+
+
 
   //Update post
   updatePost: async (req, res) => {
@@ -127,6 +205,29 @@ const postController = {
       return res.status(500).json(error);
     }
   },
+
+  // uploadImage: async (req, res) => {
+  //   console.log(req.file);
+  //   cloudinary.uploader.upload(
+  //     req.file.path,
+  //     { folder: "avatar" },
+  //     function (err, result) {
+  //       if (err) {
+  //         console.log(err);
+  //         return res.status(500).json({
+  //           success: false,
+  //           message: "Error",
+  //         });
+  //       }
+
+  //       return res.status(200).json({ data: result.secure_url });
+  //     }
+  //   );
+  // },
+ 
+
 };
+
+
 
 module.exports = postController;

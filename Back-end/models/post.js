@@ -24,14 +24,17 @@ const postSchema = new mongoose.Schema(
 
     context: {
       type: String,
+     
     },
 
     imageThumbnail: {
       type: String,
+      required: true,
     },
 
     image: {
       type: [String],
+      default: [],
     },
 
     postStatus: {
