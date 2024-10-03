@@ -2,74 +2,115 @@
 import React from "react";
 import AuthenTemplate from "../../components/authen-template/authenTemplate";
 import { Form, Input, Button, Divider, Typography, message } from "antd";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { googleProvider } from "../../config/firebase";
+// import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+// import { googleProvider } from "../../config/firebase";
 import "./index.scss";
 import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
+
   const navigate = useNavigate();
 
-  //function handle when user click sign up with google
-  const handleLoginGoogle = () => {
-    const auth = getAuth();
-    signInWithPopup(auth, googleProvider)
-      .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = googleProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        // The signed-in user info.
-        const user = result.user;
-        console.log("User info:", user);
-        // IdP data available using getAdditionalUserInfo(result)
-        // ...
-        const userData = {
-          email: user.email,
-          name: user.displayName,
-          photoUrl: user.photoURL,
-          // Thêm các thông tin khác nếu cần
-        };
+  // //function handle when user click sign up with google
+  // const handleLoginGoogle = () => {
+  //   const auth = getAuth();
+  //   signInWithPopup(auth, googleProvider)
+  //     .then((result) => {
+  //       // This gives you a Google Access Token. You can use it to access the Google API.
+  //       const credential = googleProvider.credentialFromResult(result);
+  //       const token = credential.accessToken;
+  //       // The signed-in user info.
+  //       const user = result.user;
+  //       console.log("User info:", user);
+  //       // IdP data available using getAdditionalUserInfo(result)
+  //       // ...
+  //       const userData = {
+  //         email: user.email,
+  //         name: user.displayName,
+  //         photoUrl: user.photoURL,
+  //         // Thêm các thông tin khác nếu cần
+  //       };
 
-        fetch("https://your-backend-api.com/api/auth/login", {
-          // Thay đường link của bạn ở đây
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(userData),
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
-            return response.json();
-          })
-          .then((data) => {
-            console.log("Server response:", data);
-            // Điều hướng đến trang chính sau khi đăng nhập thành công
-            navigate("/home"); // Hoặc đường dẫn đến trang chính của bạn
-          })
-          .catch((error) => {
-            console.error("Error during fetch:", error);
-            message.error("Login failed. Please try again.");
-          });
+  //       fetch("https://your-backend-api.com/api/auth/login", {
+  //         // Thay đường link của bạn ở đây
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify(userData),
+  //       })
+  //         .then((response) => {
+  //           if (!response.ok) {
+  //             throw new Error("Network response was not ok");
+  //           }
+  //           return response.json();
+  //         })
+  //         .then((data) => {
+  //           console.log("Server response:", data);
+  //           // Điều hướng đến trang chính sau khi đăng nhập thành công
+  //           navigate("/home"); // Hoặc đường dẫn đến trang chính của bạn
+  //         })
+  //         .catch((error) => {
+  //           console.error("Error during fetch:", error);
+  //           message.error("Login failed. Please try again.");
+  //         });
+  //     })
+  //     .catch((error) => {
+  //       console.error("Login error:", error);
+  //       message.error("Login failed. Please try again.");
+  //       // Handle Errors here.
+  //       const errorCode = error.code;
+  //       const errorMessage = error.message;
+  //       // The email of the user's account used.
+  //       const email = error.customData.email;
+  //       // The AuthCredential type that was used.
+  //       const credential = GoogleAuthProvider.credentialFromError(error);
+  //       // ...
+  //     });
+  // };
+
+  // function handle form login submission
+  const handleLogin = (values) => {
+    const userData = {
+      UserName: values.username,
+      password: values.password,
+    };
+
+    fetch("http://localhost:8081/v1/auth/login", {
+      // Replace with your actual API endpoint
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Server response:", data);
+        // Redirect to home page after successful login
+        if (data.accessToken) {
+          localStorage.setItem("accessToken", data.accessToken);
+        }
+        navigate("/"); // Replace with your home page path
       })
       .catch((error) => {
-        console.error("Login error:", error);
+        console.error("Error during fetch:", error);
         message.error("Login failed. Please try again.");
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.customData.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
       });
   };
 
-  const handleSignUp = () => {
+
+  const handleLinktoSignUp = () => {
     navigate("/register");
+  };
+
+  const handleLinktoForgetPass = () => {
+    navigate("/forget");
   };
 
   return (
@@ -77,7 +118,7 @@ function LoginPage() {
       <div className="form-section-child">
         <h1 className="font-medium text-3xl">Sign in</h1>
 
-        <Button className="google-button" onClick={handleLoginGoogle}>
+        {/* <Button className="google-button" onClick={handleLoginGoogle}>
           <svg width="24" height="24" viewBox="0 0 18 18">
             <path
               fill="#4285F4"
@@ -97,13 +138,13 @@ function LoginPage() {
             />
           </svg>
           <h2>Continue with Google</h2>
-        </Button>
+        </Button> */}
 
         <Divider>
           <span className="text-gray-400 font-normal">OR</span>
         </Divider>
 
-        <Form labelCol={{ span: 24 }}>
+        <Form labelCol={{ span: 24 }} onFinish={handleLogin}>
           <Form.Item
             label={
               <label className="text-gray-500 mb-1 block">
@@ -114,11 +155,7 @@ function LoginPage() {
             rules={[
               {
                 required: true,
-                message: "Please input your username or email!",
-              },
-              {
-                type: "email",
-                message: "The input is not valid E-mail!",
+                message: "Please input your username!",
               },
             ]}
           >
@@ -149,13 +186,17 @@ function LoginPage() {
           <div className="footer-links">
             <div className="account-info">
               <label>Do not have an account?</label>
-              <Typography.Link onClick={handleSignUp} style={{ color: 'black', textDecoration: 'underline' }}>
+              <Typography.Link onClick={handleLinktoSignUp} style={{ color: 'black', textDecoration: 'underline' }}>
                 Sign up</Typography.Link>
             </div>
-            <Typography.Link style={{ color: 'black', textDecoration: 'underline' }}>Forgot Password?</Typography.Link>
+            <Typography.Link onClick={handleLinktoForgetPass} style={{ color: 'black', textDecoration: 'underline' }}>Forgot Password?</Typography.Link>
           </div>
-
-          <Button color="danger" variant="solid" className="custom-button">
+          <Button
+            htmlType="submit"
+            className="custom-button"
+            variant='solid'
+            color='danger'
+          >
             Sign in
           </Button>
         </Form>

@@ -3,6 +3,7 @@ import React from "react";
 // import "./register.scss";
 import { useState } from "react";
 import { Button, Divider, Form, Input, Select } from "antd";
+import { Link } from "react-router-dom";
 
 
 const { Option } = Select;  // Thay đổi ở đây
@@ -188,6 +189,7 @@ function RegisterPage() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </Form.Item>
+
             <Form.Item style={{ marginTop: '28px' }}>
               <Button className="mt-5"
                 type="primary"
@@ -206,6 +208,12 @@ function RegisterPage() {
                 Sign up
               </Button>
             </Form.Item>
+            <div className="my-[10px] text-center">
+              <span className="text-gray-600">
+                Already have an account?{" "}
+                <Link to="/login">Login here</Link>
+              </span>
+            </div>
           </Form>
         </div>
       </div>
