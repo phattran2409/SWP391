@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LoginPage from "./page/login/login";
 import RegisterPage from "./page/register/register";
 import Dashboard from "./components/dashboard/dashboard";
-import ManageKoi from "./page/admin/manage-koi/manageKoi";
+import ManageKoiFish from "./page/admin/manage-koi/manageKoiFish";
 import ManageService from "./page/admin/manage-service/manageService";
 import ManageMembers from "./page/admin/manage-member/manageMembers";
 import ManagePonds from "./page/admin/manage-pond/managePonds";
@@ -37,7 +37,7 @@ function App() {
         },
         {
           path: "koi",
-          element: <ManageKoi />,
+          element: <ManageKoiFish />,
         },
         {
           path: "service",
