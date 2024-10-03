@@ -118,6 +118,8 @@ function ResetPasswordPage() {
               <Button
                 type="primary"
                 htmlType="submit"
+                variant="solid"
+                color="danger"
                 className="w-full h-12 rounded-[32px]"
                 loading={loading}
               >

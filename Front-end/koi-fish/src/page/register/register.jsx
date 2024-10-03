@@ -3,28 +3,45 @@ import React from "react";
 // import "./register.scss";
 import { useState } from "react";
 import { Button, Divider, Form, Input, Select } from "antd";
-import { Link } from "react-router-dom";
+// import Link from "antd/es/typography/Link";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../../config/axios";
+import { toast } from "react-toastify";
 
-
-const { Option } = Select;  // Thay đổi ở đây
+const { Option } = Select; // Thay đổi ở đây
 
 function RegisterPage() {
-  const [name, setName] = useState()
-  const [gender, setGender] = useState()
-  const [Year, setYear] = useState()
-  const [email, setEmail] = useState()
-  const [Phone, setPhone] = useState()
-  const [password, setPassword] = useState()
+  const [name, setName] = useState();
+  const [gender, setGender] = useState();
+  const [Year, setYear] = useState();
+  const [email, setEmail] = useState();
+  const [Phone, setPhone] = useState();
+  const [password, setPassword] = useState();
 
+  const navigate = useNavigate();
 
+  const handleRegister = async (values) => {
+    //submit xuong backend
+    try {
+      values.role = "CUSTOMER"; //cho nay dang de tam la customer de test
+      const response = await api.post("/v1/auth/register", values);
+      toast.success("Successfully register new account!");
+      navigate("/login");
 
+    } catch (err) {
+      // console.log
+      toast.error(err.response.data);
+    }
+  };
 
   return (
     <div className="w-full h-full flex items-center min-h-screen bg-cover bg-center bg-no-repeat sm:bg-[url('https://res.cloudinary.com/ddqgjy50x/image/upload/v1726740184/live-koi-fish-mtvpcoc3yknxrj5g_fsuwik.jpg')]">
       <div className="w-full max-w-2xl lg:max-w-3xl bg-white mx-auto rounded-3xl my-14">
         <div className="px-20">
-          <h1 className="text-3xl font-normal mb-4 text-center mt-7">Sign up</h1>
-          <Button className="google-button h-14 mb-0" >
+          <h1 className="text-3xl font-normal mb-4 text-center mt-7">
+            Sign up
+          </h1>
+          <Button className="google-button h-14 mb-0">
             <svg width="24" height="24" viewBox="0 0 18 18">
               <path
                 fill="#4285F4"
@@ -47,56 +64,76 @@ function RegisterPage() {
           </Button>
           <Divider style={{ borderColor: 'gray' }}>
             <span className="mt-4 font-light">OR</span>
-          </Divider >
+          </Divider>
         </div>
         <div className="px-28 ">
-          <Form labelCol={{ span: 24 }} >
+          <Form labelCol={{ span: 24 }} onFinish={handleRegister}>
             <Form.Item
-              name="username"
+              name="userName"
               label={<span className="text-[#716767] pb-0">Username</span>}
-              rules={[{ required: true, message: 'Please input your username!' }]}
-
+              rules={[
+                { required: true, message: "Please input your username!" },
+              ]}
             >
-              <Input
-                onChange={(e) => setName(e.target.value)}
-              />
+              <Input onChange={(e) => setName(e.target.value)} />
+            </Form.Item>
+            <Form.Item
+              name="name"
+              label={<span className="text-[#716767] pb-0">Full Name</span>}
+              rules={[
+                { required: true, message: "Please input your full name!" },
+              ]}
+            >
+              <Input onChange={(e) => setName(e.target.value)} />
             </Form.Item>
             <div className="flex space-x-4">
               <Form.Item
                 name="gender"
                 label={<span className="custom-label">Gender</span>}
                 className="w-1/2"
-                rules={[{ required: true, message: 'Please select gender!' }]}
+                rules={[{ required: true, message: "Please select gender!" }]}
               >
-                <Select placeholder="Select"
+                <Select
+                  placeholder="Select"
                   onChange={(value) => setGender(value)}
                 >
-                  <Option value="male">Male</Option>
-                  <Option value="female">Female</Option>
-                </Select >
+                  <Option value="0">Male</Option>
+                  <Option value="1">Female</Option>
+                </Select>
               </Form.Item>
               <Form.Item
-                name="yearOfBirth"
+                name="birthDate"
                 label={<span className="custom-label">Year of birth</span>}
                 className="w-1/2"
                 rules={[
-                  { required: true, message: 'Please input your year of birth!' },
+                  {
+                    required: true,
+                    message: "Please input your year of birth!",
+                  },
                   {
                     validator: (_, value) => {
                       if (value && isNaN(Number(value))) {
-                        return Promise.reject(new Error('Year of birth must be a number!'));
+                        return Promise.reject(
+                          new Error("Year of birth must be a number!")
+                        );
                       }
                       const year = Number(value);
                       if (year < 1900 || year > 2050) {
-                        return Promise.reject(new Error('Year of birth must be between 1900 and 2050!'));
+                        return Promise.reject(
+                          new Error(
+                            "Year of birth must be between 1900 and 2050!"
+                          )
+                        );
                       }
                       return Promise.resolve();
-                    }
-                  }
+                    },
+                  },
                 ]}
               >
-                <Input placeholder="YYYY"
-                  onChange={(e) => setYear(e.target.value)} />
+                <Input
+                  placeholder="YYYY"
+                  onChange={(e) => setYear(e.target.value)}
+                />
               </Form.Item>
             </div>
             <Form.Item
@@ -104,19 +141,16 @@ function RegisterPage() {
               label={<span className="custom-label">Email address</span>}
               rules={[
                 {
-                  type: 'email',
-                  message: 'The input is not valid E-mail!',
+                  type: "email",
+                  message: "The input is not valid E-mail!",
                 },
                 {
                   required: true,
-                  message: 'Please input your E-mail!',
+                  message: "Please input your E-mail!",
                 },
               ]}
-
             >
-              <Input
-                onChange={(e) => setEmail(e.target.value)}
-              />
+              <Input onChange={(e) => setEmail(e.target.value)} />
             </Form.Item>
             <Form.Item
               name="phone"
@@ -124,13 +158,17 @@ function RegisterPage() {
               rules={[
                 {
                   required: true,
-                  message: 'Please Input Your Phone Number!',
+                  message: "Please Input Your Phone Number!",
                 },
                 {
                   validator: (_, value) => {
                     const phoneRegex = /^[0-9]{10}$/;
                     if (!phoneRegex.test(value)) {
-                      return Promise.reject(new Error('Please enter a valid phone number with 10 digits!'));
+                      return Promise.reject(
+                        new Error(
+                          "Please enter a valid phone number with 10 digits!"
+                        )
+                      );
                     }
 
                     // Nếu tất cả các điều kiện đều hợp lệ
@@ -138,11 +176,9 @@ function RegisterPage() {
                   },
                 },
               ]}
-              validateTrigger={['onBlur', 'onPressEnter']}
+              validateTrigger={["onBlur", "onPressEnter"]}
             >
-              <Input
-                onChange={(e) => setPhone(e.target.value)}
-              />
+              <Input onChange={(e) => setPhone(e.target.value)} />
             </Form.Item>
             <Form.Item
               name="password"
@@ -150,60 +186,47 @@ function RegisterPage() {
               rules={[
                 {
                   required: true,
-                  message: 'Please input your password!',
-
+                  message: "Please input your password!",
                 },
 
                 {
                   min: 6,
                   max: 20,
-                  message: 'Password must be between 6 and 20 characters!',
+                  message: "Password must be between 6 and 20 characters!",
                 },
               ]}
               hasFeedback
             >
-              <Input.Password
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <Input.Password onChange={(e) => setPassword(e.target.value)} />
             </Form.Item>
             <Form.Item
-              name="c-password"
+              name="c_password"
               label={<span className="custom-label ">Confirm password</span>}
               rules={[
                 {
                   required: true,
-                  message: 'Please input your Confirm password!',
+                  message: "Please input your Confirm password!",
                 },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
-                    if (!value || getFieldValue('password') === value) {
+                    if (!value || getFieldValue("password") === value) {
                       return Promise.resolve();
                     }
-                    return Promise.reject(new Error('The two passwords do not match!'));
+                    return Promise.reject(
+                      new Error("The two passwords do not match!")
+                    );
                   },
                 }),
               ]}
               hasFeedback
             >
-              <Input.Password
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <Input.Password onChange={(e) => setPassword(e.target.value)} />
             </Form.Item>
-
             <Form.Item style={{ marginTop: '28px' }}>
-              <Button className="mt-5"
-                type="primary"
+              <Button className="w-full h-[50px] mt-5 border rounded-[32px]"
                 htmlType="submit"
-                style={{
-                  backgroundColor: 'gray',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '2rem',
-                  width: '100%',
-                  height: '50px',
-                }}
-                onMouseEnter={e => e.currentTarget.style.backgroundColor = 'red'}
-                onMouseLeave={e => e.currentTarget.style.backgroundColor = 'gray'}
+                color="danger"
+                variant="solid"
               >
                 Sign up
               </Button>
@@ -220,8 +243,7 @@ function RegisterPage() {
         </div>
       </div>
     </div>
-
-  )
+  );
 }
 
 export default RegisterPage;
