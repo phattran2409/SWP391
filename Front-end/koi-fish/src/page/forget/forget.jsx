@@ -86,8 +86,10 @@ function RecoverPage() {
                                     Cancel
                                 </Button>
                                 <Button
-                                    type="primary"
-                                    htmlType="submit"
+                                    type='primary'
+                                    htmlType='submit'
+                                    variant='solid'
+                                    color='danger'
                                     className="w-full sm:w-1/4 ml-4 rounded-[32px] h-12"
                                 >
                                     Send email
