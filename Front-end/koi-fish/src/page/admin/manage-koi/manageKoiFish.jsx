@@ -27,8 +27,8 @@ function ManageKoiFish() {
 
   const [pagination, setPagination] = useState({
     current: 1, // Trang hiện tại
-    pageSize: 10, // Số cá trên mỗi trang (limit mặc định)
-    total: 0, // Tổng số cá ban đầu là 0
+    pageSize: 10, //(limit mặc định)
+    total: 0, // ban đầu là 0
   });
 
   //Get
@@ -37,7 +37,7 @@ function ManageKoiFish() {
     limit = pagination.pageSize
   ) => {
     try {
-      // Gửi yêu cầu với tham số page và limit
+      // truyen tham số page và limit
       const response = await api.get(`v1/fish?page=${page}&limit=${limit}`);
       console.log(response.data.result.data);
 
