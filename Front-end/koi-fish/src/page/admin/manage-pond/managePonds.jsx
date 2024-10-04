@@ -172,11 +172,11 @@ function ManagePonds() {
             rules={[{ required: true, message: "Please select an element!" }]}
           >
             <Select placeholder="Select an element">
-              <Select.Option value="1">Earth</Select.Option>
-              <Select.Option value="2">Metal</Select.Option>
-              <Select.Option value="3">Water</Select.Option>
-              <Select.Option value="4">Wood</Select.Option>
-              <Select.Option value="5">Fire</Select.Option>
+              <Select.Option value="1">Metal</Select.Option>
+              <Select.Option value="2">Water</Select.Option>
+              <Select.Option value="3">Wood</Select.Option>
+              <Select.Option value="4">Fire</Select.Option>
+              <Select.Option value="5">Earth</Select.Option>
             </Select>
           </Form.Item>
           <Form.Item

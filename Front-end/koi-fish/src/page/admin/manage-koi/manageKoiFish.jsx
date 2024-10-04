@@ -10,6 +10,7 @@ import {
   Upload,
   Select,
   Image,
+  Pagination,
 } from "antd";
 import { toast } from "react-toastify";
 import { PlusOutlined } from "@ant-design/icons";
@@ -23,12 +24,32 @@ function ManageKoiFish() {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState([]);
+
+  const [pagination, setPagination] = useState({
+    current: 1, // Trang hiện tại
+    pageSize: 10, //(limit mặc định)
+    total: 0, // ban đầu là 0
+  });
+
   //Get
-  const fetchData = async () => {
+  const fetchData = async (
+    page = pagination.current,
+    limit = pagination.pageSize
+  ) => {
     try {
-      const response = await api.get(`v1/fish`);
+      // truyen tham số page và limit
+      const response = await api.get(`v1/fish?page=${page}&limit=${limit}`);
       console.log(response.data.result.data);
+
+      // Cập nhật dữ liệu vào state
       setDatas(response.data.result.data);
+
+      // Cập nhật thông tin phân trang
+      setPagination({
+        current: response.data.result.currentPage, // cập nhật trang hiện tại
+        total: response.data.result.totalDocuments, // tổng số cá
+        pageSize: limit, // số cá trên mỗi trang
+      });
     } catch (err) {
       toast.error(err.response.data.result.data);
     }
@@ -56,11 +77,12 @@ function ManageKoiFish() {
           `v1/fish/updateKoi/${values._id}`,
           values
         );
+        toast.success("Koi updated sucessfully!");
       } else {
         const response = await api.post("v1/fish/createKoi", values);
+        toast.success("Successfully saved!");
       }
 
-      toast.success("Successfully saved!");
       fetchData();
       form.resetFields();
       setShowModal(false);
@@ -117,15 +139,15 @@ function ManageKoiFish() {
   };
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData(pagination.current, pagination.pageSize);
+  }, [pagination.current, pagination.pageSize]);
 
   const elementMap = {
-    1: "Earth",
-    2: "Metal",
-    3: "Water",
-    4: "Wood",
-    5: "Fire",
+    1: "Metal",
+    2: "Water",
+    3: "Wood",
+    4: "Fire",
+    5: "Earth",
   };
 
   const columns = [
@@ -156,6 +178,7 @@ function ManageKoiFish() {
       title: "Colors",
       dataIndex: "colors",
       key: "colors",
+      render: (colors) => colors.join(", "),
     },
 
     {
@@ -209,7 +232,23 @@ function ManageKoiFish() {
       >
         Add
       </Button>
-      <Table dataSource={datas} columns={columns}></Table>
+      <Table dataSource={datas} columns={columns} pagination={false}></Table>
+
+      <div className="flex justify-end mt-4">
+        <Pagination
+          current={pagination.current}
+          pageSize={pagination.pageSize}
+          total={pagination.total}
+          onChange={(page, pageSize) => {
+            setPagination({
+              ...pagination,
+              current: page,
+              pageSize: pageSize,
+            });
+            fetchData(page, pageSize); // Gọi lại dữ liệu khi chuyển trang
+          }}
+        />
+      </div>
 
       <Modal
         open={showModal}
@@ -260,11 +299,11 @@ function ManageKoiFish() {
             rules={[{ required: true, message: "Please select an element!" }]}
           >
             <Select placeholder="Select an element">
-              <Select.Option value="1">Earth</Select.Option>
-              <Select.Option value="2">Metal</Select.Option>
-              <Select.Option value="3">Water</Select.Option>
-              <Select.Option value="4">Wood</Select.Option>
-              <Select.Option value="5">Fire</Select.Option>
+              <Select.Option value="1">Metal</Select.Option>
+              <Select.Option value="2">Water</Select.Option>
+              <Select.Option value="3">Wood</Select.Option>
+              <Select.Option value="4">Fire</Select.Option>
+              <Select.Option value="5">Earth</Select.Option>
             </Select>
           </Form.Item>
           <Form.Item name="image" label="Image">
