@@ -61,11 +61,11 @@ function ManagePonds() {
   }, []);
 
   const elementMap = {
-    1: "Earth",
-    2: "Metal",
-    3: "Water",
-    4: "Wood",
-    5: "Fire",
+    1: "Metal",
+    2: "Water",
+    3: "Wood",
+    4: "Fire",
+    5: "Earth",
   };
 
   const columns = [
