@@ -124,6 +124,9 @@ function ManageMembers() {
       dataIndex: "_id",
       key: "_id",
       width: "10%",
+      render: (id) => {
+        return id.length > 5 ? `${id.substring(0, 5)}...` : id; // Cắt ID và thêm dấu ...
+      },
     },
     {
       title: "UserName",
@@ -134,6 +137,11 @@ function ManageMembers() {
       title: "Password",
       dataIndex: "password",
       key: "password",
+      render: (password) => {
+        return password.length > 0
+          ? "*".repeat(Math.min(password.length, 10))
+          : ""; // Chỉ hiển thị tối đa 10 dấu *
+      },
     },
     {
       title: "Full name",
@@ -159,6 +167,14 @@ function ManageMembers() {
       title: "Birth Date",
       dataIndex: "birthDate",
       key: "birthDate",
+      render: (text) => {
+        if (!text) return ""; // Nếu không có giá trị, trả về chuỗi rỗng
+        const date = new Date(text); // Tạo đối tượng Date từ chuỗi ngày
+        const day = String(date.getDate()).padStart(2, "0"); // Lấy ngày và đảm bảo có 2 chữ số
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // Lấy tháng và đảm bảo có 2 chữ số
+        const year = date.getFullYear(); // Lấy năm
+        return `${day}/${month}/${year}`; // Trả về định dạng dd/mm/yyyy
+      },
     },
     {
       title: "Image",
