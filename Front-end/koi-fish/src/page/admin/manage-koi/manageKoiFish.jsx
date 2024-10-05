@@ -224,6 +224,10 @@ function ManageKoiFish() {
   ];
   return (
     <div>
+      <Input
+        placeholder="Search Koi Fish by name"
+        style={{ width: 300, marginBottom: 20 }}
+      />
       <Button
         onClick={() => {
           form.resetFields(); // Clear form fields when adding a new member
