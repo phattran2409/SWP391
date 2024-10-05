@@ -1,13 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Modal, Form, Select, Input, Popconfirm } from "antd";
+import {
+  Table,
+  Button,
+  Modal,
+  Form,
+  Select,
+  Input,
+  Popconfirm,
+  Upload,
+  Image,
+} from "antd";
 import { toast } from "react-toastify";
 import api from "../../../config/axios";
+import { PlusOutlined } from "@ant-design/icons";
+import uploadFile from "../../../utils/file";
 
 function ManageMembers() {
   const [datas, setDatas] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const [fileList, setFileList] = useState([]);
 
   const fetchData = async () => {
     try {
@@ -25,6 +40,15 @@ function ManageMembers() {
 
   const handleSubmit = async (values) => {
     console.log(values);
+
+    if (fileList.length > 0) {
+      const file = fileList[0];
+      console.log(file);
+
+      const url = await uploadFile(file.originFileObj);
+      values.avatar = url;
+    }
+
     try {
       setLoading(true);
 
@@ -45,6 +69,41 @@ function ManageMembers() {
     }
   };
 
+  const getBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+
+  const handlePreview = async (file) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPreviewImage(file.url || file.preview);
+    setPreviewOpen(true);
+  };
+  const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
+  const uploadButton = (
+    <button
+      style={{
+        border: 0,
+        background: "none",
+      }}
+      type="button"
+    >
+      <PlusOutlined />
+      <div
+        style={{
+          marginTop: 8,
+        }}
+      >
+        Upload
+      </div>
+    </button>
+  );
+
   const handleDelete = async (id) => {
     try {
       await api.delete(`/v1/user/id=${id}`);
@@ -64,6 +123,7 @@ function ManageMembers() {
       title: "ID",
       dataIndex: "_id",
       key: "_id",
+      width: "10%",
     },
     {
       title: "UserName",
@@ -99,6 +159,14 @@ function ManageMembers() {
       title: "Birth Date",
       dataIndex: "birthDate",
       key: "birthDate",
+    },
+    {
+      title: "Image",
+      dataIndex: "avatar",
+      key: "avatar",
+      render: (avatar) => (
+        <img src={avatar} alt="Avatar" style={{ width: 100 }} />
+      ),
     },
     {
       title: "Action",
@@ -269,8 +337,32 @@ function ManageMembers() {
               ))}
             </Select>
           </Form.Item>
+          <Form.Item>
+            <Upload
+              action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+              listType="picture-card"
+              fileList={fileList}
+              onPreview={handlePreview}
+              onChange={handleChange}
+            >
+              {fileList.length >= 8 ? null : uploadButton}
+            </Upload>
+          </Form.Item>
         </Form>
       </Modal>
+      {previewImage && (
+        <Image
+          wrapperStyle={{
+            display: "none",
+          }}
+          preview={{
+            visible: previewOpen,
+            onVisibleChange: (visible) => setPreviewOpen(visible),
+            afterOpenChange: (visible) => !visible && setPreviewImage(""),
+          }}
+          src={previewImage}
+        />
+      )}
     </div>
   );
 }
