@@ -1,30 +1,71 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Modal, Form, Select, Input, Popconfirm } from "antd";
+import {
+  Table,
+  Button,
+  Modal,
+  Form,
+  Select,
+  Input,
+  Popconfirm,
+  Upload,
+  Image,
+  Pagination,
+} from "antd";
 import { toast } from "react-toastify";
 import api from "../../../config/axios";
+import { PlusOutlined } from "@ant-design/icons";
+import uploadFile from "../../../utils/file";
 
 function ManageMembers() {
   const [datas, setDatas] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const [fileList, setFileList] = useState([]);
 
-  const fetchData = async () => {
+  const [pagination, setPagination] = useState({
+    current: 1, // Trang hiện tại
+    pageSize: 10, //(limit mặc định)
+    total: 0, // ban đầu là 0
+  });
+
+  //get data
+  const fetchData = async (
+    page = pagination.current,
+    limit = pagination.pageSize
+  ) => {
     try {
-      const response = await api.get("/v1/user");
+      const response = await api.get(`/v1/user?page=${page}&limit=${limit}`);
       // đổi gender từ 0, 1 thành "Nam", "Nữ"
       const modifiedData = response.data.data.map((member) => ({
         ...member,
         gender: member.gender === 0 ? "Male" : "Female",
       }));
       setDatas(modifiedData);
+      setPagination({
+        current: response.data.result.currentPage, // cập nhật trang hiện tại
+        total: response.data.result.totalDocuments, // tổng số cá
+        pageSize: limit, // số cá trên mỗi trang
+      });
     } catch (err) {
       toast.error(err.response.data.data);
     }
   };
 
+  //submit form
   const handleSubmit = async (values) => {
     console.log(values);
+
+    if (fileList.length > 0) {
+      const file = fileList[0];
+      console.log(file);
+
+      const url = await uploadFile(file.originFileObj);
+      values.avatar = url;
+    }
+
     try {
       setLoading(true);
 
@@ -45,6 +86,42 @@ function ManageMembers() {
     }
   };
 
+  //chuyen doi file sang dang bases64
+  const getBase64 = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+
+  const handlePreview = async (file) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPreviewImage(file.url || file.preview);
+    setPreviewOpen(true);
+  };
+  const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
+  const uploadButton = (
+    <button
+      style={{
+        border: 0,
+        background: "none",
+      }}
+      type="button"
+    >
+      <PlusOutlined />
+      <div
+        style={{
+          marginTop: 8,
+        }}
+      >
+        Upload
+      </div>
+    </button>
+  );
+
   const handleDelete = async (id) => {
     try {
       await api.delete(`/v1/user/id=${id}`);
@@ -64,6 +141,10 @@ function ManageMembers() {
       title: "ID",
       dataIndex: "_id",
       key: "_id",
+      width: "10%",
+      render: (id) => {
+        return id.length > 5 ? `${id.substring(0, 5)}...` : id; // Cắt ID và thêm dấu ...
+      },
     },
     {
       title: "UserName",
@@ -74,6 +155,11 @@ function ManageMembers() {
       title: "Password",
       dataIndex: "password",
       key: "password",
+      render: (password) => {
+        return password.length > 0
+          ? "*".repeat(Math.min(password.length, 10))
+          : ""; // Chỉ hiển thị tối đa 10 dấu *
+      },
     },
     {
       title: "Full name",
@@ -99,6 +185,22 @@ function ManageMembers() {
       title: "Birth Date",
       dataIndex: "birthDate",
       key: "birthDate",
+      render: (text) => {
+        if (!text) return ""; // Nếu không có giá trị, trả về chuỗi rỗng
+        const date = new Date(text); // Tạo đối tượng Date từ chuỗi ngày
+        const day = String(date.getDate()).padStart(2, "0"); // Lấy ngày và đảm bảo có 2 chữ số
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // Lấy tháng và đảm bảo có 2 chữ số
+        const year = date.getFullYear(); // Lấy năm
+        return `${day}/${month}/${year}`; // Trả về định dạng dd/mm/yyyy
+      },
+    },
+    {
+      title: "Image",
+      dataIndex: "avatar",
+      key: "avatar",
+      render: (avatar) => (
+        <img src={avatar} alt="Avatar" style={{ width: 100 }} />
+      ),
     },
     {
       title: "Action",
@@ -142,6 +244,21 @@ function ManageMembers() {
         Add
       </Button>
       <Table dataSource={datas} columns={columns} />
+      <div className="flex justify-end mt-4">
+        <Pagination
+          current={pagination.current}
+          pageSize={pagination.pageSize}
+          total={pagination.total}
+          onChange={(page, pageSize) => {
+            setPagination({
+              ...pagination,
+              current: page,
+              pageSize: pageSize,
+            });
+            fetchData(page, pageSize); // Gọi lại dữ liệu khi chuyển trang
+          }}
+        />
+      </div>
 
       <Modal
         open={showModal}
@@ -269,8 +386,32 @@ function ManageMembers() {
               ))}
             </Select>
           </Form.Item>
+          <Form.Item>
+            <Upload
+              action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+              listType="picture-card"
+              fileList={fileList}
+              onPreview={handlePreview}
+              onChange={handleChange}
+            >
+              {fileList.length >= 8 ? null : uploadButton}
+            </Upload>
+          </Form.Item>
         </Form>
       </Modal>
+      {previewImage && (
+        <Image
+          wrapperStyle={{
+            display: "none",
+          }}
+          preview={{
+            visible: previewOpen,
+            onVisibleChange: (visible) => setPreviewOpen(visible),
+            afterOpenChange: (visible) => !visible && setPreviewImage(""),
+          }}
+          src={previewImage}
+        />
+      )}
     </div>
   );
 }

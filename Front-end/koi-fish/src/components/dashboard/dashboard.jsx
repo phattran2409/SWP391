@@ -14,14 +14,18 @@ function getItem(label, key, icon, children) {
     key,
     icon,
     children,
-    label: <Link to={`/dashboard/${key}`}>{label}</Link>,
+    label: key ? <Link to={`/dashboard/${key}`}>{label}</Link> : label,
   };
 }
 const items = [
   getItem("Manage Member", "member", <PieChartOutlined />),
   getItem("Manage Pond", "pond", <PieChartOutlined />),
   getItem("Manage Koi", "koi", <PieChartOutlined />),
-  getItem("Manage Service", "service", <PieChartOutlined />),
+  getItem("Manage Post", null, <PieChartOutlined />, [
+    getItem("Manage News", "post/news"),
+    getItem("Manage Blog", "post/blog"),
+    getItem("Manage Ads", "post/ads"),
+  ]),
 ];
 const Dashboard = () => {
   const [collapsed, setCollapsed] = useState(false);

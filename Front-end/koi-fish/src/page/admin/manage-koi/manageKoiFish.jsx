@@ -39,7 +39,6 @@ function ManageKoiFish() {
     try {
       // truyen tham số page và limit
       const response = await api.get(`v1/fish?page=${page}&limit=${limit}`);
-      console.log(response.data.result.data);
 
       // Cập nhật dữ liệu vào state
       setDatas(response.data.result.data);
@@ -224,6 +223,10 @@ function ManageKoiFish() {
   ];
   return (
     <div>
+      <Input
+        placeholder="Search Koi Fish by name"
+        style={{ width: 300, marginBottom: 20 }}
+      />
       <Button
         onClick={() => {
           form.resetFields(); // Clear form fields when adding a new member
@@ -287,11 +290,25 @@ function ManageKoiFish() {
             rules={[
               {
                 required: true,
-                message: "Please enter the colors of the Koi fish!",
+                message: "Please select the colors of the Koi fish!",
               },
             ]}
           >
-            <Input placeholder="Enter the colors of the Koi fish" />
+            <Select
+              mode="multiple"
+              placeholder="Select the colors of the Koi fish"
+              allowClear
+            >
+              <Select.Option value="Red">Red</Select.Option>
+              <Select.Option value="White">White</Select.Option>
+              <Select.Option value="Black">Black</Select.Option>
+              <Select.Option value="Yellow">Yellow</Select.Option>
+              <Select.Option value="Blue">Blue</Select.Option>
+              <Select.Option value="Orange">Orange</Select.Option>
+              <Select.Option value="Green">Green</Select.Option>
+              <Select.Option value="Silver">Silver</Select.Option>
+              <Select.Option value="Gold">Gold</Select.Option>
+            </Select>
           </Form.Item>
           <Form.Item
             name="elementID"
