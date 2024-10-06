@@ -31,6 +31,7 @@ function ManageMembers() {
     total: 0, // ban đầu là 0
   });
 
+  //get data
   const fetchData = async (
     page = pagination.current,
     limit = pagination.pageSize
@@ -53,6 +54,7 @@ function ManageMembers() {
     }
   };
 
+  //submit form
   const handleSubmit = async (values) => {
     console.log(values);
 
@@ -84,6 +86,7 @@ function ManageMembers() {
     }
   };
 
+  //chuyen doi file sang dang bases64
   const getBase64 = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
