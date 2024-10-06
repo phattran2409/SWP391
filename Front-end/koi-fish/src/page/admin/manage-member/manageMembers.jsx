@@ -9,6 +9,7 @@ import {
   Popconfirm,
   Upload,
   Image,
+  Pagination,
 } from "antd";
 import { toast } from "react-toastify";
 import api from "../../../config/axios";
@@ -24,15 +25,29 @@ function ManageMembers() {
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState([]);
 
-  const fetchData = async () => {
+  const [pagination, setPagination] = useState({
+    current: 1, // Trang hiện tại
+    pageSize: 10, //(limit mặc định)
+    total: 0, // ban đầu là 0
+  });
+
+  const fetchData = async (
+    page = pagination.current,
+    limit = pagination.pageSize
+  ) => {
     try {
-      const response = await api.get("/v1/user");
+      const response = await api.get(`/v1/user?page=${page}&limit=${limit}`);
       // đổi gender từ 0, 1 thành "Nam", "Nữ"
       const modifiedData = response.data.data.map((member) => ({
         ...member,
         gender: member.gender === 0 ? "Male" : "Female",
       }));
       setDatas(modifiedData);
+      setPagination({
+        current: response.data.result.currentPage, // cập nhật trang hiện tại
+        total: response.data.result.totalDocuments, // tổng số cá
+        pageSize: limit, // số cá trên mỗi trang
+      });
     } catch (err) {
       toast.error(err.response.data.data);
     }
@@ -226,6 +241,21 @@ function ManageMembers() {
         Add
       </Button>
       <Table dataSource={datas} columns={columns} />
+      <div className="flex justify-end mt-4">
+        <Pagination
+          current={pagination.current}
+          pageSize={pagination.pageSize}
+          total={pagination.total}
+          onChange={(page, pageSize) => {
+            setPagination({
+              ...pagination,
+              current: page,
+              pageSize: pageSize,
+            });
+            fetchData(page, pageSize); // Gọi lại dữ liệu khi chuyển trang
+          }}
+        />
+      </div>
 
       <Modal
         open={showModal}

@@ -39,7 +39,6 @@ function ManageKoiFish() {
     try {
       // truyen tham số page và limit
       const response = await api.get(`v1/fish?page=${page}&limit=${limit}`);
-      console.log(response.data.result.data);
 
       // Cập nhật dữ liệu vào state
       setDatas(response.data.result.data);
