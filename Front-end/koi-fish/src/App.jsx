@@ -12,11 +12,13 @@ import ManageNews from "./page/admin/manage-post/manage-news/manageNews";
 import ManageBlogs from "./page/admin/manage-post/manage-blogs/manageBlogs";
 import ManageAds from "./page/admin/manage-post/manage-ads/manageAds";
 
+import Home from "./page/Home/Home";
+
 function App() {
   const router = createBrowserRouter([
     {
-      path: "",
-      element: <div>Hello world!</div>,
+      path: "/home",
+      element: <Home/>,
     },
     {
       path: "/login",
