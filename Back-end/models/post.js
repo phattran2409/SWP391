@@ -32,10 +32,10 @@ const postSchema = new mongoose.Schema(
       required: true,
     },
 
-    image: {
-      type: [String],
-      default: [],
-    },
+    // image: {
+    //   type: [String],
+    //   default: [],
+    // },
 
     postStatus: {
       type: Boolean,
