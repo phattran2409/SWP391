@@ -69,8 +69,8 @@ function LoginPage() {
   };
 
   return (
-    <AuthenTemplate className="auth-template">
-      <div className="form-section-child">
+    <AuthenTemplate className="auth-template ">
+      <div className="form-section-child ">
         <h1 className="font-medium text-3xl">Sign in</h1>
 
         <Button className="google-button" onClick={handleLoginGoogle}>
