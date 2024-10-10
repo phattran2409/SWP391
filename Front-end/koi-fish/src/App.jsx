@@ -5,6 +5,10 @@ import LoginPage from "./page/login/login";
 import RegisterPage from "./page/register/register";
 import RecoverPage from "./page/forget/forget";
 import ResetPasswordPage from "./page/forget/reset";
+import NewsPage from "./page/new/news";
+import BlogPage from "./page/new/blog";
+import DetailsPage from "./page/new/details";
+// import Search from "./page/new/search";
 
 function App() {
   const router = createBrowserRouter([
@@ -27,7 +31,24 @@ function App() {
     {
       path: "/reset",
       element: <ResetPasswordPage />,
-    }
+    },
+    {
+      path: "/news",
+      element: < NewsPage />,
+    },
+    {
+      path: "/blog",
+      element: <BlogPage />,
+    },
+    {
+      path: "/details",
+      element: <DetailsPage />,
+    },
+    // {
+    //   path: "/search",
+    //   element: <Search />,
+    // }
+
   ]);
 
   return <RouterProvider router={router} />;
