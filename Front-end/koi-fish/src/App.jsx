@@ -12,12 +12,12 @@ import ManageNews from "./page/admin/manage-post/manage-news/manageNews";
 import ManageBlogs from "./page/admin/manage-post/manage-blogs/manageBlogs";
 import ManageAds from "./page/admin/manage-post/manage-ads/manageAds";
 
-import Home from "./page/Home/Home";
+import Home from "./page/Home/Home.jsx";
 
 function App() {
   const router = createBrowserRouter([
     {
-      path: "/home",
+      path:   "/",
       element: <Home/>,
     },
     {

@@ -7,7 +7,8 @@ import { Button, Divider, Form, Input, Select } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../config/axios";
 import { toast } from "react-toastify";
-
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
+import { jwtDecode } from "jwt-decode";
 const { Option } = Select; // Thay đổi ở đây
 
 function RegisterPage() {
@@ -33,38 +34,83 @@ function RegisterPage() {
       toast.error(err.response.data);
     }
   };
+   const handleLogin = async (values) => {
+     try {
+       const response = await api.post("/v1/auth/login", values);
+       console.log(values);
+       console.log(response.data);
+       const { admin, accessToken } = response.data;
+
+       localStorage.setItem("token", accessToken);
+       localStorage.setItem("user", JSON.stringify(response.data));
+       if (admin) {
+         navigate("/dashboard");
+       } else {
+         navigate("");
+       }
+     } catch (err) {
+       toast.err(err.response.data);
+     }
+   };
+
+   const handleLoginSuccess = (response) => {
+     const token = jwtDecode(response.credential);
+     console.log(token);
+     sendTokenToAPI(token);
+     // Bạn có thể gửi mã token để xác thực ở backend
+   };
+
+   const handleLoginError = () => {
+     console.log("Login Failed");
+   };
+
+   const sendTokenToAPI = async (data) => {
+     console.log(import.meta.env.API_SIGNIN);
+
+     try {
+       const response = await api.post(
+         "http://localhost:8081/v1/Oauth/signin",
+         {
+           data: data, // Gửi token trong body của request
+         }
+       );
+       const { accessToken } = response.data;
+
+       console.log("API Response:", response.data);
+       if (response.data) {
+         localStorage.setItem("token", accessToken);
+         localStorage.setItem("user", JSON.stringify(response.data));
+
+         navigate("/?status=login_gg_success", {
+           state: { message: JSON.stringify(response.data.message) },
+         });
+       }
+     } catch (error) {
+       toast.error("Error");
+     }
+   };
+
 
   return (
     <div className="w-full h-full flex items-center min-h-screen bg-cover bg-center bg-no-repeat bg-[url('https://res.cloudinary.com/ddqgjy50x/image/upload/v1726740184/live-koi-fish-mtvpcoc3yknxrj5g_fsuwik.jpg')]">
       <div className="w-full max-w-2xl lg:max-w-3xl bg-white mx-auto rounded-3xl my-14">
-        <div className="px-20">
+        <div className="px-20 ">
           <h1 className="text-3xl font-normal mb-4 text-center mt-7">
             Sign up
           </h1>
-          <Button className="google-button h-14 mb-0">
-            <svg width="24" height="24" viewBox="0 0 18 18">
-              <path
-                fill="#4285F4"
-                d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18"
+          <GoogleOAuthProvider clientId={import.meta.env.VITE_ClIENT_ID}>
+            <div className="App">
+              <GoogleLogin
+                onSuccess={handleLoginSuccess}
+                onError={handleLoginError}
               />
-              <path
-                fill="#34A853"
-                d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17"
-              />
-              <path
-                fill="#FBBC05"
-                d="M4.5 10.52a4.8 4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 0 0 7.18z"
-              />
-              <path
-                fill="#EA4335"
-                d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.8 4.8 0 0 1 4.48-3.3"
-              />
-            </svg>
-            <h2 className="font-normal text-base">Continue with Google</h2>
-          </Button>
-          <Divider style={{ marginTop: "0" }}>
-            <span className="font-light">OR</span>
-          </Divider>
+            </div>
+          </GoogleOAuthProvider>
+          <div className="divider mt-9">
+            <Divider style={{ marginTop: "0" }}>
+              <span className="font-light">OR</span>
+            </Divider>
+          </div>
         </div>
         <div className="px-28 ">
           <Form labelCol={{ span: 24 }} onFinish={handleRegister}>
@@ -245,7 +291,12 @@ function RegisterPage() {
                 Sign up
               </Button>
             </Form.Item>
-            <Link to="/login">Already have Account? Go to Login!</Link>
+            <div className="link-login mb-5 mt-5">
+              <Link to="/login">
+                Already have Account?{" "}
+                <span className="underline text-red-500 ">Go to Login!</span>
+              </Link>
+            </div>
           </Form>
         </div>
       </div>

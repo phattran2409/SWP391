@@ -5,9 +5,10 @@ import { Form, Input, Button, Divider, Typography, message } from "antd";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { googleProvider } from "../../config/firebase";
 import "./index.scss";
-import { useNavigate } from "react-router-dom";
+import { json, useNavigate } from "react-router-dom";
 import api from "../../config/axios";
 import { toast } from "react-toastify";
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 
 function LoginPage() {
@@ -49,10 +50,12 @@ function LoginPage() {
   const handleLogin = async (values) => {
     try {
       const response = await api.post("/v1/auth/login", values);
-      console.log(response);
+      console.log(values);
+      console.log(response.data);
       const { admin, accessToken } = response.data;
 
       localStorage.setItem("token", accessToken);
+      localStorage.setItem("user" ,JSON.stringify(response.data))
       if (admin) {
         navigate("/dashboard");
       } else {
@@ -63,12 +66,48 @@ function LoginPage() {
     }
   };
 
+// Login google 
+    const handleLoginSuccess = (response) => {
+      const token = jwtDecode(response.credential);
+      console.log(token);
+      sendTokenToAPI(token);
+      // Bạn có thể gửi mã token để xác thực ở backend
+    };
+
+    const handleLoginError = () => {
+      console.log("Login Failed");
+    };
+
+    const sendTokenToAPI = async (data) => {
+      console.log(import.meta.env.API_SIGNIN);
+
+      try {
+        const response = await api.post("http://localhost:8081/v1/Oauth/signin",{
+          data: data, // Gửi token trong body của request
+        });
+        const { accessToken } = response.data;  
+
+        console.log("API Response:", response.data); 
+       if (response.data) { 
+          localStorage.setItem("token", accessToken)
+          localStorage.setItem("user" , JSON.stringify(response.data))
+        
+          
+          navigate("/?status=login_gg_success" , {state : {message : JSON.stringify(response.data.message)}})
+       } 
+  
+      } catch (error) {
+        toast.error("Error");
+
+      }
+    };
+
   return (
     <AuthenTemplate className="auth-template">
       <div className="form-section-child">
         <h1 className="font-medium text-3xl">Sign in</h1>
 
-        <Button className="google-button" onClick={handleLoginGoogle}>
+        {/* <Button className="google-button" onClick={handleLoginGoogle}>
           <svg width="24" height="24" viewBox="0 0 18 18">
             <path
               fill="#4285F4"
@@ -88,7 +127,15 @@ function LoginPage() {
             />
           </svg>
           <h2>Continue with Google</h2>
-        </Button>
+        </Button> */}
+        <GoogleOAuthProvider clientId={import.meta.env.VITE_ClIENT_ID}>
+          <div className="App">
+            <GoogleLogin
+              onSuccess={handleLoginSuccess}
+              onError={handleLoginError}
+            />
+          </div>
+        </GoogleOAuthProvider>
 
         <Divider>
           <span className="text-gray-400 font-normal">OR</span>
