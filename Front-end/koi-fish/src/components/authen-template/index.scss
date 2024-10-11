@@ -11,6 +11,10 @@
   justify-content: center;
   position: relative;
   height: 100vh;
+
+  @media (max-width: 640px) {
+    display: none;
+  }
 }
 
 .image-section img {
@@ -55,4 +59,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 }
