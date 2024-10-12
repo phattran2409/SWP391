@@ -2,15 +2,16 @@ const { json } = require("express");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const refreshTokens = require("../models/refreshToken");
 
-let refreshTokensArr = [];
+//npm install nodemailer
+const nodemailer = require("nodemailer");
+
 const authController = {
   accessToken: (user) => {
     return jwt.sign(
       { id: user.id, admin: user.admin },
       process.env.JWT_ACCESS_KEY,
-      { expiresIn: "30s" }
+      { expiresIn: "2m" }
     );
   },
   refreshToken: (user) => {
@@ -25,6 +26,8 @@ const authController = {
       }
     );
   },
+  
+  
   registerUser: async (req, res) => {
     try {
       const salt = await bcrypt.genSalt(10);
@@ -50,34 +53,26 @@ const authController = {
       res.status(500).json(error);
     }
   },
+  
+  
   loginUser: async (req, res) => {
     try {
-      const user = await User.findOne({ UserName: req.body.name });
+      const user = await User.findOne({ UserName: req.body.UserName });
       if (!user) {
-        res.status(401).json("Wrong UserName");
+        return res.status(401).json("Wrong UserName");
       }
       const ValidPassword = await bcrypt.compare(
         req.body.password,
         user.password
       );
       if (!ValidPassword) {
-        res.status(401).json("wrong password");
+        return res.status(401).json("wrong password");
       }
 
       if (user && ValidPassword) {
         // create JWT
         const accessToken = authController.accessToken(user);
         const refreshToken = authController.refreshToken(user);
-
-        //add refreshToken in array
-        refreshTokensArr.push(refreshToken);
-        const newRefreshToken = await new refreshTokens({
-          token: refreshToken,
-        });
-        console.log(newRefreshToken);
-        console.log(refreshTokensArr);
-
-        await newRefreshToken.save();
 
         res.cookie("refreshToken", refreshToken, {
           httpOnly: true,
@@ -95,6 +90,8 @@ const authController = {
       res.status(500).json(error);
     }
   },
+  
+  
   reqRefreshToken: async (req, res) => {
     // lay cookies tu req
     const refreshToken = req.cookies.refreshToken;
@@ -102,36 +99,14 @@ const authController = {
     //
     if (!refreshToken) return res.status(404).json("you're not authenticated");
     // if (!refreshTokensArr.includes(refreshToken)) return res.sendStatus(403);
-    const refreshTokenDB = await refreshTokens.find({ token: refreshToken });
-
-    // check refreshTokenDb
-    if (!refreshTokenDB) return res.status(404).json("not found refresh token");
 
     //  verify refreshToken
     jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY, async (err, user) => {
+      if (err) return res.status(403).json("Invalid refresh token");
       const newAccessToken = authController.accessToken(user);
       const newRefreshToken = authController.refreshToken(user);
 
-      if (err) {
-        console.log(err);
-      }
-      // xoa di token cu va add newRefreshToken
-      // refreshTokensArr = refreshTokensArr.filter((token) => refreshToken !== token )
-
-     const  result = await refreshTokens.deleteOne({ token: refreshToken }); 
-     
-      if (result.deletedCount === 1) {
-        console.log("Token deleted successfully");
-      } else {
-        console.log("Token not found or not deleted");
-      }
-      const newRefreshTokenDB = new refreshTokens({
-        token: newRefreshToken,
-      });
-
-      newRefreshTokenDB.save();
-
-      // refreshTokensArr.push(newRefreshToken);
+      // Update refreshToken in cookie
 
       res.cookie("refreshToken", newRefreshToken, {
         httpOnly: true,
@@ -144,8 +119,95 @@ const authController = {
       res.status(200).json({ accessToken: newAccessToken });
     });
   },
-  logout: async (req, res) => {},
-  
+
+
+
+  logout: async (req, res) => {
+    res.clearCookie("refreshToken");
+    res.status(200).json("logout success");
+  },
+
+
+
+
+
+   // Phương thức gửi email reset password
+   sendResetPasswordEmail: async (req, res) => {
+    try {
+      const user = await User.findOne({ email: req.body.email });
+      if (!user) {
+        return res.status(404).json("User not found");
+      }
+
+      // Tạo JWT Token cho việc reset password
+      const resetToken = jwt.sign(
+        { id: user.id, email: user.email },
+        process.env.JWT_RESET_PASSWORD_KEY,
+        { expiresIn: "15m" } // Token sống trong 15 phút
+      );
+
+      // Cấu hình Nodemailer để gửi email
+      const transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          user: process.env.EMAIL_USER, // Email của bạn
+          pass: process.env.EMAIL_PASS, // Mật khẩu của bạn
+        },
+      });
+
+      // Gửi email reset password
+      const mailOptions = {
+        to: user.email,
+        subject: "Reset Password",
+        text: `You requested a password reset. Click the link to reset: 
+        http://localhost:${process.env.PORT}/v1/auth/reset-password/${resetToken}`,
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          return res.status(500).json(error);
+        }
+        res.status(200).json("Reset password email sent");
+      });
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  },
+
+  // Phương thức reset password
+  resetPassword: async (req, res) => {
+    try {
+      // Lấy token từ params hoặc từ request body
+      const resetToken = req.params.token || req.body.token;
+
+      // Xác thực token
+      jwt.verify(
+        resetToken,
+        process.env.JWT_RESET_PASSWORD_KEY,
+        async (err, decoded) => {
+          if (err) {
+            return res.status(400).json("Invalid or expired token");
+          }
+
+          // Nếu token hợp lệ, tiến hành cập nhật mật khẩu
+          const user = await User.findOne({ _id: decoded.id });
+          if (!user) {
+            return res.status(404).json("User not found");
+          }
+
+          // Mã hóa mật khẩu mới
+          const salt = await bcrypt.genSalt(10);
+          user.password = await bcrypt.hash(req.body.password, salt);
+
+          // Lưu mật khẩu mới
+          await user.save();
+          res.status(200).json("Password has been reset successfully");
+        }
+      );
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  },
 };
 
 module.exports = authController;

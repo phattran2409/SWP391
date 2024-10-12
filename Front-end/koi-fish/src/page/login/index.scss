@@ -1,8 +1,8 @@
 .auth-template {
-  @apply flex justify-center items-center min-h-screen bg-[#f0f2f5];
+  @apply flex justify-center items-center min-h-screen min-w-[475px] bg-[#f0f2f5];
 }
 .form-section-child {
-  @apply bg-white p-8 w-[70%];
+  @apply w-full max-w-md bg-white p-8 ;
 }
 .google-button {
   @apply  flex w-full items-center justify-center p-6 mb-10
