@@ -41,10 +41,11 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
-    gender : {
-      type: Number,
-    }
-    ,
+    // gender : {
+    //   type: Number,
+    //   enum: [0, 1, 2], // Ví dụ: 0 - Nam, 1 - Nữ, 2 - Khác
+    // }
+    // ,
     birthDate : {
       type : Date,
     },

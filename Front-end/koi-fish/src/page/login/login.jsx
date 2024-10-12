@@ -1,51 +1,26 @@
 // eslint-disable-next-line no-unused-vars
 import React from "react";
 import AuthenTemplate from "../../components/authen-template/authenTemplate";
-import { Form, Input, Button, Divider, Typography, message } from "antd";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { googleProvider } from "../../config/firebase";
+import { Form, Input, Button, Divider, Typography, } from "antd";
+
 import "./index.scss";
-import { json, useNavigate } from "react-router-dom";
+
+import {  useNavigate } from "react-router-dom";
 import api from "../../config/axios";
 import { toast } from "react-toastify";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 
+
 function LoginPage() {
   const navigate = useNavigate();
 
-  //function handle when user click sign up with google
-  const handleLoginGoogle = () => {
-    const auth = getAuth();
-    signInWithPopup(auth, googleProvider)
-      .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = googleProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        console.log("TOKEN google " + token);
-        // The signed-in user info.
-        const user = result.user;
-        console.log("User info:", user);
-        // IdP data available using getAdditionalUserInfo(result)
-        // ...
-      })
-      .catch((error) => {
-        console.error("Login error:", error);
-        message.error("Login failed. Please try again.");
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.customData.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
-      });
-  };
 
-  const handleSignUp = () => {
+
+  const handleLinktoSignUp = () => {
     navigate("/register");
   };
+
 
   const handleLogin = async (values) => {
     try {
@@ -65,7 +40,12 @@ function LoginPage() {
      toast.error(err.response.data);
      
     }
+   };
+
+  const handleLinktoForgetPass = () => {
+    navigate("/forget");
   };
+
 
 // Login google 
     const handleLoginSuccess = (response) => {
@@ -98,14 +78,15 @@ function LoginPage() {
        } 
   
       } catch (error) {
-        toast.error("Error");
+        toast.error(error.response.data);
 
       }
     };
 
+
   return (
-    <AuthenTemplate className="auth-template">
-      <div className="form-section-child">
+    <AuthenTemplate className="auth-template ">
+      <div className="form-section-child ">
         <h1 className="font-medium text-3xl">Sign in</h1>
 
         {/* <Button className="google-button" onClick={handleLoginGoogle}>
@@ -178,18 +159,13 @@ function LoginPage() {
           <div className="footer-links">
             <div className="account-info">
               <label>Do not have an account?</label>
-              <Typography.Link
-                onClick={handleSignUp}
-                style={{ color: "black", textDecoration: "underline" }}
-              >
-                Sign up
-              </Typography.Link>
+
+
+              <Typography.Link onClick={handleLinktoSignUp} style={{ color: 'black', textDecoration: 'underline' }}>
+                Sign up</Typography.Link>
             </div>
-            <Typography.Link
-              style={{ color: "black", textDecoration: "underline" }}
-            >
-              Forgot Password?
-            </Typography.Link>
+            <Typography.Link onClick={handleLinktoForgetPass} style={{ color: 'black', textDecoration: 'underline' }}>Forgot Password?</Typography.Link>
+
           </div>
 
           <Button
