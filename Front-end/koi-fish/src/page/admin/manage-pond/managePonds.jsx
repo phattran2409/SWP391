@@ -38,6 +38,7 @@ function ManagePonds() {
       toast.success("Successfully saved!");
       fetchData();
       form.resetFields();
+       // close modal create 
       setShowModal(false);
     } catch (err) {
       toast.error(err.response.data.data);
@@ -108,6 +109,9 @@ function ManagePonds() {
       title: "Image",
       dataIndex: "image",
       key: "image",
+      render : (Image) => 
+         <img src={Image} alt="pond" style={{ width: 100 }} />,
+      
     },
     {
       title: "Element",
@@ -153,6 +157,7 @@ function ManagePonds() {
       >
         Add
       </Button>
+      {/* Data khi lay ve */}
       <Table dataSource={datas} columns={columns}></Table>
 
       <Modal
