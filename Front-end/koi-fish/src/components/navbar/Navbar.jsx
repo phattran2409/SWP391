@@ -53,7 +53,7 @@ const Navbar = () => {
     setUser(null);
     toast.success("Logged out successfully");
 
-    navigate("/login?status=logout_success");
+    navigate("/?status=logout_success");
   };
   // khi an cancle
     const handleCancel = () => {

@@ -62,7 +62,8 @@ function LoginPage() {
         navigate("");
       }
     } catch (err) {
-      toast.err(err.response.data);
+     toast.error(err.response.data);
+     
     }
   };
 
