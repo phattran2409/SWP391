@@ -12,7 +12,6 @@ import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 
 
-
 const { Option } = Select; // Thay đổi ở đây
 
 function RegisterPage() {
@@ -73,6 +72,7 @@ function RegisterPage() {
            state: { message: JSON.stringify(response.data.message) },
          });
        }
+
      } catch (err) {
        toast.error(err.response.data);
      }
@@ -82,9 +82,11 @@ function RegisterPage() {
    
   
 
+
   return (
     <div className="w-full h-full flex items-center min-h-screen bg-cover bg-center bg-no-repeat sm:bg-[url('https://res.cloudinary.com/ddqgjy50x/image/upload/v1726740184/live-koi-fish-mtvpcoc3yknxrj5g_fsuwik.jpg')]">
       <div className="w-full max-w-2xl lg:max-w-3xl bg-white mx-auto rounded-3xl my-14">
+
         <div className="px-20 ">
           <h1 className="text-3xl font-normal mb-4 text-center mt-7">
             Sign up
@@ -261,6 +263,7 @@ function RegisterPage() {
               <Input.Password onChange={(e) => setPassword(e.target.value)} />
             </Form.Item>
 
+{/* <<<<<<< HEAD
             <Form.Item style={{ marginTop: "28px" }}>
               <Button
                 className="mt-5"
@@ -288,6 +291,19 @@ function RegisterPage() {
             //     variant="solid"
                 >
               
+                Sign up
+              </Button>
+            </Form.Item>
+
+======= */}
+            {}
+
+            <Form.Item style={{ marginTop: '28px' }}>
+              <Button className="w-full h-[50px] mt-5 border rounded-[32px]"
+                htmlType="submit"
+                color="danger"
+                variant="solid"
+              >
                 Sign up
               </Button>
             </Form.Item>
