@@ -36,10 +36,11 @@ function LoginPage() {
       } else {
         navigate("");
       }
-
-    } catch (error) { 
-      toast.error(error.response.data); 
-    } };
+    } catch (err) {
+     toast.error(err.response.data);
+     
+    }
+   };
 
   const handleLinktoForgetPass = () => {
     navigate("/forget");

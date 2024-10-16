@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Table,
   Button,
@@ -10,11 +10,13 @@ import {
   Upload,
   Image,
   Pagination,
+  DatePicker,
 } from "antd";
 import { toast } from "react-toastify";
 import api from "../../../config/axios";
 import { PlusOutlined } from "@ant-design/icons";
 import uploadFile from "../../../utils/file";
+import { castArray, debounce } from "lodash";
 
 function ManageMembers() {
   const [datas, setDatas] = useState([]);
@@ -24,13 +26,14 @@ function ManageMembers() {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState([]);
-
+  const [searchValue, setSearchValue] = useState("");
   const [pagination, setPagination] = useState({
     current: 1, // Trang hiện tại
     pageSize: 10, //(limit mặc định)
     total: 0, // ban đầu là 0
   });
-
+  const [beTrang , setBeTrang] = useState(false)
+  const [showBetrang , setShowBeTrang] = useState(false)
   //get data
   const fetchData = async (
     page = pagination.current,
@@ -102,6 +105,7 @@ function ManageMembers() {
     setPreviewImage(file.url || file.preview);
     setPreviewOpen(true);
   };
+
   const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
   const uploadButton = (
     <button
@@ -136,6 +140,53 @@ function ManageMembers() {
     fetchData();
   }, []);
 
+  // ->>  handle search
+  const handleSearch = async (e) => {
+    try {
+      const { value } = e.target;
+      setSearchValue(e.target.value);
+      debouncedSearch(value);
+    } catch (err) {
+      toast.error(err);
+    }
+  };
+
+  // search với độ trễ tránh xử lý nhiều lần
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      console.log(value);
+      callApiSearch(value);
+    }, 500),
+    []
+  ); // 500ms delay
+
+  // call api cho viec search ca koi
+  const callApiSearch = async (value) => {
+    try {
+      // kiem tra xem value nhap vao co la empty
+      if (value === "") {
+        fetchData(pagination.current, pagination.pageSize);
+      }
+      const res = await api.get(
+        `v1/user/search?searchName=${value}&page=${pagination.current}&limit=${pagination.pageSize}`
+      );
+
+      console.log("api search" + res.data.data);
+      setDatas(res.data.data);
+      setPagination({
+        current: res.data.currentPage, // cập nhật trang hiện tại
+        total: res.data.totalDocuments, // tổng số cá
+        pageSize: 10,
+      });
+    } catch (err) {
+      console.log(err);
+      if (err.status === 404) {
+        toast.error("Error 404: Resource not found");
+      }
+      toast.error(err.res.data);
+    }
+  };
+
   const columns = [
     {
       title: "ID",
@@ -150,6 +201,8 @@ function ManageMembers() {
       title: "UserName",
       dataIndex: "userName",
       key: "userName",
+      sorter: (a, b) => a.userName.localeCompare(b.userName),
+      sortDirections: ["descend", "ascend"],
     },
     {
       title: "Password",
@@ -165,6 +218,13 @@ function ManageMembers() {
       title: "Full name",
       dataIndex: "name",
       key: "name",
+      sorter: (a, b) => {
+        if (a.name && b.name) {
+          return a.name.length - b.name.length;
+        }
+        return 0;
+      },
+      sortDirections: ["descend", "ascend"],
     },
     {
       title: "Email",
@@ -180,6 +240,8 @@ function ManageMembers() {
       title: "Gender",
       dataIndex: "gender",
       key: "gender",
+      sorter: (a, b) => a.gender - b.gender,
+      sortDirections: ["descend", "ascend"],
     },
     {
       title: "Birth Date",
@@ -193,13 +255,20 @@ function ManageMembers() {
         const year = date.getFullYear(); // Lấy năm
         return `${day}/${month}/${year}`; // Trả về định dạng dd/mm/yyyy
       },
+    
     },
     {
       title: "Image",
       dataIndex: "avatar",
       key: "avatar",
       render: (avatar) => (
-        <img src={avatar} alt="Avatar" style={{ width: 100 }} />
+        <>
+          {avatar ? (
+            <img src={avatar} alt="Avatar" style={{ width: 100 }} />
+          ) : (
+            <img src="https://placehold.co/100x100/png" />
+          )}
+        </>
       ),
     },
     {
@@ -211,7 +280,7 @@ function ManageMembers() {
           <Button
             type="primary"
             onClick={() => {
-              setShowModal(true);
+              setShowModal(!showModal)
               form.setFieldsValue(member);
             }}
           >
@@ -231,10 +300,20 @@ function ManageMembers() {
     },
   ];
 
-  const years = Array.from({ length: 125 }, (_, index) => 2024 - index);
-
   return (
     <div>
+      <div className="group-search flex">
+        {/* searh  Name*/}
+        <div className="search-name">
+          <label className="mr-4"> Search Name :</label>
+          <Input
+            value={searchValue}
+            placeholder="Search  by name"
+            style={{ width: 300, marginBottom: 20 }}
+            onChange={handleSearch}
+          />
+        </div>
+      </div>
       <Button
         onClick={() => {
           form.resetFields(); // Clear form fields when adding a new member
@@ -243,7 +322,7 @@ function ManageMembers() {
       >
         Add
       </Button>
-      <Table dataSource={datas} columns={columns} />
+      <Table dataSource={datas} columns={columns} pagination={false} />
       <div className="flex justify-end mt-4">
         <Pagination
           current={pagination.current}
@@ -262,7 +341,7 @@ function ManageMembers() {
 
       <Modal
         open={showModal}
-        onCancel={() => setShowModal(false)}
+        onCancel={() => setShowModal()}
         title="Create Member"
         onOk={() => form.submit()}
         confirmLoading={loading}
@@ -378,13 +457,7 @@ function ManageMembers() {
               { required: true, message: "Please select your birth year!" },
             ]}
           >
-            <Select placeholder="Select member's birth year">
-              {years.map((year) => (
-                <Select.Option key={year} value={year}>
-                  {year}
-                </Select.Option>
-              ))}
-            </Select>
+            <DatePicker format="DD-MM-YYYY" />
           </Form.Item>
           <Form.Item>
             <Upload
@@ -399,6 +472,7 @@ function ManageMembers() {
           </Form.Item>
         </Form>
       </Modal>
+
       {previewImage && (
         <Image
           wrapperStyle={{

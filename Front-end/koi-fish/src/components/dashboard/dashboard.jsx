@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   DesktopOutlined,
   FileOutlined,
@@ -7,7 +7,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Breadcrumb, Layout, Menu, theme } from "antd";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet , useLocation } from "react-router-dom";
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -18,20 +18,34 @@ function getItem(label, key, icon, children) {
   };
 }
 const items = [
-  getItem("Manage Member", "member", <PieChartOutlined />),
+  getItem("Manage Member", "member", <UserOutlined/>),
   getItem("Manage Pond", "pond", <PieChartOutlined />),
   getItem("Manage Koi", "koi", <PieChartOutlined />),
-  getItem("Manage Post", null, <PieChartOutlined />, [
+  getItem("Manage Post", null, <FileOutlined/> , [
     getItem("Manage News", "post/news"),
     getItem("Manage Blog", "post/blog"),
     getItem("Manage Ads", "post/ads"),
   ]),
 ];
+
+ // path
+
+ const pathSnippets = location.pathname.split("/").filter((i) => i);
+  
+
 const Dashboard = () => {
+
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
+  useEffect(() => {
+    console.log(location.pathname);
+    
+  } , [location.pathname])
+
+  
   return (
     <Layout
       style={{
@@ -68,8 +82,15 @@ const Dashboard = () => {
               margin: "16px 0",
             }}
           >
-            <Breadcrumb.Item>User</Breadcrumb.Item>
-            <Breadcrumb.Item>Bill</Breadcrumb.Item>
+            
+            
+             {
+              pathSnippets.map((_, index) => (
+                <Breadcrumb.Item>
+                    {pathSnippets[index]}
+                </Breadcrumb.Item>
+              ))
+             }
           </Breadcrumb>
           <div
             style={{
