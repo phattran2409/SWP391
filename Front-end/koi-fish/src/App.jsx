@@ -13,9 +13,14 @@ import ManageBlogs from "./page/admin/manage-post/manage-blogs/manageBlogs";
 import ManageAds from "./page/admin/manage-post/manage-ads/manageAds";
 
 import Home from "./page/Home/Home";
+import ContactUs from "./page/contactus/contactus";
 
 function App() {
   const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Home/>,
+    },
     {
       path: "/home",
       element: <Home/>,
@@ -62,6 +67,10 @@ function App() {
           ],
         },
       ],
+    },
+    {
+      path: "/contactus",
+      element: <ContactUs />,
     },
   ]);
 

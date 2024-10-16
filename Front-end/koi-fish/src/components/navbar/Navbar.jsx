@@ -43,11 +43,11 @@ const Navbar = () => {
                 {/* Main Nav for Large Screens */}
                 <div className="hidden lg:flex items-center space-x-6">
                     <ul className="flex space-x-8">
-                        <li><a href="#" className="text-white hover:text-neutral-500 transition duration-300">Home</a></li>
-                        <li><a href="#" className="text-white hover:text-neutral-500 transition duration-300">About</a></li>
-                        <li><a href="#" className="text-white hover:text-neutral-500 transition duration-300">Consulting</a></li>
-                        <li><a href="#" className="text-white hover:text-neutral-500 transition duration-300">Contact Us</a></li>
-                        <li><a href="#" className="text-white hover:text-neutral-500 transition duration-300">News</a></li>
+                        <li><a href="/home" className="text-white hover:text-neutral-500 transition duration-300">Home</a></li>
+                        <li><a href="/about" className="text-white hover:text-neutral-500 transition duration-300">About</a></li>
+                        <li><a href="/consult" className="text-white hover:text-neutral-500 transition duration-300">Consult</a></li>
+                        <li><a href="/contactus" className="text-white hover:text-neutral-500 transition duration-300">Contact Us</a></li>
+                        <li><a href="/news" className="text-white hover:text-neutral-500 transition duration-300">News</a></li>
                     </ul>
 
                     <div className="h-6 border-l border-neutral-500 mx-4"></div>
@@ -62,7 +62,7 @@ const Navbar = () => {
                         Login
                     </a>
                     <a
-                        href="https://google.com"
+                        href="/register"
                         className="ml-4 px-4 py-2 text-white border border-white rounded hover:bg-white hover:text-black transition duration-300">
                         Signup
                     </a>
@@ -82,22 +82,22 @@ const Navbar = () => {
                 </button>
 
                 <ul className="space-y-4">
-                    <li><a href="#" className="text-white hover:text-neutral-500 transition duration-300" onClick={handleLinkClick}>Home</a></li>
-                    <li><a href="#" className="text-white hover:text-neutral-500 transition duration-300" onClick={handleLinkClick}>About</a></li>
-                    <li><a href="#" className="text-white hover:text-neutral-500 transition duration-300" onClick={handleLinkClick}>Consulting</a></li>
-                    <li><a href="#" className="text-white hover:text-neutral-500 transition duration-300" onClick={handleLinkClick}>Contact Us</a></li>
-                    <li><a href="#" className="text-white hover:text-neutral-500 transition duration-300" onClick={handleLinkClick}>News</a></li>
+                    <li><a href="/home" className="text-white hover:text-neutral-500 transition duration-300" onClick={handleLinkClick}>Home</a></li>
+                    <li><a href="/about" className="text-white hover:text-neutral-500 transition duration-300" onClick={handleLinkClick}>About</a></li>
+                    <li><a href="/consult" className="text-white hover:text-neutral-500 transition duration-300" onClick={handleLinkClick}>Consult</a></li>
+                    <li><a href="/contactus" className="text-white hover:text-neutral-500 transition duration-300" onClick={handleLinkClick}>Contact Us</a></li>
+                    <li><a href="/news" className="text-white hover:text-neutral-500 transition duration-300" onClick={handleLinkClick}>News</a></li>
                 </ul>
 
                 {/* Login and Signup in Mobile Menu */}
                 <div className="mt-6">
                     <a
-                        href="https://google.com"
+                        href="/login"
                         className="block px-4 py-2 text-white rounded hover:bg-white hover:text-black transition duration-300 mb-4 text-center">
                         Login
                     </a>
                     <a
-                        href="https://google.com"
+                        href="/register"
                         className="block px-4 py-2 text-white hover:bg-white hover:text-black transition duration-300 text-center">
                         Signup
                     </a>

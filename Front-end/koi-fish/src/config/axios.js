@@ -1,7 +1,7 @@
 // Set config defaults when creating the instance
 import axios from "axios";
 const api = axios.create({
-  baseURL: "https://swp391-feng-shui.onrender.com",
+  baseURL: "https://swp391-jruy.onrender.com",
 });
 
 //lam 1 hanh dong gi do truoc khi call api
