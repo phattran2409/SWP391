@@ -5,6 +5,7 @@ import HeroSection from '../Home/home/HeroSection';
 import News from '../Home/home/News';
 import Posts from '../Home/home/Posts';
 import Footer from '../../components/footer/Footer';
+import KoiFish from '../Home/home/KoiFish';
 
 const Home = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -36,6 +37,7 @@ const Home = () => {
           </div>
           <div className="section">
             <News />
+            <KoiFish />
             <Posts />
             <Footer />
           </div>
@@ -52,6 +54,7 @@ const Home = () => {
                   </div>
                   <div className="section">
                     <News />
+                    <KoiFish />
                     <Posts />
                     <Footer />
                   </div>

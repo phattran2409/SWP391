@@ -65,11 +65,11 @@ const NewsComponent = () => {
             </div>
           </a>
         </div>
-        <div className="flex flex-col justify-between pl-0 md:pl-4 w-full md:w-2/3">
+        <div className="grid lg:grid-rows-2 sm:grid-rows-1 grid-flow-col gap-4 pl-0 md:pl-4 w-full md:w-2/3">
           <a href="#" className="block">
-            <h3 className="text-2xl font-bold text-black">{posts[0].title}</h3> {/* Bold title */}
+            <h3 className="text-3xl font-bold text-black">{posts[0].title}</h3>
           </a>
-          <p className="text-sm text-black mt-1">{posts[0].context.replace(/<[^>]+>/g, '')}</p> {/* Full context without truncation */}
+          <p className="text-justify text-xl text-black mt-1">{posts[0].context.replace(/<[^>]+>/g, '')}</p> 
         </div>
       </div>
 
@@ -87,8 +87,8 @@ const NewsComponent = () => {
                   className="absolute inset-0 w-full h-full object-cover rounded-lg mb-2 shadow-md"
                 />
               </div>
-              <h4 className="text-2xs font-bold text-center text-black">{post.title}</h4> {/* Bold post title */}
-              <p className="text-xs text-center text-black">{truncateText(post.context.replace(/<[^>]+>/g, ''), 100)}</p>
+              <h4 className="text-2xs font-bold text-center text-black my-3">{post.title}</h4> {/* Bold post title */}
+              <p className="text-xs text-left text-justify text-black">{truncateText(post.context.replace(/<[^>]+>/g, ''), 100)}</p>
             </a>
           </div>
         ))}
