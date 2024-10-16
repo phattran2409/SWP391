@@ -3,7 +3,7 @@ import Fullpage from '@fullpage/react-fullpage';
 import Navbar from '../../components/navbar/Navbar';
 import HeroSection from '../Home/home/HeroSection';
 import News from '../Home/home/News';
-// import Posts from '../Home/home/Posts';
+import Posts from '../Home/home/Posts';
 import Footer from '../../components/footer/Footer';
 
 const Home = () => {
@@ -36,7 +36,7 @@ const Home = () => {
           </div>
           <div className="section">
             <News />
-            {/* <Posts /> */}
+            <Posts />
             <Footer />
           </div>
         </div>
@@ -52,7 +52,7 @@ const Home = () => {
                   </div>
                   <div className="section">
                     <News />
-                    {/* <Posts /> */}
+                    <Posts />
                     <Footer />
                   </div>
                 </Fullpage.Wrapper>

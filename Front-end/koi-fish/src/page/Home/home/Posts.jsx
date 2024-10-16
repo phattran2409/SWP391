@@ -5,49 +5,44 @@ import "swiper/css/pagination";
 import "swiper/css/free-mode";
 import { Pagination, Autoplay } from "swiper/modules";
 import { RxArrowTopRight, RxCrop, RxDesktop, RxPencil2, RxReader, RxRocket, RxAccessibility } from "react-icons/rx";
-import SpaceCity1 from '../../assets/Screenshot.png';
-import SpaceCity5 from '../../assets/Screenshot.png';
-import SpaceCity6 from '../../assets/Screenshot.png';
-import SpaceCity7 from '../../assets/Screenshot.png';
-import SpaceCity8 from '../../assets/Screenshot.png';
-import SpaceCity9 from '../../assets/Screenshot.png';
+import api from "../../../config/axios";
 
 const ServiceData = [
   {
     icon: RxCrop,
     title: "Development",
     content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    backgroundImage: SpaceCity9,
+    backgroundImage: "https://res.cloudinary.com/ddqgjy50x/image/upload/v1726740825/two-koi-fish-in-pond_ae9hor.jpg",
   },
   {
     icon: RxPencil2,
     title: "Branding",
     content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    backgroundImage: SpaceCity1,
+    backgroundImage: "https://res.cloudinary.com/ddqgjy50x/image/upload/v1726740825/two-koi-fish-in-pond_ae9hor.jpg",
   },
   {
     icon: RxDesktop,
     title: "Design",
     content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    backgroundImage: SpaceCity6,
+    backgroundImage: "https://res.cloudinary.com/ddqgjy50x/image/upload/v1726740825/two-koi-fish-in-pond_ae9hor.jpg",
   },
   {
     icon: RxReader,
     title: "SEO",
     content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    backgroundImage: SpaceCity7,
+    backgroundImage: "https://res.cloudinary.com/ddqgjy50x/image/upload/v1726740825/two-koi-fish-in-pond_ae9hor.jpg",
   },
   {
     icon: RxAccessibility,
     title: "Management",
     content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    backgroundImage: SpaceCity5,
+    backgroundImage: "https://res.cloudinary.com/ddqgjy50x/image/upload/v1726740825/two-koi-fish-in-pond_ae9hor.jpg",
   },
   {
     icon: RxRocket,
     title: "Production",
     content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    backgroundImage: SpaceCity8,
+    backgroundImage: "https://res.cloudinary.com/ddqgjy50x/image/upload/v1726740825/two-koi-fish-in-pond_ae9hor.jpg",
   },
 ];
 
