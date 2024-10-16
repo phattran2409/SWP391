@@ -31,7 +31,7 @@ const useController = {
           updateData.password = hashedPawssword;
         }
 
-
+        
          const updateUsr = await User.findByIdAndUpdate(idUser , updateData ,  {
           new : true , 
           runValidators : true,

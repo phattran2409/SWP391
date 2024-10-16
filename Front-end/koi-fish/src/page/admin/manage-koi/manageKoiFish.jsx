@@ -31,7 +31,9 @@ function ManageKoiFish() {
     pageSize: 10, //(limit mặc định)
     total: 0, // ban đầu là 0
   });
+
   const [selectedColor , setSelectColor]  = useState([]);
+
 
   //Get
   const fetchData = async (
@@ -43,8 +45,6 @@ function ManageKoiFish() {
       const response = await api.get(
         `http://localhost:8081/v1/fish?page=${page}&limit=${limit}`
       );
-
-
 
       // Cập nhật dữ liệu vào state
       setDatas(response.data.data);
@@ -146,10 +146,12 @@ function ManageKoiFish() {
     }
   };
 
+
   // ->>  handle search 
   const handleSearch = async (e) => {
     try {
      const {value} = e.target;
+
       setSearchValue(e.target.value);
       debouncedSearch(value);
     } catch (err) {
@@ -158,71 +160,69 @@ function ManageKoiFish() {
   };
 
 
-
-  // search với độ trễ tránh xử lý nhiều lần 
-  const debouncedSearch =  useCallback(
+  // search với độ trễ tránh xử lý nhiều lần
+  const debouncedSearch = useCallback(
     debounce((value) => {
-      console.log(value)
-      callApiSearch(value)
+      console.log(value);
+      callApiSearch(value);
     }, 500),
     []
-  ); // 500ms delay 
+  ); // 500ms delay
 
-
-  // call api cho viec search ca koi  
+  // call api cho viec search ca koi
   const callApiSearch = async (value) => {
-     
-  try {
-    // kiem tra xem value nhap vao co la empty 
-    if (value === "") {
-       fetchData(pagination.current , pagination.pageSize);
-    } 
-    const res = await api.get(
-      `v1/fish/search?searchName=${value}&page=${pagination.current}&limit=${pagination.pageSize}`
-    );
-    
-    console.log("api search"+res.data.data);
-    setDatas(res.data.data)
-    setPagination({
-      current: res.data.currentPage, // cập nhật trang hiện tại
-      total: res.data.totalDocuments, // tổng số cá
-      pageSize: 10,
-    });
-  }catch(err) {
-    console.log(err);
-     if ( err.status === 404) {
-       toast.error("Error 404: Resource not found");
-     }
-    toast.error(err.res.data);
-  }
-  }
-  // call api search color
-  const handleSearchColor = async (value) => { 
-    console.log("func search color : "+typeof value);
-    setSelectColor(value)
     try {
-    const queryString = selectedColor.join(",");
-    if (selectedColor.length < 0 ) { 
-      fetchData(pagination.current, pagination.pageSize);
+      // kiem tra xem value nhap vao co la empty
+      if (value === "") {
+        fetchData(pagination.current, pagination.pageSize);
+      }
+      const res = await api.get(
+        `v1/fish/search?searchName=${value}&page=${pagination.current}&limit=${pagination.pageSize}`
+      );
+
+      console.log("api search" + res.data.data);
+      setDatas(res.data.data);
+      setPagination({
+        current: res.data.currentPage, // cập nhật trang hiện tại
+        total: res.data.totalDocuments, // tổng số cá
+        pageSize: 10,
+      });
+    } catch (err) {
+      console.log(err);
+      if (err.status === 404) {
+        toast.error("Error 404: Resource not found");
+      }
+      toast.error(err.res.data);
     }
-    const res = await api.get(
-      `v1/fish/search?searchColor=${queryString}&page=${pagination.current}&limit=${pagination.pageSize}`
-    );
-    console.log("respone API "+res.data.data);
-    
-    setDatas(res.data.data);
-    setPagination({
-      current: res.data.currentPage, // cập nhật trang hiện tại
-      total: res.data.totalDocuments, // tổng số cá
-      pageSize: 10,
-    });
-    }catch (err) {
-      if ( err.status === 404) {
-      toast.error('Error 404: Resource not found');
+  };
+  // call api search color
+  const handleSearchColor = async (value) => {
+    console.log("func search color : " + typeof value);
+    setSelectColor(value);
+    try {
+      const queryString = selectedColor.join(",");
+      if (selectedColor.length < 0) {
+        fetchData(pagination.current, pagination.pageSize);
+      }
+      const res = await api.get(
+        `v1/fish/search?searchColor=${queryString}&page=${pagination.current}&limit=${pagination.pageSize}`
+      );
+      console.log("respone API " + res.data.data);
+
+      setDatas(res.data.data);
+      setPagination({
+        current: res.data.currentPage, // cập nhật trang hiện tại
+        total: res.data.totalDocuments, // tổng số cá
+        pageSize: 10,
+      });
+    } catch (err) {
+      if (err.status === 404) {
+        toast.error("Error 404: Resource not found");
       }
       toast.error(err.res);
     }
-  }
+  };
+
 
   useEffect(() => {
     fetchData(pagination.current, pagination.pageSize);
@@ -361,7 +361,7 @@ function ManageKoiFish() {
           </Form>
         </div>
       </div>
-      
+
       <Button
         onClick={() => {
           form.resetFields(); // Clear form fields when adding a new member
@@ -395,8 +395,10 @@ function ManageKoiFish() {
         title="Create Koi"
         onOk={() => form.submit()}
         confirmLoading={loading}
+        
       >
-        <Form form={form} labelCol={{ span: 24 }} onFinish={handleSubmit}>
+        
+        <Form form={form} labelCol={{ span: 24 }} onFinish={handleSubmit} >
           <Form.Item name="_id" hidden>
             <Input />
           </Form.Item>

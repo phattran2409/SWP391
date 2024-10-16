@@ -31,48 +31,48 @@ function RegisterPage() {
       const response = await api.post("/v1/auth/register", values);
       toast.success("Successfully register new account!");
       navigate("/login");
-
-
     } catch (err) {
       // console.log
       toast.error(err.response.data);
     }
   };
 
+  const handleLoginSuccess = (response) => {
+    const token = jwtDecode(response.credential);
+    console.log(token);
+    sendTokenToAPI(token);
+    // Bạn có thể gửi mã token để xác thực ở backend
+  };
 
-   const handleLoginSuccess = (response) => {
-     const token = jwtDecode(response.credential);
-     console.log(token);
-     sendTokenToAPI(token);
-     // Bạn có thể gửi mã token để xác thực ở backend
-   };
+  const handleLoginError = () => {
+    console.log("Login Failed");
+  };
 
-   const handleLoginError = () => {
-     console.log("Login Failed");
-   };
+  const sendTokenToAPI = async (data) => {
+    console.log(import.meta.env.API_SIGNIN);
 
-   const sendTokenToAPI = async (data) => {
-     console.log(import.meta.env.API_SIGNIN);
+    try {
+      const response = await api.post("http://localhost:8081/v1/Oauth/signin", {
+        data: data, // Gửi token trong body của request
+      });
+      const { accessToken } = response.data;
 
-     try {
-       const response = await api.post(
-         "http://localhost:8081/v1/Oauth/signin",
-         {
-           data: data, // Gửi token trong body của request
-         }
-       );
-       const { accessToken } = response.data;
+      console.log("API Response:", response.data);
+      if (response.data) {
+        localStorage.setItem("token", accessToken);
+        localStorage.setItem("user", JSON.stringify(response.data));
 
-       console.log("API Response:", response.data);
-       if (response.data) {
-         localStorage.setItem("token", accessToken);
-         localStorage.setItem("user", JSON.stringify(response.data));
+        navigate("/?status=login_gg_success", {
+          state: { message: JSON.stringify(response.data.message) },
+        });
+      }
+      
+
 
          navigate("/?status=login_gg_success", {
            state: { message: JSON.stringify(response.data.message) },
          });
-       }
-
+            
      } catch (err) {
        toast.error(err.response.data);
      }
@@ -81,6 +81,7 @@ function RegisterPage() {
 
    
   
+
 
 
   return (
@@ -104,7 +105,6 @@ function RegisterPage() {
               <span className="font-light">OR</span>
             </Divider>
           </div>
-
         </div>
         <div className="px-28 ">
           <Form labelCol={{ span: 24 }} onFinish={handleRegister}>
@@ -263,7 +263,7 @@ function RegisterPage() {
               <Input.Password onChange={(e) => setPassword(e.target.value)} />
             </Form.Item>
 
-{/* <<<<<<< HEAD
+
             <Form.Item style={{ marginTop: "28px" }}>
               <Button
                 className="mt-5"
@@ -295,11 +295,32 @@ function RegisterPage() {
               </Button>
             </Form.Item>
 
-======= */}
-            {}
 
-            <Form.Item style={{ marginTop: '28px' }}>
-              <Button className="w-full h-[50px] mt-5 border rounded-[32px]"
+
+            {/* // <Form.Item style={{ marginTop: "28px" }}>
+            //   <Button
+            //     className="mt-5"
+            //     type="primary"
+            //     htmlType="submit"
+            //     style={{
+            //       backgroundColor: "gray",
+            //       color: "white",
+            //       border: "none",
+            //       borderRadius: "2rem",
+            //       width: "100%",
+            //       height: "50px",
+            //     }}
+            //     onMouseEnter={(e) =>
+            //       (e.currentTarget.style.backgroundColor = "red")
+            //     }
+            //     onMouseLeave={(e) =>
+            //       (e.currentTarget.style.backgroundColor = "gray")
+            //     } */}
+
+            <Form.Item style={{ marginTop: "28px" }}>
+              <Button
+                className="w-full h-[50px] mt-5 border rounded-[32px]"
+
                 htmlType="submit"
                 color="danger"
                 variant="solid"
@@ -313,9 +334,10 @@ function RegisterPage() {
                 Already have an account?
               </span>
               <span className="ml-2 text-gray-600 block sm:inline">
-                <Link to="/login" className="underline">Login here</Link>
+                <Link to="/login" className="underline">
+                  Login here
+                </Link>
               </span>
-
             </div>
           </Form>
         </div>
