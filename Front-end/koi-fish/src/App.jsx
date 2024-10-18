@@ -20,6 +20,8 @@ import ResetPasswordPage from "./page/forget/reset";
 import NewsPage from "./page/new/news";
 import BlogPage from "./page/new/blog";
 import DetailsPage from "./page/new/details";
+import KoiDetails from "./page/testpage/consulting-detail/koidetail.jsx";
+import PondDetails from "./page/testpage/consulting-detail/ponddetail.jsx";
 
 
 function App() {
@@ -92,7 +94,15 @@ function App() {
       path: "/details",
       element: <DetailsPage />,
     },
-  
+    
+    {
+      path: "/koidetail/:id",
+      element: <KoiDetails />,
+    },
+    {
+      path: "/ponddetail/:id",
+      element: <PondDetails />,
+    }
   ]);
 
   return <RouterProvider router={router} />;

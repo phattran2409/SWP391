@@ -1,11 +1,9 @@
 // Set config defaults when creating the instance
 import axios from "axios";
 const URL = {
-<<<<<<< Updated upstream
+
   DEPLOY_URL: "https://swp391-jruy.onrender.com",
-=======
-  DEPLOY_URL: "https://swp391-jruy.onrender.com/",
->>>>>>> Stashed changes
+
   LOCALHOST: "http://localhost:8081/",
 };
 

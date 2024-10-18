@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import api from "../../../../config/axios";
+import { Tag } from "antd";
 import {
   Button,
   Modal,
@@ -11,12 +12,15 @@ import {
   Pagination,
   Row,
   Col,
+  Image,
 } from "antd";
 import { toast } from "react-toastify";
 import { debounce } from "lodash";
 import "quill/dist/quill.snow.css"; // Import Quill CSS
 import ReactQuill from "react-quill"; // Import ReactQuill
 import parse from "html-react-parser";
+import { AlignCenter } from "lucide-react";
+import moment from "moment";
 
 function ManageNews() {
   const [datas, setDatas] = useState([]);
@@ -38,6 +42,8 @@ function ManageNews() {
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
+  const [createdAt, setCreatedAt] = useState("");
+  const [updatedAt, setUpdatedAt] = useState("");
 
   const reactQuillRef = useRef(null);
 
@@ -247,12 +253,13 @@ function ManageNews() {
         return;
       }
       const res = await api.get(
-        `http://localhost:8081/v1/post/searchPost?categoryID=1&postStatus=false&title=${encodeURIComponent(
+        `http://localhost:8081/v1/post/searchPost?categoryID=1&title=${encodeURIComponent(
           value
         )}&page=${pagination.current}&limit=${pagination.pageSize}`
       );
 
       setDatas(res.data.data);
+
       setPagination({
         current: res.data.currentPage,
         total: res.data.totalDocuments,
@@ -294,6 +301,11 @@ function ManageNews() {
       title: "ID",
       dataIndex: "_id",
       key: "_id",
+      render: (_id) => {
+        // const name = author?.name || "Admin";
+        const maxLength = 10;
+        return _id.length > maxLength ? `${_id.slice(0, maxLength)}...` : _id;
+      },
     },
     {
       title: "Title",
@@ -311,7 +323,7 @@ function ManageNews() {
       title: "Content",
       dataIndex: "context",
       key: "context",
-      width: "20%",
+      width: "15%",
       render: (text) => {
         const maxLength = 20;
 
@@ -354,7 +366,7 @@ function ManageNews() {
       key: "imageThumbnail",
       render: (imageThumbnail) =>
         imageThumbnail ? (
-          <img src={imageThumbnail} alt="Thumbnail" style={{ width: 100 }} />
+          <Image src={imageThumbnail} alt="Thumbnail" style={{ width: 100 }} />
         ) : (
           "No Image"
         ),
@@ -368,7 +380,21 @@ function ManageNews() {
       sortDirections: ["descend", "ascend"],
     },
     {
+      title: "Status",
+      dataIndex: "postStatus",
+      key: "postStatus",
+      render: (status) =>
+        status ? (
+          <Tag color="green">Approved</Tag>
+        ) : (
+          <Tag color="red">Rejected</Tag>
+        ),
+      sorter: (a, b) => b.postStatus - a.postStatus, // Đảo ngược để true (1) lên trước false (0)
+    },
+
+    {
       title: "Action",
+      align: "center",
       dataIndex: "_id",
       key: "_id",
       render: (_id, news) => (
@@ -384,6 +410,8 @@ function ManageNews() {
               setTitle(news.title || ""); // Set title for preview
               setContent(news.context || "");
               setAuthor(news.author.name || "admin");
+              setCreatedAt(news.createdAt || ""); // Set createdAt for preview
+              setUpdatedAt(news.updatedAt || ""); // Set updatedAt for preview
             }}
             style={{ marginRight: 8, background: "#42b6f5" }}
           >
@@ -397,25 +425,36 @@ function ManageNews() {
             cancelText="No"
           >
             <Button type="primary" danger>
-              Rejected
+              Delete
             </Button>
           </Popconfirm>
           <Popconfirm
             title="Update Status"
-            description="Do you want to approve this news?"
+            description="Do you want to approve or reject this news?"
             onConfirm={() => handleStatus(_id, { postStatus: true })}
-            okText="Yes"
-            cancelText="No"
+            onCancel={() => handleStatus(_id, { postStatus: false })}
+            okText="Approve"
+            cancelText="Reject"
+            okButtonProps={{
+              style: { backgroundColor: "#4CAF50", borderColor: "#4CAF50" },
+            }}
+            cancelButtonProps={{
+              style: {
+                backgroundColor: "#FF4D4F",
+                borderColor: "#FF4D4F",
+                color: "white",
+              },
+            }}
           >
             <Button
               type="primary"
               style={{
-                background: "#08bd40",
-                borderColor: "yellow",
+                background: "#FFD700",
+
                 marginLeft: 8,
               }}
             >
-              Approved
+              Censorship
             </Button>
           </Popconfirm>
         </>
@@ -449,6 +488,8 @@ function ManageNews() {
           setTitle(""); // Set title for preview
           setContent("");
           setAuthor("admin");
+          setCreatedAt(""); // Set createdAt for preview
+          setUpdatedAt(""); // Set updatedAt for preview
         }}
         style={{ marginBottom: 16 }}
       >
@@ -479,23 +520,18 @@ function ManageNews() {
           setThumbnailFile(null); // Reset thumbnail file when modal is closed
           setExistingThumbnail(""); // Reset existing thumbnail
         }}
-        title={
-          form.getFieldValue("_id") ? "Update News" : "Create News"
-        }
+        title={form.getFieldValue("_id") ? "Update News" : "Create News"}
         onOk={() => form.submit()}
         confirmLoading={loading}
         width={1300}
       >
         <Form form={form} labelCol={{ span: 24 }} onFinish={handleSubmit}>
-          <Form.Item name="_id" hidden>
-            <Input />
-          </Form.Item>
           <Row gutter={16}>
             {/* Left Side: Form Inputs */}
             <Col xs={24} sm={24} md={12}>
               <Form.Item
                 name="title"
-                label="News Title"
+                label="Title"
                 rules={[{ required: true, message: "Please enter the title!" }]}
               >
                 <Input
@@ -511,6 +547,14 @@ function ManageNews() {
                 initialValue={userId}
                 hidden
               >
+                <Input readOnly />
+              </Form.Item>
+
+              <Form.Item name="createdAt" label="Created At" hidden>
+                <Input readOnly />
+              </Form.Item>
+
+              <Form.Item name="updatedAt" label="Updated At" hidden>
                 <Input readOnly />
               </Form.Item>
 
@@ -547,10 +591,11 @@ function ManageNews() {
                 ]}
               >
                 <Select placeholder="Status" allowClear>
-                  <Select.Option value="true">True</Select.Option>
-                  <Select.Option value="false">False</Select.Option>
+                  <Select.Option value={true}>True</Select.Option>
+                  <Select.Option value={false}>False</Select.Option>
                 </Select>
               </Form.Item>
+
               <Form.Item
                 name="elementID"
                 label="Element"
@@ -567,8 +612,9 @@ function ManageNews() {
                 </Select>
               </Form.Item>
               {/* File Input for Thumbnail */}
+
               <Form.Item
-                label="Thumbnail"
+                label="Thumbnail (required)"
                 rules={[
                   {
                     required: !form.getFieldValue("_id"),
@@ -599,6 +645,9 @@ function ManageNews() {
                     />
                   )}
                 </>
+              </Form.Item>
+              <Form.Item name="_id" label="Post ID">
+                <Input readOnly />
               </Form.Item>
             </Col>
 
@@ -632,22 +681,35 @@ function ManageNews() {
                 )}
                 <br />
                 <h2>
-                  <strong>Title:</strong>
+                  <strong>Title:</strong>{" "}
+                  {title ? parse(title) : <p>Your Title</p>}
                 </h2>
-                <h1>
-                  <strong>{title ? parse(title) : <p>Your Title</p>}</strong>
-                </h1>
+
                 <br />
                 <h2>
-                  <strong>Author:</strong>
+                  <strong>Author:</strong> {author}
                 </h2>
-                <h3>
-                  <strong>{author}</strong>
-                </h3>
+
+                <br />
+                <h2>
+                  <strong>Created At: </strong>
+
+                  {createdAt
+                    ? moment(createdAt).format("YYYY-MM-DD HH:mm:ss")
+                    : "Loading..."}
+                </h2>
+                <h2>
+                  <strong> Updated At: </strong>
+
+                  {updatedAt
+                    ? moment(updatedAt).format("YYYY-MM-DD HH:mm:ss")
+                    : "Loading..."}
+                </h2>
                 <br />
                 <h2>
                   <strong>Content:</strong>
                 </h2>
+
                 <div>
                   {content ? (
                     parse(content)
