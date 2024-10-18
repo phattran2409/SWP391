@@ -6,6 +6,7 @@ import News from '../Home/home/News';
 import Posts from '../Home/home/Posts';
 import Footer from '../../components/footer/Footer';
 import KoiFish from '../Home/home/KoiFish';
+import KoiPond from './home/KoiPond';
 
 const Home = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -15,18 +16,15 @@ const Home = () => {
       setIsMobile(window.innerWidth <= 768);
     };
 
-    // Initial check
     handleResize();
 
-    // Add event listener
     window.addEventListener('resize', handleResize);
 
-    // Cleanup event listener
     return () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-  
+
   return (
     <div>
       <Navbar />
@@ -38,13 +36,14 @@ const Home = () => {
           <div className="section">
             <News />
             <KoiFish />
+            <KoiPond />
             <Posts />
             <Footer />
           </div>
         </div>
       ) : (
         <Fullpage
-          scrollingSpeed={1000} 
+          scrollingSpeed={1000}
           render={({ state, fullpageApi }) => {
             return (
               <div>
@@ -53,9 +52,12 @@ const Home = () => {
                     <HeroSection />
                   </div>
                   <div className="section">
-                    <News />
-                    <KoiFish />
-                    <Posts />
+                    <div className='mx-auto text-center w-full max-w-[80%]'>
+                      <News />
+                      <KoiFish />
+                      <KoiPond />
+                      <Posts />
+                    </div>
                     <Footer />
                   </div>
                 </Fullpage.Wrapper>
@@ -70,7 +72,7 @@ const Home = () => {
         }
       `}</style>
     </div>
-    
+
   );
 };
 
