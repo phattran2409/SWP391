@@ -79,12 +79,22 @@ const pondController = {
   //GET POND BY ELEMENT
   getByElement: async (req, res) => {
     try {
-      const elementID = req.query.elementID;
-      const pond = await ponds.find({elementID});
-      if (!pond || pond.length === 0) {
-        return res.status(403).json("data is not found");
-      }
-      res.status(200).json(pond);
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 5;
+
+      const skip = (page - 1) * limit;
+      const pond = await ponds
+      .find({ elementID: req.params.id})
+    
+      .skip(skip)
+      .limit(limit);
+    const totalDocuments = await ponds.countDocuments({ elementID: req.params.id });
+    res.status(200).json({
+      currentPage: page,
+      totalPages: Math.ceil(totalDocuments / limit),
+      totalDocuments: totalDocuments,
+      data: pond,
+    });
     } catch (error) {
       return res.status(500).json(error);
     }

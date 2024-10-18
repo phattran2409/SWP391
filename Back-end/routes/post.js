@@ -35,4 +35,5 @@ router.get("/searchPost", postController.searchPost);
 //Set status
 router.put("/setStatus/:id", postController.setStatus);
 
+router.get("/searchPage", postController.searchPostnotPagination);
 module.exports = router;
