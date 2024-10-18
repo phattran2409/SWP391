@@ -25,8 +25,8 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="sticky top-0 z-50 py-3 bg-black">
-            <div className="container mx-auto px-4 flex justify-between items-center">
+        <nav className="sticky top-0 z-50 h-[60px] bg-black">
+            <div className="container mx-auto px-4 flex justify-between items-center h-full">
                 <span className="text-white text-lg font-semibold">Feng Shui Koi</span>
 
                 {/* Mobile Menu Button */}
@@ -44,17 +44,18 @@ const Navbar = () => {
                 <div className="hidden lg:flex items-center space-x-6">
                     <ul className="flex space-x-8">
                         <li><a href="/home" className="text-white hover:text-neutral-500 transition duration-300">Home</a></li>
-                        <li><a href="/about" className="text-white hover:text-neutral-500 transition duration-300">About</a></li>
                         <li><a href="/consult" className="text-white hover:text-neutral-500 transition duration-300">Consult</a></li>
-                        <li><a href="/contactus" className="text-white hover:text-neutral-500 transition duration-300">Contact Us</a></li>
                         <li><a href="/news" className="text-white hover:text-neutral-500 transition duration-300">News</a></li>
+                        <li><a href="/about" className="text-white hover:text-neutral-500 transition duration-300">About</a></li>
+                        <li><a href="/contactus" className="text-white hover:text-neutral-500 transition duration-300">Contact Us</a></li>
+
                     </ul>
 
                     <div className="h-6 border-l border-neutral-500 mx-4"></div>
 
-                    <button className="text-white hover:text-neutral-500 focus:outline-none">
+                    {/* <button className="text-white hover:text-neutral-500 focus:outline-none">
                         <Search className="w-5 h-5" />
-                    </button>
+                    </button> */}
 
                     <a
                         href="/login"
@@ -83,10 +84,11 @@ const Navbar = () => {
 
                 <ul className="space-y-4">
                     <li><a href="/home" className="text-white hover:text-neutral-500 transition duration-300" onClick={handleLinkClick}>Home</a></li>
-                    <li><a href="/about" className="text-white hover:text-neutral-500 transition duration-300" onClick={handleLinkClick}>About</a></li>
                     <li><a href="/consult" className="text-white hover:text-neutral-500 transition duration-300" onClick={handleLinkClick}>Consult</a></li>
-                    <li><a href="/contactus" className="text-white hover:text-neutral-500 transition duration-300" onClick={handleLinkClick}>Contact Us</a></li>
                     <li><a href="/news" className="text-white hover:text-neutral-500 transition duration-300" onClick={handleLinkClick}>News</a></li>
+                    <li><a href="/about" className="text-white hover:text-neutral-500 transition duration-300" onClick={handleLinkClick}>About</a></li>
+                    <li><a href="/contactus" className="text-white hover:text-neutral-500 transition duration-300" onClick={handleLinkClick}>Contact Us</a></li>
+
                 </ul>
 
                 {/* Login and Signup in Mobile Menu */}

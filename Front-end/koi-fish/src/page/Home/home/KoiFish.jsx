@@ -5,6 +5,7 @@ import "swiper/css/pagination";
 import "swiper/css/free-mode";
 import { Pagination, Autoplay } from "swiper/modules";
 import api from "../../../config/axios";
+import Loading from '../../../components/loading/Loading';
 
 const KoiFish = () => {
   const [fishs, setFish] = useState([]);
@@ -43,8 +44,14 @@ const KoiFish = () => {
     };
   }, []);
 
+  
+
   if (!fishs.length) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex flex-col items-center justify-center h-[800px] bg-gray-100 rounded-xl shadow-md">
+        <Loading />
+      </div>
+    );
   }
 
   const truncateText = (text, length) => {

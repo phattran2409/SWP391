@@ -37,7 +37,8 @@ const HeroSection = () => {
     };
 
     return (
-        <div id="carouselDarkVariant" className="relative h-screen">
+        <div id="carouselDarkVariant" className="relative h-screen mt-[-60px]">
+            
             {/* Carousel indicators */}
             <div className="absolute inset-x-0 bottom-0 z-[2] mx-[15%] mb-4 flex list-none justify-center p-0">
                 {slides.map((_, index) => (
