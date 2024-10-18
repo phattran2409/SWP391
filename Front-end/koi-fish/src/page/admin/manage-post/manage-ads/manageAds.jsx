@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import api from "../../../../config/axios";
+import { Tag } from "antd";
 import {
   Button,
   Modal,
@@ -11,11 +12,13 @@ import {
   Pagination,
   Row,
   Col,
+  Image,
 } from "antd";
 import { toast } from "react-toastify";
+import { AlignCenter } from "lucide-react";
+import moment from "moment";
 import { debounce } from "lodash";
 import "quill/dist/quill.snow.css"; // Import Quill CSS
-
 
 import parse from "html-react-parser";
 
@@ -36,7 +39,8 @@ function ManageAds() {
   const userData = localStorage.getItem("user");
   const parsedUser = JSON.parse(userData);
   const userId = parsedUser._id;
-
+  const [createdAt, setCreatedAt] = useState("");
+  const [updatedAt, setUpdatedAt] = useState("");
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
 
@@ -114,11 +118,11 @@ function ManageAds() {
       if (values._id) {
         // Update existing post
         await api.put(`v1/post/updatePost/${values._id}`, values);
-        toast.success("News updated successfully!");
+        toast.success("Advertising updated successfully!");
       } else {
         // Create new post
         await api.post("v1/post/createPost", values);
-        toast.success("News created successfully!");
+        toast.success("Advertising created successfully!");
       }
 
       fetchData();
@@ -153,7 +157,7 @@ function ManageAds() {
         statusData
       );
       console.log(statusData);
-      toast.success("Approved successfully!");
+      toast.success("Changed successfully!");
       fetchData();
     } catch (err) {
       toast.error(err.response?.data?.data || "An error occurred");
@@ -183,7 +187,7 @@ function ManageAds() {
         return;
       }
       const res = await api.get(
-        `http://localhost:8081/v1/post/searchPost?categoryID=3&postStatus=false&title=${encodeURIComponent(
+        `http://localhost:8081/v1/post/searchPost?categoryID=3&title=${encodeURIComponent(
           value
         )}&page=${pagination.current}&limit=${pagination.pageSize}`
       );
@@ -235,6 +239,13 @@ function ManageAds() {
       title: "Title",
       dataIndex: "title",
       key: "title",
+      render: (title) => {
+        // const name = author?.name || "Admin";
+        const maxLength = 30;
+        return title.length > maxLength
+          ? `${title.slice(0, maxLength)}...`
+          : title;
+      },
     },
 
     {
@@ -255,7 +266,7 @@ function ManageAds() {
       key: "imageThumbnail",
       render: (imageThumbnail) =>
         imageThumbnail ? (
-          <img src={imageThumbnail} alt="Thumbnail" style={{ width: 100 }} />
+          <Image src={imageThumbnail} alt="Thumbnail" style={{ width: 100 }} />
         ) : (
           "No Image"
         ),
@@ -267,6 +278,18 @@ function ManageAds() {
       render: (elementID) => elementMap[elementID] || "Unknown",
       sorter: (a, b) => a.elementID - b.elementID,
       sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "Status",
+      dataIndex: "postStatus",
+      key: "postStatus",
+      render: (status) =>
+        status ? (
+          <Tag color="green">Approved</Tag>
+        ) : (
+          <Tag color="red">Rejected</Tag>
+        ),
+      sorter: (a, b) => b.postStatus - a.postStatus, // Đảo ngược để true (1) lên trước false (0)
     },
     {
       title: "Action",
@@ -283,8 +306,9 @@ function ManageAds() {
               setThumbnailFile(null); // Reset thumbnail file when editing
               setExistingThumbnail(imageThumbnail); // Set existing thumbnail
               setTitle(ads.title || ""); // Set title for preview
-
               setAuthor(ads.author.name || "admin");
+              setCreatedAt(ads.createdAt || ""); // Set createdAt for preview
+              setUpdatedAt(ads.updatedAt || ""); // Set updatedAt for preview
             }}
             style={{ marginRight: 8, background: "#42b6f5" }}
           >
@@ -298,25 +322,36 @@ function ManageAds() {
             cancelText="No"
           >
             <Button type="primary" danger>
-              Rejected
+              Delete
             </Button>
           </Popconfirm>
           <Popconfirm
             title="Update Status"
-            description="Do you want to approve this advertising?"
+            description="Do you want to approve or reject this advertising?"
             onConfirm={() => handleStatus(_id, { postStatus: true })}
-            okText="Yes"
-            cancelText="No"
+            onCancel={() => handleStatus(_id, { postStatus: false })}
+            okText="Approve"
+            cancelText="Reject"
+            okButtonProps={{
+              style: { backgroundColor: "#4CAF50", borderColor: "#4CAF50" },
+            }}
+            cancelButtonProps={{
+              style: {
+                backgroundColor: "#FF4D4F",
+                borderColor: "#FF4D4F",
+                color: "white",
+              },
+            }}
           >
             <Button
               type="primary"
               style={{
-                background: "#08bd40",
-                borderColor: "yellow",
+                background: "#FFD700",
+
                 marginLeft: 8,
               }}
             >
-              Approved
+              Censorship
             </Button>
           </Popconfirm>
         </>
@@ -328,7 +363,7 @@ function ManageAds() {
   return (
     <div>
       <div className="group-search flex">
-        {/* Search News by Title */}
+        {/* Search advertising by Title */}
         <div className="search-name">
           <label className="mr-4"> Search Advertising :</label>
           <Input
@@ -348,8 +383,9 @@ function ManageAds() {
           setExistingThumbnail(""); // Reset existing thumbnail
           setShowModal(true);
           setTitle(""); // Set title for preview
-
           setAuthor("admin");
+          setCreatedAt(""); // Set createdAt for preview
+          setUpdatedAt(""); // Set updatedAt for preview
         }}
         style={{ marginBottom: 16 }}
       >
@@ -381,7 +417,9 @@ function ManageAds() {
           setExistingThumbnail(""); // Reset existing thumbnail
         }}
         title={
-          form.getFieldValue("_id") ? "Update Advertising" : "Create New Advertising"
+          form.getFieldValue("_id")
+            ? "Update Advertising"
+            : "Create New Advertising"
         }
         onOk={() => form.submit()}
         confirmLoading={loading}
@@ -396,7 +434,7 @@ function ManageAds() {
             <Col xs={24} sm={24} md={12}>
               <Form.Item
                 name="title"
-                label="News Title"
+                label="Title"
                 rules={[{ required: true, message: "Please enter the title!" }]}
               >
                 <Input
@@ -412,6 +450,14 @@ function ManageAds() {
                 initialValue={userId}
                 hidden
               >
+                <Input readOnly />
+              </Form.Item>
+
+              <Form.Item name="createdAt" label="Created At" hidden>
+                <Input readOnly />
+              </Form.Item>
+
+              <Form.Item name="updatedAt" label="Updated At" hidden>
                 <Input readOnly />
               </Form.Item>
 
@@ -435,8 +481,8 @@ function ManageAds() {
                 ]}
               >
                 <Select placeholder="Status" allowClear>
-                  <Select.Option value="true">True</Select.Option>
-                  <Select.Option value="false">False</Select.Option>
+                  <Select.Option value={true}>True</Select.Option>
+                  <Select.Option value={false}>False</Select.Option>
                 </Select>
               </Form.Item>
               <Form.Item
@@ -488,6 +534,9 @@ function ManageAds() {
                   )}
                 </>
               </Form.Item>
+              <Form.Item name="_id" label="Post ID">
+                <Input readOnly />
+              </Form.Item>
             </Col>
 
             {/* Right Side: Preview */}
@@ -532,6 +581,21 @@ function ManageAds() {
                 <h3>
                   <strong>{author}</strong>
                 </h3>
+                <br />
+                <h2>
+                  <strong>Created At: </strong>
+
+                  {createdAt
+                    ? moment(createdAt).format("YYYY-MM-DD HH:mm:ss")
+                    : "Loading..."}
+                </h2>
+                <h2>
+                  <strong> Updated At: </strong>
+
+                  {updatedAt
+                    ? moment(updatedAt).format("YYYY-MM-DD HH:mm:ss")
+                    : "Loading..."}
+                </h2>
               </div>
             </Col>
           </Row>

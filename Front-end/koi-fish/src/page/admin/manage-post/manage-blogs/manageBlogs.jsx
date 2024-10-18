@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import api from "../../../../config/axios";
+import { Tag } from "antd";
 import {
   Button,
   Modal,
@@ -11,12 +12,15 @@ import {
   Pagination,
   Row,
   Col,
+  Image,
 } from "antd";
 import { toast } from "react-toastify";
 import { debounce } from "lodash";
 import "quill/dist/quill.snow.css"; // Import Quill CSS
 import ReactQuill from "react-quill"; // Import ReactQuill
 import parse from "html-react-parser";
+import { AlignCenter } from "lucide-react";
+import moment from "moment";
 
 function ManageBlogs() {
   const [datas, setDatas] = useState([]);
@@ -38,6 +42,8 @@ function ManageBlogs() {
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
+  const [createdAt, setCreatedAt] = useState("");
+  const [updatedAt, setUpdatedAt] = useState("");
 
   const reactQuillRef = useRef(null);
 
@@ -178,11 +184,11 @@ function ManageBlogs() {
       if (values._id) {
         // Update existing post
         await api.put(`v1/post/updatePost/${values._id}`, values);
-        toast.success("News updated successfully!");
+        toast.success("Blog updated successfully!");
       } else {
         // Create new post
         await api.post("v1/post/createPost", values);
-        toast.success("News created successfully!");
+        toast.success("Blog created successfully!");
       }
 
       fetchData();
@@ -217,7 +223,7 @@ function ManageBlogs() {
         statusData
       );
       console.log(statusData);
-      toast.success("Approved successfully!");
+      toast.success("Changed successfully!");
       fetchData();
     } catch (err) {
       toast.error(err.response?.data?.data || "An error occurred");
@@ -247,12 +253,13 @@ function ManageBlogs() {
         return;
       }
       const res = await api.get(
-        `http://localhost:8081/v1/post/searchPost?categoryID=2&postStatus=false&title=${encodeURIComponent(
+        `http://localhost:8081/v1/post/searchPost?categoryID=2&title=${encodeURIComponent(
           value
         )}&page=${pagination.current}&limit=${pagination.pageSize}`
       );
 
       setDatas(res.data.data);
+
       setPagination({
         current: res.data.currentPage,
         total: res.data.totalDocuments,
@@ -294,6 +301,11 @@ function ManageBlogs() {
       title: "ID",
       dataIndex: "_id",
       key: "_id",
+      render: (_id) => {
+        // const name = author?.name || "Admin";
+        const maxLength = 10;
+        return _id.length > maxLength ? `${_id.slice(0, maxLength)}...` : _id;
+      },
     },
     {
       title: "Title",
@@ -311,7 +323,7 @@ function ManageBlogs() {
       title: "Content",
       dataIndex: "context",
       key: "context",
-      width: "20%",
+      width: "15%",
       render: (text) => {
         const maxLength = 20;
 
@@ -354,7 +366,7 @@ function ManageBlogs() {
       key: "imageThumbnail",
       render: (imageThumbnail) =>
         imageThumbnail ? (
-          <img src={imageThumbnail} alt="Thumbnail" style={{ width: 100 }} />
+          <Image src={imageThumbnail} alt="Thumbnail" style={{ width: 100 }} />
         ) : (
           "No Image"
         ),
@@ -368,22 +380,38 @@ function ManageBlogs() {
       sortDirections: ["descend", "ascend"],
     },
     {
+      title: "Status",
+      dataIndex: "postStatus",
+      key: "postStatus",
+      render: (status) =>
+        status ? (
+          <Tag color="green">Approved</Tag>
+        ) : (
+          <Tag color="red">Rejected</Tag>
+        ),
+      sorter: (a, b) => b.postStatus - a.postStatus, // Đảo ngược để true (1) lên trước false (0)
+    },
+
+    {
       title: "Action",
+      align: "center",
       dataIndex: "_id",
       key: "_id",
-      render: (_id, news) => (
+      render: (_id, blog) => (
         <>
           <Button
             type="primary"
             onClick={() => {
               setShowModal(true);
-              const { imageThumbnail, ...otherFields } = news; // Exclude imageThumbnail
+              const { imageThumbnail, ...otherFields } = blog; // Exclude imageThumbnail
               form.setFieldsValue(otherFields);
               setThumbnailFile(null); // Reset thumbnail file when editing
               setExistingThumbnail(imageThumbnail); // Set existing thumbnail
-              setTitle(news.title || ""); // Set title for preview
-              setContent(news.context || "");
-              setAuthor(news.author.name || "admin");
+              setTitle(blog.title || ""); // Set title for preview
+              setContent(blog.context || "");
+              setAuthor(blog.author.name || "admin");
+              setCreatedAt(blog.createdAt || ""); // Set createdAt for preview
+              setUpdatedAt(blog.updatedAt || ""); // Set updatedAt for preview
             }}
             style={{ marginRight: 8, background: "#42b6f5" }}
           >
@@ -397,25 +425,36 @@ function ManageBlogs() {
             cancelText="No"
           >
             <Button type="primary" danger>
-              Rejected
+              Delete
             </Button>
           </Popconfirm>
           <Popconfirm
             title="Update Status"
-            description="Do you want to approve this blog?"
+            description="Do you want to approve or reject this blog?"
             onConfirm={() => handleStatus(_id, { postStatus: true })}
-            okText="Yes"
-            cancelText="No"
+            onCancel={() => handleStatus(_id, { postStatus: false })}
+            okText="Approve"
+            cancelText="Reject"
+            okButtonProps={{
+              style: { backgroundColor: "#4CAF50", borderColor: "#4CAF50" },
+            }}
+            cancelButtonProps={{
+              style: {
+                backgroundColor: "#FF4D4F",
+                borderColor: "#FF4D4F",
+                color: "white",
+              },
+            }}
           >
             <Button
               type="primary"
               style={{
-                background: "#08bd40",
-                borderColor: "yellow",
+                background: "#FFD700",
+
                 marginLeft: 8,
               }}
             >
-              Approved
+              Censorship
             </Button>
           </Popconfirm>
         </>
@@ -423,16 +462,16 @@ function ManageBlogs() {
     },
   ];
 
- // Render the component
+  // Render the component
   return (
     <div>
       <div className="group-search flex">
-        {/* Search News by Title */}
+        {/* Search blog by Title */}
         <div className="search-name">
           <label className="mr-4"> Search Blog :</label>
           <Input
             value={searchValue}
-            placeholder="Search blog by title"
+            placeholder="Search Blog by title"
             style={{ width: 300, marginBottom: 20 }}
             onChange={handleSearch}
           />
@@ -449,6 +488,8 @@ function ManageBlogs() {
           setTitle(""); // Set title for preview
           setContent("");
           setAuthor("admin");
+          setCreatedAt(""); // Set createdAt for preview
+          setUpdatedAt(""); // Set updatedAt for preview
         }}
         style={{ marginBottom: 16 }}
       >
@@ -479,23 +520,18 @@ function ManageBlogs() {
           setThumbnailFile(null); // Reset thumbnail file when modal is closed
           setExistingThumbnail(""); // Reset existing thumbnail
         }}
-        title={
-          form.getFieldValue("_id") ? "Update Blog" : "Create New Blog"
-        }
+        title={form.getFieldValue("_id") ? "Update Blog" : "Create Blog"}
         onOk={() => form.submit()}
         confirmLoading={loading}
         width={1300}
       >
         <Form form={form} labelCol={{ span: 24 }} onFinish={handleSubmit}>
-          <Form.Item name="_id" hidden>
-            <Input />
-          </Form.Item>
           <Row gutter={16}>
             {/* Left Side: Form Inputs */}
             <Col xs={24} sm={24} md={12}>
               <Form.Item
                 name="title"
-                label="News Title"
+                label="Title"
                 rules={[{ required: true, message: "Please enter the title!" }]}
               >
                 <Input
@@ -511,6 +547,14 @@ function ManageBlogs() {
                 initialValue={userId}
                 hidden
               >
+                <Input readOnly />
+              </Form.Item>
+
+              <Form.Item name="createdAt" label="Created At" hidden>
+                <Input readOnly />
+              </Form.Item>
+
+              <Form.Item name="updatedAt" label="Updated At" hidden>
                 <Input readOnly />
               </Form.Item>
 
@@ -547,10 +591,11 @@ function ManageBlogs() {
                 ]}
               >
                 <Select placeholder="Status" allowClear>
-                  <Select.Option value="true">True</Select.Option>
-                  <Select.Option value="false">False</Select.Option>
+                  <Select.Option value={true}>True</Select.Option>
+                  <Select.Option value={false}>False</Select.Option>
                 </Select>
               </Form.Item>
+
               <Form.Item
                 name="elementID"
                 label="Element"
@@ -567,8 +612,9 @@ function ManageBlogs() {
                 </Select>
               </Form.Item>
               {/* File Input for Thumbnail */}
+
               <Form.Item
-                label="Thumbnail"
+                label="Thumbnail (required)"
                 rules={[
                   {
                     required: !form.getFieldValue("_id"),
@@ -599,6 +645,9 @@ function ManageBlogs() {
                     />
                   )}
                 </>
+              </Form.Item>
+              <Form.Item name="_id" label="Post ID">
+                <Input readOnly />
               </Form.Item>
             </Col>
 
@@ -632,22 +681,35 @@ function ManageBlogs() {
                 )}
                 <br />
                 <h2>
-                  <strong>Title:</strong>
+                  <strong>Title:</strong>{" "}
+                  {title ? parse(title) : <p>Your Title</p>}
                 </h2>
-                <h1>
-                  <strong>{title ? parse(title) : <p>Your Title</p>}</strong>
-                </h1>
+
                 <br />
                 <h2>
-                  <strong>Author:</strong>
+                  <strong>Author:</strong> {author}
                 </h2>
-                <h3>
-                  <strong>{author}</strong>
-                </h3>
+
+                <br />
+                <h2>
+                  <strong>Created At: </strong>
+
+                  {createdAt
+                    ? moment(createdAt).format("YYYY-MM-DD HH:mm:ss")
+                    : "Loading..."}
+                </h2>
+                <h2>
+                  <strong> Updated At: </strong>
+
+                  {updatedAt
+                    ? moment(updatedAt).format("YYYY-MM-DD HH:mm:ss")
+                    : "Loading..."}
+                </h2>
                 <br />
                 <h2>
                   <strong>Content:</strong>
                 </h2>
+
                 <div>
                   {content ? (
                     parse(content)
@@ -663,8 +725,5 @@ function ManageBlogs() {
     </div>
   );
 }
-
-
-
 
 export default ManageBlogs;
