@@ -1,11 +1,24 @@
 // Set config defaults when creating the instance
 import axios from "axios";
+const URL = {
+
+  DEPLOY_URL: "https://swp391-jruy.onrender.com",
+
+  LOCALHOST: "http://localhost:8081/",
+};
+
+const BASE_URL = URL.DEPLOY_URL;
+
 const api = axios.create({
-  baseURL: "https://swp391-jruy.onrender.com",
+
+  baseURL: BASE_URL,
+  
+
 });
 
 //lam 1 hanh dong gi do truoc khi call api
 const handleBefore = (config) => {
+
   const token = localStorage.getItem("token");
   config.headers["Authorization"] = `Bearer ${token}`;
   return config;
@@ -13,9 +26,11 @@ const handleBefore = (config) => {
 
 const handleError = (error) => {
   console.log(error);
+
 };
 
 api.interceptors.request.use(handleBefore, handleError);
 
 // Alter defaults after instance has been created
+
 export default api;
