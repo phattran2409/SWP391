@@ -156,31 +156,66 @@ const fishController = {
     }
    } ,
 
-   getKoiByElement  : async(req ,res) => {
-       try {
+  //  getKoiByElement  : async(req ,res) => {
+  //      try {
      
-         console.log("query " + req.params.id);
-         console.log("query  "  + typeof req.params.id);
-         //get bang body
-         // const fishkoi = await fishkois.find({elementID : parseInt(data.elementID) });
+  //        console.log("query " + req.params.id);
+  //        console.log("query  "  + typeof req.params.id);
+  //        //get bang body
+  //        // const fishkoi = await fishkois.find({elementID : parseInt(data.elementID) });
 
-         //get bang query
-         const fishkoi = await fishkois.find  ({  
-           elementID:  req.params.id})
+  //        //get bang query
+  //        const fishkoi = await fishkois.find  ({  
+  //          elementID:  req.params.id})
          
          
-         console.log(typeof fishkoi);
-         console.log(fishkoi.length);
+  //        console.log(typeof fishkoi);
+  //        console.log(fishkoi.length);
 
-         if (fishkoi.length === 0) {
-           return res.status(403).json("data is not found");
-         }
-         return res.status(200).json(fishkoi);
-       } catch (err) {
-         return res.status(500).json(err);
-       }
-      
-   },
+  //        if (fishkoi.length === 0) {
+  //          return res.status(403).json("data is not found");
+  //        }
+  //        return res.status(200).json(fishkoi);
+  //      } catch (err) {
+  //        return res.status(500).json(err);
+  //      }    
+  //  },
+
+  getKoiByElementId: async (req, res) => {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 20;
+
+      const skip = (page - 1) * limit;
+      const koi = await fishkois
+      .find({ elementID: req.params.id})
+    
+      .skip(skip)
+      .limit(limit);
+    const totalDocuments = await fishkois.countDocuments({ elementID: req.params.id });
+    res.status(200).json({
+      currentPage: page,
+      totalPages: Math.ceil(totalDocuments / limit),
+      totalDocuments: totalDocuments,
+      data: koi,
+    });
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  },
+
+  getKoiById: async (req, res) => {
+    try {
+      const koi = await fishkois.findById(req.params.id);
+      if (!koi || koi.length === 0) {
+        return res.status(403).json("data is not found");
+      }
+      return res.status(200).json(koi);
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  },
+
 };
 
 module.exports = fishController
