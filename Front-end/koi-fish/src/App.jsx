@@ -22,13 +22,16 @@ import BlogPage from "./page/new/blog";
 import DetailsPage from "./page/new/details";
 import KoiDetails from "./page/testpage/consulting-detail/koidetail.jsx";
 import PondDetails from "./page/testpage/consulting-detail/ponddetail.jsx";
-
+import MemberPackage from "./page/MemberPackage/package.jsx";
+import ThankYou from "./page/thankYou/thankYou.jsx";
+import ManageOrder from "./page/admin/manage-orders/manageOrders.jsx";
+import Consulting from "./page/consulting/consulting.jsx";
 
 function App() {
   const router = createBrowserRouter([
     {
-      path:   "/",
-      element: <Home/>,
+      path: "/",
+      element: <Home />,
     },
     {
       path: "/login",
@@ -39,7 +42,6 @@ function App() {
       element: <RegisterPage />,
     },
     {
-
       path: "/dashboard",
       element: <Dashboard />,
       children: [
@@ -54,6 +56,10 @@ function App() {
         {
           path: "koi",
           element: <ManageKoiFish />,
+        },
+        {
+          path: "order",
+          element: <ManageOrder />,
         },
         {
           path: "post",
@@ -84,7 +90,7 @@ function App() {
     },
     {
       path: "/news",
-      element: < NewsPage />,
+      element: <NewsPage />,
     },
     {
       path: "/blog",
@@ -94,7 +100,7 @@ function App() {
       path: "/details",
       element: <DetailsPage />,
     },
-    
+
     {
       path: "/koidetail/:id",
       element: <KoiDetails />,
@@ -102,7 +108,16 @@ function App() {
     {
       path: "/ponddetail/:id",
       element: <PondDetails />,
-    }
+    },
+    {
+      path: "/memberPackage",
+      element: <MemberPackage />,
+      children: [{ path: "thankyou", element: <ThankYou /> }],
+    },
+    {
+      path: "/consulting",
+      element: <Consulting />,
+    },
   ]);
 
   return <RouterProvider router={router} />;

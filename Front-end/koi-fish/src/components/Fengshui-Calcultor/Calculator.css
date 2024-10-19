@@ -1,0 +1,21 @@
+.calculator { 
+    background-image:  url(../../assets/Image_Koi_Consulting.jpg);
+    display:  flex;
+    justify-content: center;
+    height: 100%;
+}
+.cal-children { 
+    
+    width: 800px;   
+    height: 50vh;
+}
+
+.label-item {        
+
+}
+.ant-form-item-label {
+     
+}
+/* .css-dev-only-do-not-override-14qglws { 
+     font-size: 20px;
+} */

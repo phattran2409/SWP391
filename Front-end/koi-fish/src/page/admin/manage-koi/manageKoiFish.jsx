@@ -16,11 +16,13 @@ import { toast } from "react-toastify";
 import { PlusOutlined } from "@ant-design/icons";
 import uploadFile from "../../../utils/file";
 import { castArray, debounce } from "lodash";
+import moment from "moment";
 
 function ManageKoiFish() {
   const [datas, setDatas] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [form] = Form.useForm();
+  const [formSearch ] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
@@ -33,6 +35,7 @@ function ManageKoiFish() {
   });
 
   const [selectedColor , setSelectColor]  = useState([]);
+  const [searchOption, setSearchOption] = useState("Shape");
 
 
   //Get
@@ -43,7 +46,7 @@ function ManageKoiFish() {
     try {
       // truyen tham số page và limit
       const response = await api.get(
-        `http://localhost:8081/v1/fish?page=${page}&limit=${limit}`
+        `v1/fish?page=${page}&limit=${limit}`
       );
 
       // Cập nhật dữ liệu vào state
@@ -317,7 +320,9 @@ function ManageKoiFish() {
 
   return (
     <div>
-      <div className="group-search flex">
+      <div className="group-search flex"> 
+       
+  
         {/* searh  koi Name*/}
         <div className="search-name">
           <label className="mr-4"> Search Name :</label>
@@ -328,6 +333,7 @@ function ManageKoiFish() {
             onChange={handleSearch}
           />
         </div>
+         
         {/* search koi colors */}
         <div className="search-colors w-64 ml-4">
           <Form>
