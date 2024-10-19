@@ -7,11 +7,12 @@ const middlewareController = require("../controller/middlewareController");
 
 router.get('/getAllPond', middlewareController.verifyTokenAdminAuth , pondController.getAllPond);
 
-//Get pond by element
-router.get('/getByElement', middlewareController.verifyTokenAdminAuth, pondController.getByElement);
+//Get pond by element 
+// v1/pond/getByElement/1
+router.get('/getByElement/:id', pondController.getByElement);
 
 //Get pond by id
-router.get('/getById/:id', middlewareController.verifyTokenAdminAuth, pondController.getById);
+router.get("/getById/:id", pondController.getById);
 
 //Create new pond
 router.post('/createPond', middlewareController.verifyTokenAdminAuth ,pondController.createPond);
