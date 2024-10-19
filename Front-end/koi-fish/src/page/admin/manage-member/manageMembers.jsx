@@ -11,12 +11,16 @@ import {
   Image,
   Pagination,
   DatePicker,
+  Badge,
+  Tag,
+  Avatar
 } from "antd";
 import { toast } from "react-toastify";
 import api from "../../../config/axios";
 import { PlusOutlined } from "@ant-design/icons";
 import uploadFile from "../../../utils/file";
 import { castArray, debounce } from "lodash";
+import moment from "moment";
 
 function ManageMembers() {
   const [datas, setDatas] = useState([]);
@@ -32,8 +36,7 @@ function ManageMembers() {
     pageSize: 10, //(limit mặc định)
     total: 0, // ban đầu là 0
   });
-  const [beTrang , setBeTrang] = useState(false)
-  const [showBetrang , setShowBeTrang] = useState(false)
+  
   //get data
   const fetchData = async (
     page = pagination.current,
@@ -44,8 +47,10 @@ function ManageMembers() {
       // đổi gender từ 0, 1 thành "Nam", "Nữ"
       const modifiedData = response.data.data.map((member) => ({
         ...member,
-        gender: member.gender === 0 ? "Male" : "Female",
+        birthDate:  moment(member.birthDate)
       }));
+      console.log("fecth API ---> "+modifiedData);
+
       setDatas(modifiedData);
       setPagination({
         current: response.data.result.currentPage, // cập nhật trang hiện tại
@@ -53,22 +58,24 @@ function ManageMembers() {
         pageSize: limit, // số cá trên mỗi trang
       });
     } catch (err) {
-      toast.error(err.response.data.data);
+      toast.error(err);
     }
   };
 
   //submit form
   const handleSubmit = async (values) => {
-    console.log(values);
-
+    console.log("handle Submit : "+ values.phoneNumber);
+    const formatBirthDate = values.birthDate.format();
+    console.log(formatBirthDate);
+    
     if (fileList.length > 0) {
       const file = fileList[0];
       console.log(file);
-
       const url = await uploadFile(file.originFileObj);
       values.avatar = url;
     }
-
+    values.birthDate  = formatBirthDate;
+   
     try {
       setLoading(true);
 
@@ -83,7 +90,9 @@ function ManageMembers() {
       form.resetFields();
       setShowModal(false);
     } catch (err) {
-      toast.err(err.response.data.data);
+      if(err.status == 500) { 
+        toast.error("Error update User")
+      }
     } finally {
       setLoading(false);
     }
@@ -99,6 +108,8 @@ function ManageMembers() {
     });
 
   const handlePreview = async (file) => {
+    console.log("Preview file  "+file);
+    
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
     }
@@ -242,6 +253,9 @@ function ManageMembers() {
       key: "gender",
       sorter: (a, b) => a.gender - b.gender,
       sortDirections: ["descend", "ascend"],
+      render: (number) => {
+        return <>{number == 0 ? <>Male</> : <>Female</>}</>;
+      },
     },
     {
       title: "Birth Date",
@@ -250,12 +264,13 @@ function ManageMembers() {
       render: (text) => {
         if (!text) return ""; // Nếu không có giá trị, trả về chuỗi rỗng
         const date = new Date(text); // Tạo đối tượng Date từ chuỗi ngày
+
         const day = String(date.getDate()).padStart(2, "0"); // Lấy ngày và đảm bảo có 2 chữ số
         const month = String(date.getMonth() + 1).padStart(2, "0"); // Lấy tháng và đảm bảo có 2 chữ số
         const year = date.getFullYear(); // Lấy năm
+
         return `${day}/${month}/${year}`; // Trả về định dạng dd/mm/yyyy
       },
-    
     },
     {
       title: "Image",
@@ -264,37 +279,66 @@ function ManageMembers() {
       render: (avatar) => (
         <>
           {avatar ? (
-            <img src={avatar} alt="Avatar" style={{ width: 100 }} />
+            <Image src={avatar} alt="Avatar" style={{ width: 100 }} />
           ) : (
-            <img src="https://placehold.co/100x100/png" />
+            <Image src="https://placehold.co/100x100/png" />
           )}
         </>
       ),
     },
+    {
+      title: "status",
+      dataIndex: "memberStatus",
+      key: `memberStatus`,
+      render: (isMember ,record) => {
+        return (
+          <>
+          <div className="flex">
+            {isMember ? (
+              <Tag color="green" text="member">
+                Member
+              </Tag>
+            ) : (
+              <Tag color="cyan" text="user">
+                User
+              </Tag>
+            )}
+            { (record.admin) && ( 
+              <Tag color="red"> Admin</Tag>
+            )}
+          </div>
+          </>
+        );
+      },
+    },
+
     {
       title: "Action",
       dataIndex: "_id",
       key: "_id",
       render: (_id, member) => (
         <>
-          <Button
-            type="primary"
-            onClick={() => {
-              setShowModal(!showModal)
-              form.setFieldsValue(member);
-            }}
-          >
-            Edit
-          </Button>
-          <Popconfirm
-            title="Delete"
-            description="Do you want to delete this category?"
-            onConfirm={() => handleDelete(_id)}
-          >
-            <Button type="primary" danger>
-              Delete
+          <div className="flex gap-1">
+            <Button
+              type="primary"
+              onClick={() => {
+                setShowModal(!showModal);
+                form.setFieldsValue({...member  , avatar : member.avatar});
+                
+              }}
+            >
+              Edit
             </Button>
-          </Popconfirm>
+            <Popconfirm
+              title="Delete"
+              description="Do you want to delete this category?"
+              onConfirm={() => handleDelete(_id)}
+            >
+              <Button type="primary" danger>
+                Delete
+              </Button>
+            </Popconfirm>
+          </div>
         </>
       ),
     },
@@ -314,6 +358,7 @@ function ManageMembers() {
           />
         </div>
       </div>
+
       <Button
         onClick={() => {
           form.resetFields(); // Clear form fields when adding a new member
@@ -322,7 +367,15 @@ function ManageMembers() {
       >
         Add
       </Button>
-      <Table dataSource={datas} columns={columns} pagination={false} />
+
+      {/* Show Data Table */}
+      <Table
+        dataSource={datas}
+        columns={columns}
+        pagination={false}
+        className="w-full overflow-x-auto"
+      />
+
       <div className="flex justify-end mt-4">
         <Pagination
           current={pagination.current}
@@ -457,8 +510,9 @@ function ManageMembers() {
               { required: true, message: "Please select your birth year!" },
             ]}
           >
-            <DatePicker format="DD-MM-YYYY" />
+            <DatePicker format={"DD/MM/YYYY"} />
           </Form.Item>
+
           <Form.Item>
             <Upload
               action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
@@ -470,6 +524,8 @@ function ManageMembers() {
               {fileList.length >= 8 ? null : uploadButton}
             </Upload>
           </Form.Item>
+
+        
         </Form>
       </Modal>
 
