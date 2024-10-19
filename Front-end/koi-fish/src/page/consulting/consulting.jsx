@@ -109,7 +109,7 @@ var settings = {
       const res = await api.get(`v1/fish/getKoiElement/${value.elementID}`);
       const resPond = await api.get(`v1/pond/getByElement/${value.elementID}`);
       console.log(res.data);
-      setKoi(res.data);
+      setKoi(res.data.data);
       setPond(resPond.data.data)
     } catch (err) {
       toast.error(err.errorCode);

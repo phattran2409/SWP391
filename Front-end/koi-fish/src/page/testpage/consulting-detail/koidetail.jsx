@@ -105,10 +105,10 @@ const koiDetails = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-gray-100">
       <div className="flex justify-between items-center mb-8">
-        <button className="text-blue-600 flex items-center hover:text-blue-700 transition-colors">
+        <a href="/consulting" className="text-blue-600 flex items-center hover:text-blue-700 transition-colors">
           <MdArrowBack className="mr-2" />
           Back
-        </button>
+        </a>
       </div>
 
       <div className="bg-white p-8 rounded-lg shadow-lg">
