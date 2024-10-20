@@ -33,6 +33,12 @@ router.put(
   middlewareController.verifyTokenAdminAuth,
   useController.updateUser
 );
+//update user for user
+router.put(
+  "/updateProfile/id=:id",
+  middlewareController.verifyToken,
+  useController.updateUserForUser
+);
 // SUBCRIBE  Membership
 // /v1/user/subcribe
 router.post(

@@ -133,6 +133,29 @@ const useController = {
       console.log(err);
     }
   },
+  updateUserForUser: async (req, res) => {
+    try {
+        const idUser = req.params.id
+        const updateData = req.body
+     
+        
+         const updateUsr = await User.findByIdAndUpdate(idUser , updateData ,  {
+          new : true , 
+          runValidators : true,
+        })
+        
+        if (!updateUsr) {
+          return res.status(404).json({ error: "User Not found" });
+        }
+        // neu muon update sai save()
+        // await updateUsr.save();
+        res.status(202).json(updateUsr)
+
+    } catch (err) {
+      res.status(500).json(err)
+    }
+  },
+
   getUserById: async (req, res) => {
     try {
       const user = await User.findById(req.params.id);
