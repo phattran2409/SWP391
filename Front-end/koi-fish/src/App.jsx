@@ -5,9 +5,10 @@ import LoginPage from "./page/login/login";
 import RegisterPage from "./page/register/register";
 import RecoverPage from "./page/forget/forget";
 import ResetPasswordPage from "./page/forget/reset";
-import NewsPage from "./page/new/news";
-import BlogPage from "./page/new/blog";
-import DetailsPage from "./page/new/details";
+import NewsPage from "./page/new/news/news";
+import BlogPage from "./page/new/blogs/blog";
+import DetailsPage from "./page/new/details/details";
+import Search from "./page/new/search";
 // import Search from "./page/new/search";
 
 function App() {
@@ -41,13 +42,13 @@ function App() {
       element: <BlogPage />,
     },
     {
-      path: "/details",
+      path: "/details/:id",
       element: <DetailsPage />,
     },
-    // {
-    //   path: "/search",
-    //   element: <Search />,
-    // }
+    {
+      path: "/search",
+      element: <Search />,
+    }
 
   ]);
 
