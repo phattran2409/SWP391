@@ -6,17 +6,17 @@ const HeroSection = () => {
     const slides = [
         {
             image: "https://res.cloudinary.com/ddqgjy50x/image/upload/v1727929262/pexels-quang-nguyen-vinh-222549-2131828_mefvov.jpg",
-            title: "Feng Shui Koi Shop",
+            title: "Feng Shui Koi Consultant",
             description: "Best Koi"
         },
         {
             image: "https://res.cloudinary.com/ddqgjy50x/image/upload/v1727929081/koi_fish_fish_water_174744_1920x1080_qm843r.jpg",
-            title: "Feng Shui Koi Shop",
+            title: "Feng Shui Koi Consultant",
             description: "Experience serenity"
         },
         {
             image: "https://res.cloudinary.com/ddqgjy50x/image/upload/v1726740825/two-koi-fish-in-pond_ae9hor.jpg",
-            title: "Feng Shui Koi Shop",
+            title: "Feng Shui Koi Consultant",
             description: "Dive into rich culture"
         }
     ];

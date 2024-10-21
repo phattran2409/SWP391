@@ -14,7 +14,8 @@ import ManageAds from "./page/admin/manage-post/manage-ads/manageAds";
 
 import Home from "./page/Home/Home";
 import ContactUs from "./page/contactus/contactus";
-
+import ShowFish from "./page/showdetails/showfish";
+import ShowPond from "./page/showdetails/ShowPond";
 function App() {
   const router = createBrowserRouter([
     {
@@ -28,6 +29,14 @@ function App() {
     {
       path: "/login",
       element: <LoginPage />,
+    },
+    {
+      path: "/showfish",
+      element: <ShowFish />,
+    },
+    {
+      path: "/showpond",
+      element: <ShowPond />,
     },
     {
       path: "/register",

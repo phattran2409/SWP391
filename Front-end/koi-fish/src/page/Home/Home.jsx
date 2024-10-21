@@ -3,10 +3,10 @@ import Fullpage from '@fullpage/react-fullpage';
 import Navbar from '../../components/navbar/Navbar';
 import HeroSection from '../Home/home/HeroSection';
 import News from '../Home/home/News';
-import Posts from '../Home/home/Posts';
 import Footer from '../../components/footer/Footer';
 import KoiFish from '../Home/home/KoiFish';
 import KoiPond from '../Home/home/KoiPond';
+import AnimationReveal from '../../components/animation/AnimationReveal'; // Assuming you have the AnimationReveal component
 
 const Home = () => {
   const [isMobile, setIsMobile] = useState(false);
@@ -35,10 +35,11 @@ const Home = () => {
             <HeroSection />
           </div>
           <div className="section">
-            <News />
-            <KoiFish />
-            <KoiPond />
-            {/* <Posts /> */}
+            <AnimationReveal>
+              <News />
+              <KoiFish />
+              <KoiPond />
+            </AnimationReveal>
             <Footer />
           </div>
         </div>
@@ -58,13 +59,14 @@ const Home = () => {
                   <div className="section">
                     <div className="mx-auto text-center w-full max-w-[80%]">
                       <div className="h-10" />
-                      <News />
+                      <AnimationReveal>
+                        <News />
+                        <div className="h-10" />
+                        <KoiFish />
+                        <div className="h-10" />
+                        <KoiPond />
+                      </AnimationReveal>
                       <div className="h-10" />
-                      <KoiFish />
-                      <div className="h-10" />
-                      <KoiPond />
-                      <div className="h-10" />
-                      {/* <Posts /> */}
                     </div>
                     <Footer />
                   </div>
