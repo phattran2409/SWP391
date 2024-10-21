@@ -26,7 +26,8 @@ const ShowFish = () => {
 
     if (!fishs.length) {
         return (
-            <div><Navbar />
+            <div>
+                <Navbar />
                 <div className="flex flex-col items-center justify-center h-full w-full bg-white rounded-xl p-6 max-w-[80%] mx-auto fade-in">
                     <Loading />
                 </div>
@@ -52,30 +53,32 @@ const ShowFish = () => {
         <div>
             <Navbar />
             <AnimationReveal>
-                <div className="flex flex-col items-center justify-center h-full w-full bg-white rounded-xl p-6 max-w-[80%] mx-auto">
+                <div className="flex flex-col items-center justify-center h-full w-full bg-white rounded-xl p-6 lg:max-w-[80%] max-w-screen mx-auto">
                     <h2 className="text-4xl font-bold mb-10 text-black text-center">
                         Koi Fish
                     </h2>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-y-20 gap-x-10">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-y-20 gap-x-10">
                         {fishs.slice(0, visibleCount).map((item, index) => (
                             <div
                                 key={item.id || index}
                                 className="flex flex-col group relative shadow bg-white text-black rounded-xl overflow-hidden h-[800px] w-full sm:w-[80%] mx-auto fade-in border-2 border-gray-300"
                             >
-                                <div
-                                    className="h-[70%] w-full bg-white bg-center bg-no-repeat"
-                                    style={{
-                                        backgroundImage: `url(${item.image})`,
-                                        backgroundSize: 'contain', 
-                                        backgroundPosition: 'center',
-                                        backgroundColor: 'white',
-                                    }}
-                                />
+                                <div className="h-[60%] w-full bg-white bg-center bg-no-repeat flex items-center justify-center">
+                                    <div
+                                        className="h-full w-full bg-center bg-no-repeat"
+                                        style={{
+                                            backgroundImage: `url(${item.image})`,
+                                            backgroundSize: 'contain',
+                                            backgroundPosition: 'center',
+                                            backgroundColor: 'white',
+                                        }}
+                                    />
+                                </div>
 
-                                <div className="h-auto bg-white p-4 flex flex-col justify-between">
+                                <div className="h-[40%] bg-white p-4 flex flex-col justify-between overflow-y-auto">
                                     <h1 className="text-xl font-semibold">{item.koiName}</h1>
-                                    <p className="text-black text-justify">
+                                    <p className="text-black text-justify overflow-y-auto max-h-[80%]">
                                         {item.description}
                                     </p>
                                     <div className="flex items-center mt-2">
