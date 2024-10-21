@@ -570,6 +570,8 @@ const useController = {
       return res.status(500).json(err);
     }
   },
+
+  
   calculateElement : async (req , res) => { 
       const year = req.query.y; 
       console.log( typeof parseInt(year));

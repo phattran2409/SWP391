@@ -89,6 +89,7 @@ const postController = {
       return res.status(500).json(error);
     }
   },
+  
 
   getApprovedPost: async (req, res) => {
     try {
@@ -101,6 +102,7 @@ const postController = {
         .find({ categoryID: req.params.id, postStatus: "true" })
         .populate("author")
         .skip(skip)
+        .sort({ updatedAt: -1 })
         .limit(limit);
       const totalDocuments = await posts.countDocuments({ categoryID: req.params.id, postStatus: "true" });
       res.status(200).json({
