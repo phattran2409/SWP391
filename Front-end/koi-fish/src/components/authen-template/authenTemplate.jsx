@@ -7,7 +7,7 @@ function AuthenTemplate({ children }) {
   return (
     <div className="container-image">
       {/* Phần hình ảnh */}
-      <div className="image-section">
+      <div className="image-section hidden md:block">
         <img
           src="https://res.cloudinary.com/ddqgjy50x/image/upload/v1726740183/live-koi-fish-4000-x-6000-w598f7g3aiuemo2i_wsbfn5.jpg"
           alt="Placeholder Image"

@@ -2,15 +2,16 @@ const { json } = require("express");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const refreshTokens = require("../models/refreshToken");
 
-let refreshTokensArr = [];
+//npm install nodemailer
+const nodemailer = require("nodemailer");
+
 const authController = {
   accessToken: (user) => {
     return jwt.sign(
       { id: user.id, admin: user.admin },
       process.env.JWT_ACCESS_KEY,
-      { expiresIn: "30s" }
+      { expiresIn: "1d" }
     );
   },
   refreshToken: (user) => {
@@ -25,22 +26,23 @@ const authController = {
       }
     );
   },
+
   registerUser: async (req, res) => {
     try {
       const salt = await bcrypt.genSalt(10);
       const hashed = await bcrypt.hash(req.body.password, salt);
 
-      const gender = Number.parseInt(req.body.birthDate);
+      const gender = Number.parseInt(req.body.gender);
       // create  a new user
       const newUser = await new User({
-        UserName: req.body.UserName,
+        userName: req.body.userName,
         email: req.body.email,
         password: hashed,
         avatar: "",
         birthDate: req.body.birthDate,
         gender: gender,
-        phoneNumber: req.body.phonenumber,
-        Name: req.body.fullName,
+        phoneNumber: req.body.phoneNumber,
+        name: req.body.fullName,
       });
 
       // save to database
@@ -50,34 +52,25 @@ const authController = {
       res.status(500).json(error);
     }
   },
+
   loginUser: async (req, res) => {
     try {
-      const user = await User.findOne({ UserName: req.body.name });
+      const user = await User.findOne({ userName: req.body.userName });
       if (!user) {
-        res.status(401).json("Wrong UserName");
+        return res.status(401).json("Wrong UserName");
       }
       const ValidPassword = await bcrypt.compare(
         req.body.password,
         user.password
       );
       if (!ValidPassword) {
-        res.status(401).json("wrong password");
+        return res.status(401).json("wrong password");
       }
 
       if (user && ValidPassword) {
         // create JWT
         const accessToken = authController.accessToken(user);
         const refreshToken = authController.refreshToken(user);
-
-        //add refreshToken in array
-        refreshTokensArr.push(refreshToken);
-        const newRefreshToken = await new refreshTokens({
-          token: refreshToken,
-        });
-        console.log(newRefreshToken);
-        console.log(refreshTokensArr);
-
-        await newRefreshToken.save();
 
         res.cookie("refreshToken", refreshToken, {
           httpOnly: true,
@@ -95,6 +88,7 @@ const authController = {
       res.status(500).json(error);
     }
   },
+
   reqRefreshToken: async (req, res) => {
     // lay cookies tu req
     const refreshToken = req.cookies.refreshToken;
@@ -102,13 +96,10 @@ const authController = {
     //
     if (!refreshToken) return res.status(404).json("you're not authenticated");
     // if (!refreshTokensArr.includes(refreshToken)) return res.sendStatus(403);
-    const refreshTokenDB = await refreshTokens.find({ token: refreshToken });
-
-    // check refreshTokenDb
-    if (!refreshTokenDB) return res.status(404).json("not found refresh token");
 
     //  verify refreshToken
     jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY, async (err, user) => {
+      if (err) return res.status(403).json("Invalid refresh token");
       const newAccessToken = authController.accessToken(user);
       const newRefreshToken = authController.refreshToken(user);
 
@@ -118,8 +109,8 @@ const authController = {
       // xoa di token cu va add newRefreshToken
       // refreshTokensArr = refreshTokensArr.filter((token) => refreshToken !== token )
 
-     const  result = await refreshTokens.deleteOne({ token: refreshToken }); 
-     
+      const result = await refreshTokens.deleteOne({ token: refreshToken });
+
       if (result.deletedCount === 1) {
         console.log("Token deleted successfully");
       } else {
@@ -144,8 +135,226 @@ const authController = {
       res.status(200).json({ accessToken: newAccessToken });
     });
   },
-  logout: async (req, res) => {},
-  
+
+  //Logout
+  logout: async (req, res) => {
+    const token = req.headers.token;
+    if (!token) {
+      return res.status(400).json({ message: "No token provideds" });
+    }
+  },
+
+  sendResetPasswordEmail: async (req, res) => {
+    try {
+      const user = await User.findOne({ email: req.body.email });
+      if (!user) {
+        return res.status(404).json("User not found");
+      }
+
+      // Tạo JWT Token cho việc reset password
+      const resetToken = jwt.sign(
+        { id: user.id, email: user.email },
+        process.env.JWT_RESET_PASSWORD_KEY,
+        { expiresIn: "15m" } // Token sống trong 15 phút
+      );
+
+      // Cấu hình Nodemailer để gửi email
+      const transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          user: process.env.EMAIL_USER, // Email của bạn
+          pass: process.env.EMAIL_PASS, // Mật khẩu của bạn
+        },
+      });
+
+      // Gửi email reset password
+      const mailOptions = {
+        to: user.email,
+        subject: "Reset Password",
+        html:
+          `<p>You requested a password reset. Click the link below to reset your password:</p>` +
+          `<p><a href="http://localhost:${process.env.PORT}/v1/auth/reset-password/${resetToken}">Click Here To Reset Your Password</a></p>` +
+          `<p>This link will expire in 15 minutes. If you didn't request a reset, please ignore this email.</p>`,
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          return res.status(500).json(error);
+        }
+        res.status(200).json("Reset password email sent");
+      });
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  },
+
+  // Phương thức reset password
+  resetPassword: async (req, res) => {
+    try {
+      // Lấy token từ params hoặc từ request body
+      const resetToken = req.params.token || req.body.token;
+
+      // Xác thực token
+      jwt.verify(
+        resetToken,
+        process.env.JWT_RESET_PASSWORD_KEY,
+        async (err, decoded) => {
+          if (err) {
+            return res.status(400).json("Invalid or expired token");
+          }
+
+          // Nếu token hợp lệ, tiến hành cập nhật mật khẩu
+          const user = await User.findOne({ _id: decoded.id });
+          if (!user) {
+            return res.status(404).json("User not found");
+          }
+
+          // Mã hóa mật khẩu mới
+          const salt = await bcrypt.genSalt(10);
+          user.password = await bcrypt.hash(req.body.password, salt);
+
+          // Lưu mật khẩu mới
+          await user.save();
+          res.status(200).json("Password has been reset successfully");
+        }
+      );
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  },
+
+
+
+
+  sendChangeEmail: async (req, res) => {
+    try {
+      const email = req.body.email;
+      const userId = req.user.id;
+
+      const user = await User.findById(userId);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      if (user.email !== email) {
+        return res.status(400).json({ message: "Your email is incorrect" });
+      }
+
+      // Tạo JWT Token
+      const changeEmailToken = jwt.sign(
+        { id: userId },
+        process.env.JWT_CHANGE_EMAIL_KEY,
+        { expiresIn: "15m" }
+      );
+
+      // Cấu hình Nodemailer
+      const transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+
+      // Gửi email xác nhận
+      const mailOptions = {
+        to: email,
+        subject: "Email Change Confirmation",
+        html: `
+          <p>You have requested to change your email address. Click the link below to confirm:</p>
+          <p><a href="http://localhost:${process.env.PORT}/v1/auth/send-change-email/${changeEmailToken}">Email Change Confirmation</a></p>
+          <p>This link will expire after 15 minutes. If you do not request a change, please ignore this email.</p>
+        `,
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          return res.status(500).json(error);
+        }
+        res.status(200).json("Email change confirmation sent");
+      });
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  },
+
+  confirmChangeEmail: async (req, res) => {
+    try {
+      const changeEmailToken = req.params.token || req.body.token;
+
+      if (!changeEmailToken) {
+        return res.status(400).json("Token not provided");
+      }
+
+      // Xác thực token
+      jwt.verify(
+        changeEmailToken,
+        process.env.JWT_CHANGE_EMAIL_KEY,
+        async (err, decoded) => {
+          if (err) {
+            console.error("Token verification error:", err);
+            return res.status(400).json("Invalid or expired token");
+          }
+
+          const  id  = decoded.id;
+          const  newEmail  = req.body.newEmail;
+
+          // Kiểm tra lại xem email mới có bị sử dụng chưa
+          const existingEmail = await User.findOne({ email: newEmail });
+          if (existingEmail) {
+            return res.status(400).json("This email has already been used");
+          }
+
+          // Tìm người dùng theo ID
+          const user = await User.findById(id);
+          if (!user) {
+            return res.status(404).json("User not found");
+          }
+
+          const oldEmail = user.email; // Lưu email cũ để thông báo sau
+
+          // Cập nhật email mới
+          user.email = newEmail;
+          await user.save();
+
+          // Cấu hình Nodemailer cho email thông báo đến email cũ
+          const transporter = nodemailer.createTransport({
+            service: "Gmail",
+            auth: {
+              user: process.env.EMAIL_USER,
+              pass: process.env.EMAIL_PASS,
+            },
+          });
+
+          // Tạo nội dung email thông báo
+          const mailOptionsOldEmail = {
+            to: oldEmail,
+            subject: "Email Change Notification",
+            html: `
+              <p>Your user email address have been changed from <strong>${oldEmail}</strong> to <strong>${newEmail}</strong>.</p>
+              <p>If you do not make this change, please contact support immediately.</p>
+            `,
+          };
+
+          // Gửi email thông báo đến email cũ
+          transporter.sendMail(mailOptionsOldEmail, (error, info) => {
+            if (error) {
+              console.error(
+                "Error sending notification email to old email:",
+                error
+              );
+              // Không trả lỗi cho người dùng vì thay đổi email đã thành công
+            }
+          });
+
+          res.status(200).json("Email has been changed successfully");
+        }
+      );
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  },
 };
 
 module.exports = authController;

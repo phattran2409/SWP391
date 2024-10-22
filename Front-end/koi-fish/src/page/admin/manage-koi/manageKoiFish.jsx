@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import api from "../../../config/axios";
 import {
   Button,
@@ -15,21 +15,28 @@ import {
 import { toast } from "react-toastify";
 import { PlusOutlined } from "@ant-design/icons";
 import uploadFile from "../../../utils/file";
+import { castArray, debounce } from "lodash";
+import moment from "moment";
 
 function ManageKoiFish() {
   const [datas, setDatas] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [form] = Form.useForm();
+  const [formSearch ] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState([]);
-
+  const [searchValue, setSearchValue] = useState("");
   const [pagination, setPagination] = useState({
     current: 1, // Trang hiện tại
     pageSize: 10, //(limit mặc định)
     total: 0, // ban đầu là 0
   });
+
+  const [selectedColor , setSelectColor]  = useState([]);
+  const [searchOption, setSearchOption] = useState("Shape");
+
 
   //Get
   const fetchData = async (
@@ -38,21 +45,25 @@ function ManageKoiFish() {
   ) => {
     try {
       // truyen tham số page và limit
-      const response = await api.get(`v1/fish?page=${page}&limit=${limit}`);
+      const response = await api.get(
+        `v1/fish?page=${page}&limit=${limit}`
+      );
 
       // Cập nhật dữ liệu vào state
-      setDatas(response.data.result.data);
+      setDatas(response.data.data);
 
       // Cập nhật thông tin phân trang
       setPagination({
-        current: response.data.result.currentPage, // cập nhật trang hiện tại
-        total: response.data.result.totalDocuments, // tổng số cá
+        current: response.data.currentPage, // cập nhật trang hiện tại
+        total: response.data.totalDocuments, // tổng số cá
         pageSize: limit, // số cá trên mỗi trang
       });
     } catch (err) {
       toast.error(err.response.data.result.data);
     }
   };
+  // log data
+  console.log("Datas" + datas);
 
   const handleSubmit = async (values) => {
     console.log(values);
@@ -107,6 +118,7 @@ function ManageKoiFish() {
     setPreviewImage(file.url || file.preview);
     setPreviewOpen(true);
   };
+
   const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
   const uploadButton = (
     <button
@@ -137,14 +149,92 @@ function ManageKoiFish() {
     }
   };
 
+
+  // ->>  handle search 
+  const handleSearch = async (e) => {
+    try {
+     const {value} = e.target;
+
+      setSearchValue(e.target.value);
+      debouncedSearch(value);
+    } catch (err) {
+      toast.error(err);
+    }
+  };
+
+
+  // search với độ trễ tránh xử lý nhiều lần
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      console.log(value);
+      callApiSearch(value);
+    }, 500),
+    []
+  ); // 500ms delay
+
+  // call api cho viec search ca koi
+  const callApiSearch = async (value) => {
+    try {
+      // kiem tra xem value nhap vao co la empty
+      if (value === "") {
+        fetchData(pagination.current, pagination.pageSize);
+      }
+      const res = await api.get(
+        `v1/fish/search?searchName=${value}&page=${pagination.current}&limit=${pagination.pageSize}`
+      );
+
+      console.log("api search" + res.data.data);
+      setDatas(res.data.data);
+      setPagination({
+        current: res.data.currentPage, // cập nhật trang hiện tại
+        total: res.data.totalDocuments, // tổng số cá
+        pageSize: 10,
+      });
+    } catch (err) {
+      console.log(err);
+      if (err.status === 404) {
+        toast.error("Error 404: Resource not found");
+      }
+      toast.error(err.res.data);
+    }
+  };
+  // call api search color
+  const handleSearchColor = async (value) => {
+    console.log("func search color : " + typeof value);
+    setSelectColor(value);
+    try {
+      const queryString = selectedColor.join(",");
+      if (selectedColor.length < 0) {
+        fetchData(pagination.current, pagination.pageSize);
+      }
+      const res = await api.get(
+        `v1/fish/search?searchColor=${queryString}&page=${pagination.current}&limit=${pagination.pageSize}`
+      );
+      console.log("respone API " + res.data.data);
+
+      setDatas(res.data.data);
+      setPagination({
+        current: res.data.currentPage, // cập nhật trang hiện tại
+        total: res.data.totalDocuments, // tổng số cá
+        pageSize: 10,
+      });
+    } catch (err) {
+      if (err.status === 404) {
+        toast.error("Error 404: Resource not found");
+      }
+      toast.error(err.res);
+    }
+  };
+
+
   useEffect(() => {
     fetchData(pagination.current, pagination.pageSize);
   }, [pagination.current, pagination.pageSize]);
 
   const elementMap = {
     1: "Metal",
-    2: "Water",
-    3: "Wood",
+    2: "Wood",
+    3: "Water",
     4: "Fire",
     5: "Earth",
   };
@@ -159,6 +249,8 @@ function ManageKoiFish() {
       title: "Koi Name",
       dataIndex: "koiName",
       key: "koiName",
+      sorter: (a, b) => a.koiName.localeCompare(b.koiName),
+      sortDirections: ["descend", "ascend"],
     },
     {
       title: "Description",
@@ -192,6 +284,8 @@ function ManageKoiFish() {
       dataIndex: "elementID",
       key: "elementID",
       render: (elementID) => elementMap[elementID] || "Unknown",
+      sorter: (a, b) => a.elementID - b.elementID,
+      sortDirections: ["descend", "ascend"],
     },
     {
       title: "Action",
@@ -221,12 +315,59 @@ function ManageKoiFish() {
       ),
     },
   ];
+
+  console.log(pagination);
+
   return (
     <div>
-      <Input
-        placeholder="Search Koi Fish by name"
-        style={{ width: 300, marginBottom: 20 }}
-      />
+      <div className="group-search flex"> 
+       
+  
+        {/* searh  koi Name*/}
+        <div className="search-name">
+          <label className="mr-4"> Search Name :</label>
+          <Input
+            value={searchValue}
+            placeholder="Search Koi Fish by name"
+            style={{ width: 300, marginBottom: 20 }}
+            onChange={handleSearch}
+          />
+        </div>
+         
+        {/* search koi colors */}
+        <div className="search-colors w-64 ml-4">
+          <Form>
+            <Form.Item
+              name="colors"
+              label="Colors"
+              rules={[
+                {
+                  required: true,
+                  message: "Please select the colors of the Koi fish!",
+                },
+              ]}
+            >
+              <Select
+                mode="multiple"
+                placeholder="Select the colors of the Koi fish"
+                allowClear
+                onChange={handleSearchColor}
+              >
+                <Select.Option value="Red">Red</Select.Option>
+                <Select.Option value="White">White</Select.Option>
+                <Select.Option value="Black">Black</Select.Option>
+                <Select.Option value="Yellow">Yellow</Select.Option>
+                <Select.Option value="Blue">Blue</Select.Option>
+                <Select.Option value="Orange">Orange</Select.Option>
+                <Select.Option value="Green">Green</Select.Option>
+                <Select.Option value="Silver">Silver</Select.Option>
+                <Select.Option value="Gold">Gold</Select.Option>
+              </Select>
+            </Form.Item>
+          </Form>
+        </div>
+      </div>
+
       <Button
         onClick={() => {
           form.resetFields(); // Clear form fields when adding a new member
@@ -235,6 +376,7 @@ function ManageKoiFish() {
       >
         Add
       </Button>
+
       <Table dataSource={datas} columns={columns} pagination={false}></Table>
 
       <div className="flex justify-end mt-4">
@@ -259,8 +401,10 @@ function ManageKoiFish() {
         title="Create Koi"
         onOk={() => form.submit()}
         confirmLoading={loading}
+        
       >
-        <Form form={form} labelCol={{ span: 24 }} onFinish={handleSubmit}>
+        
+        <Form form={form} labelCol={{ span: 24 }} onFinish={handleSubmit} >
           <Form.Item name="_id" hidden>
             <Input />
           </Form.Item>
@@ -317,8 +461,8 @@ function ManageKoiFish() {
           >
             <Select placeholder="Select an element">
               <Select.Option value="1">Metal</Select.Option>
-              <Select.Option value="2">Water</Select.Option>
-              <Select.Option value="3">Wood</Select.Option>
+              <Select.Option value="2">Wood</Select.Option>
+              <Select.Option value="3">Water</Select.Option>
               <Select.Option value="4">Fire</Select.Option>
               <Select.Option value="5">Earth</Select.Option>
             </Select>
@@ -336,6 +480,7 @@ function ManageKoiFish() {
           </Form.Item>
         </Form>
       </Modal>
+
       {previewImage && (
         <Image
           wrapperStyle={{

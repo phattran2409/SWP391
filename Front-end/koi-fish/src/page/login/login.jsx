@@ -1,74 +1,100 @@
 // eslint-disable-next-line no-unused-vars
 import React from "react";
 import AuthenTemplate from "../../components/authen-template/authenTemplate";
-import { Form, Input, Button, Divider, Typography, message } from "antd";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { googleProvider } from "../../config/firebase";
+import { Form, Input, Button, Divider, Typography, } from "antd";
+
 import "./index.scss";
-import { useNavigate } from "react-router-dom";
+
+import {  useNavigate } from "react-router-dom";
 import api from "../../config/axios";
-import { toast } from "react-toastify";
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import CSS của Toastify
+
 
 function LoginPage() {
   const navigate = useNavigate();
 
-  //function handle when user click sign up with google
-  const handleLoginGoogle = () => {
-    const auth = getAuth();
-    signInWithPopup(auth, googleProvider)
-      .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = googleProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        console.log("TOKEN google " + token);
-        // The signed-in user info.
-        const user = result.user;
-        console.log("User info:", user);
-        // IdP data available using getAdditionalUserInfo(result)
-        // ...
-      })
-      .catch((error) => {
-        console.error("Login error:", error);
-        message.error("Login failed. Please try again.");
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.customData.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
-      });
-  };
 
-  const handleSignUp = () => {
+
+  const handleLinktoSignUp = () => {
     navigate("/register");
   };
+
 
   const handleLogin = async (values) => {
     try {
       const response = await api.post("/v1/auth/login", values);
-      console.log(response);
+      console.log(values);
+      console.log(response.data);
       const { admin, accessToken } = response.data;
 
       localStorage.setItem("token", accessToken);
+      localStorage.setItem("user" ,JSON.stringify(response.data))
       if (admin) {
         navigate("/dashboard");
       } else {
-        navigate("");
+        navigate("/");
       }
     } catch (err) {
-      toast.err(err.response.data);
+
+     
+     toast.error("Login Failed. Please check your username or password");
+     
     }
+   };
+
+  const handleLinktoForgetPass = () => {
+    navigate("/forget");
   };
 
+
+// Login google 
+    const handleLoginSuccess = (response) => {
+      const token = jwtDecode(response.credential);
+      console.log(token);
+      sendTokenToAPI(token);
+      // Bạn có thể gửi mã token để xác thực ở backend
+    };
+
+    const handleLoginError = () => {
+      console.log("Login Failed");
+      toast.error("Login Failed");
+      
+    };
+
+    const sendTokenToAPI = async (data) => {
+      console.log(import.meta.env.API_SIGNIN);
+
+      try {
+        const response = await api.post("http://localhost:8081/v1/Oauth/signin",{
+          data: data, // Gửi token trong body của request
+        });
+        const { accessToken } = response.data;  
+
+        console.log("API Response:", response.data); 
+       if (response.data) { 
+          localStorage.setItem("token", accessToken)
+          localStorage.setItem("user" , JSON.stringify(response.data))
+        
+          
+          navigate("/?status=login_gg_success" , {state : {message : JSON.stringify(response.data.message)}})
+       } 
+  
+      } catch (error) {
+        toast.error(error.response.data);
+
+      }
+    };
+
+
   return (
-    <AuthenTemplate className="auth-template">
-      <div className="form-section-child">
+    <AuthenTemplate className="auth-template ">
+      <div className="form-section-child ">
         <h1 className="font-medium text-3xl">Sign in</h1>
 
-        <Button className="google-button" onClick={handleLoginGoogle}>
+        {/* <Button className="google-button" onClick={handleLoginGoogle}>
           <svg width="24" height="24" viewBox="0 0 18 18">
             <path
               fill="#4285F4"
@@ -88,7 +114,15 @@ function LoginPage() {
             />
           </svg>
           <h2>Continue with Google</h2>
-        </Button>
+        </Button> */}
+        <GoogleOAuthProvider clientId={import.meta.env.VITE_ClIENT_ID}>
+          <div className="App">
+            <GoogleLogin
+              onSuccess={handleLoginSuccess}
+              onError={handleLoginError}
+            />
+          </div>
+        </GoogleOAuthProvider>
 
         <Divider>
           <span className="text-gray-400 font-normal">OR</span>
@@ -130,32 +164,37 @@ function LoginPage() {
           <div className="footer-links">
             <div className="account-info">
               <label>Do not have an account?</label>
-              <Typography.Link
-                onClick={handleSignUp}
-                style={{ color: "black", textDecoration: "underline" }}
-              >
-                Sign up
-              </Typography.Link>
+
+
+              <Typography.Link onClick={handleLinktoSignUp} style={{ color: 'black', textDecoration: 'underline' }}>
+                Sign up</Typography.Link>
             </div>
-            <Typography.Link
-              style={{ color: "black", textDecoration: "underline" }}
-            >
-              Forgot Password?
-            </Typography.Link>
+            <Typography.Link onClick={handleLinktoForgetPass} style={{ color: 'black', textDecoration: 'underline' }}>Forgot Password?</Typography.Link>
+
           </div>
 
           <Button
-            color="danger"
-            variant="solid"
-            className="custom-button"
-            type="primary"
-            htmlType="submit"
+           className="w-full h-[50px] mt-5 border rounded-[32px]"
+           htmlType="submit"
+           color="danger"
+           variant="solid"
+        
           >
             Sign in
           </Button>
         </Form>
       </div>
+      <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          closeOnClick
+          pauseOnHover
+          draggable
+          theme="light"
+        />
     </AuthenTemplate>
+    
   );
 }
 
