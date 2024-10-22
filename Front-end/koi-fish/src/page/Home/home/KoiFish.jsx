@@ -72,9 +72,9 @@ const KoiFish = () => {
       <div className="flex justify-between items-center w-full px-6 lg:px-10 mt-20 max-[1024px]:mt-10 mb-10">
         <h2 className="text-2xl font-bold text-black">
           Koi Fish
-          <hr className="w-full h-1 mx-auto my-4 bg-gray-100 border-0 rounded dark:bg-gray-700" />
+          <hr className="w-full h-1 mx-auto my-4 bg-gray-100 border-0 rounded dark:bg-gray-700"/>
         </h2>
-        <Link to="/showfish" className="ml-4 px-4 py-2 text-gray-600 border border-gray-200 rounded hover:bg-white hover:text-black transition duration-300">
+        <Link to="/showfish" className="ml-4 px-4 py-2 text-gray-600 border border-gray-300 rounded hover:bg-white hover:text-black transition duration-300">
           Show More
         </Link>
       </div>

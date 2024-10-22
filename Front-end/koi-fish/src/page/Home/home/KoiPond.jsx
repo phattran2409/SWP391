@@ -70,7 +70,7 @@ const KoiPond = () => {
           Koi Pond
           <hr className="w-full h-1 mx-auto my-4 bg-gray-100 border-0 rounded dark:bg-gray-700" />
         </h2>
-        <Link to="/showpond" className="ml-4 px-4 py-2 text-gray-600 border border-gray-200 rounded hover:bg-white hover:text-black transition duration-300">
+        <Link to="/showpond" className="ml-4 px-4 py-2 text-gray-600 border border-gray-300 rounded hover:bg-white hover:text-black transition duration-300">
           Show More
         </Link>
       </div>
