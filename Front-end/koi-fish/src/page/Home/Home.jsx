@@ -36,9 +36,13 @@ const Home = () => {
           </div>
           <div className="section">
             <AnimationReveal>
+            <div className="h-10" />
               <News />
+              <div className="h-10" />
               <KoiFish />
+              <div className="h-10" />
               <KoiPond />
+              <div className="h-10" />
             </AnimationReveal>
             <Footer />
           </div>
@@ -57,7 +61,7 @@ const Home = () => {
 
                   {/* Content Section */}
                   <div className="section">
-                    <div className="mx-auto text-center w-full max-w-[80%]">
+                    <div className="mx-auto text-center w-full max-w-[90%]">
                       <div className="h-10" />
                       <AnimationReveal>
                         <News />

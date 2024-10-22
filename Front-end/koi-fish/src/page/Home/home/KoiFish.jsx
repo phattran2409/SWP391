@@ -68,8 +68,8 @@ const KoiFish = () => {
   };
 
   return (
-    <div className="flex items-center justify-stretch flex-col h-[800px] w-full bg-gray-100 rounded-xl">
-      <div className="flex justify-between items-center w-full px-6 lg:px-10 mt-20 mb-10">
+    <div className="flex items-center justify-stretch flex-col h-[800px] max-[1024px]:h-[700px] max-[768px]:h-[650px] w-full bg-gray-100 rounded-xl">
+      <div className="flex justify-between items-center w-full px-6 lg:px-10 mt-20 max-[1024px]:mt-10 mb-10">
         <h2 className="text-2xl font-bold text-black">
           Koi Fish
           <hr className="w-full h-1 mx-auto my-4 bg-gray-100 border-0 rounded dark:bg-gray-700" />
@@ -118,10 +118,10 @@ const KoiFish = () => {
       >
         {fishs.map((item, index) => (
           <SwiperSlide key={item.id || index}>
-            <div className="flex flex-col group relative shadow bg-white text-white rounded-xl overflow-hidden cursor-pointer h-[450px] lg:h-[500px]">
+            <div className="flex flex-col group relative shadow bg-white text-white rounded-xl overflow-hidden cursor-pointer max-w-[95%] h-[450px] lg:h-[500px]">
               {/* Top section: Image */}
               <div
-                className="h-[70%] bg-white bg-center bg-no-repeat"
+                className="h-[60%] bg-white bg-center bg-no-repeat"
                 style={{
                   backgroundImage: `url(${item.image})`,
                   backgroundSize: 'contain',
@@ -134,11 +134,13 @@ const KoiFish = () => {
                 }}
               />
               {/* Bottom section: Text */}
-              <div className="h-[30%] bg-white mt-4 p-4 flex flex-col justify-center object-cover">
+              <div className="flex h-[40%] bg-white mt-2 p-4 flex-col justify-between object-cover">
                 <h1 className="text-xl lg:text-2xl text-black font-semibold">{item.koiName}</h1>
-                <p className="lg:text-[18px] text-black text-justify">
-                  {truncateText(item.description, 80)}
-                </p>
+                <div className="flex-grow grid grid-rows-1">
+                  <p className="lg:text-[18px] text-black text-justify max-[1024px]:text-sm h-20 overflow-hidden">
+                    {truncateText(item.description, 80)}
+                  </p>
+                </div>
                 {/* Color display */}
                 <div className="flex items-center mt-2">
                   <span className="font-semibold text-black">Color:</span>
@@ -151,6 +153,7 @@ const KoiFish = () => {
                   ))}
                 </div>
               </div>
+
             </div>
           </SwiperSlide>
         ))}
