@@ -45,25 +45,43 @@ const ShowPond = () => {
     }
 
     const handleShowMore = () => {
-        setVisibleCount(ponds.length); // Show all ponds
+        setVisibleCount(ponds.length);
     };
 
     return (
         <div>
             <Navbar />
             <AnimationReveal>
-                <div className="flex flex-col items-center justify-center h-full w-full bg-white rounded-xl p-6 lg:max-w-[80%] max-w-screen mx-auto">
-                    <h2 className="text-4xl font-bold mb-10 text-black text-center">
-                        Koi Ponds
+                {/* Part 1: What is a Koi Pond? */}
+                <section className="mb-10 h-full w-full bg-white rounded-xl p-6 lg:max-w-[80%] max-w-screen mx-auto bg-stone-200 p-6 rounded-xl shadow-md fade-in">
+                    <h2 className="text-3xl max-[425px]:text-xl max-[768px]:text-md font-bold text-center text-black mb-4">
+                        What is a Koi Pond?
                     </h2>
+                    <p className="text-lg max-[425px]:text-sm max-[768px]:text-base text-justify text-gray-700">
+                        A Koi pond is a beautifully designed outdoor water feature specifically built to house koi fish. These ponds are known for their aesthetic appeal, and koi fish—often featuring vibrant colors—are prized for their beauty and symbolism. Koi ponds are not only about decoration; they bring a sense of tranquility and elegance to any garden or outdoor space. Koi fish can live for many decades, sometimes exceeding a century, making them a long-term and meaningful addition to any home.
+                    </p>
+                </section>
 
+                {/* Part 2: Why Do We Need a Feng Shui Koi Pond? */}
+                <section className="mb-10 h-full w-full bg-white rounded-xl p-6 lg:max-w-[80%] max-w-screen mx-auto bg-stone-200 p-6 rounded-xl shadow-md fade-in">
+                    <h2 className="text-3xl max-[425px]:text-xl max-[768px]:text-md font-bold text-center text-black mb-4">
+                        Why Do We Need a Feng Shui Koi Pond?
+                    </h2>
+                    <p className="text-lg max-[425px]:text-sm max-[768px]:text-base text-justify text-gray-700">
+                        According to Feng Shui principles, water elements such as koi ponds are powerful sources of positive energy, attracting wealth, prosperity, and good fortune. The movement of water in a Feng Shui koi pond helps to circulate energy, creating balance and harmony within the environment. Proper placement and design of the pond, such as the direction of water flow and surrounding elements, are crucial in maximizing its benefits. A Feng Shui koi pond not only enhances the aesthetic beauty of your space but also plays a vital role in improving the overall energy of your home or garden, bringing a peaceful and prosperous atmosphere.
+                    </p>
+                </section>
+                <h2 className="text-5xl lg:text-4xl sm:text-4xl max-[1024px]:text-2xl max-[1024px]:text-center max-[1024px]:ml-0 font-bold mb-10 text-black text-left w-full ml-20 xl:ml-20 mx-auto">
+                    Koi Ponds
+                </h2>
+                <div className="flex flex-col items-center justify-center h-full w-full bg-white rounded-xl p-6 lg:max-w max-w-screen min-[1921px]:max-w-[80%] mx-auto">
                     <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-y-20 gap-x-10">
                         {ponds.slice(0, visibleCount).map((item, index) => (
                             <div
                                 key={item._id || index}
-                                className="flex flex-col group relative shadow bg-white text-black rounded-xl overflow-hidden sm:h-[800px] h-[500px] w-full sm:w-[80%] mx-auto fade-in border-2 border-gray-300"
+                                className="flex flex-col group relative shadow bg-white text-black rounded-xl overflow-hidden sm:h-[800px] h-[600px] w-full sm:w-[80%] mx-auto fade-in border-2 border-gray-300"
                             >
-                                <div className="h-[60%] w-full bg-white bg-center bg-no-repeat flex items-center justify-center">
+                                <div className="h-[50%] max-[500px]:h-[40%] max-[768px]:h-[45%]  w-full bg-white bg-center bg-no-repeat flex items-center justify-center">
                                     <div
                                         className="h-full w-full bg-center bg-no-repeat"
                                         style={{
@@ -75,39 +93,39 @@ const ShowPond = () => {
                                     />
                                 </div>
 
-                                <div className="h-[40%] bg-white p-4 flex flex-col justify-between overflow-y-auto">
-                                    <h1 className="text-xl font-semibold">Shape: {item.shape}</h1>
-                                    <p className="text-black text-justify">
+                                <div className="h-[50%] max-[500px]:h-[60%] max-[768px]:h-[55%] bg-white p-4 flex flex-col justify-between">
+                                    <h1 className="text-xl max-[768px]:text-lg font-semibold">Shape: {item.shape}</h1>
+                                    
+                                    <p className="text-black text-justify max-[768px]:text-sm overflow-y-auto">
                                         {item.description}
                                     </p>
+                                    
                                     <div className="flex items-center mt-2">
-                                        <span className="font-semibold">Direction:</span>
+                                        <span className="font-semibold max-[768px]:text-base">Direction:</span>
                                         {item.direction.map((dir, idx) => (
-                                            <span key={idx} className="ml-2">{dir}</span>
+                                            <span key={idx} className="ml-2 max-[768px]:text-base">{dir}</span>
                                         ))}
                                     </div>
                                     <div className="flex items-center mt-2">
-                                        <span className="font-semibold">Trees:</span>
-                                        <span className="ml-2">{item.trees}</span>
+                                        <span className="font-semibold max-[768px]:text-base">Trees:</span>
+                                        <span className="ml-2 max-[768px]:text-base">{item.trees}</span>
                                     </div>
                                     <div className="flex items-center mt-2">
-                                        <span className="font-semibold">Water Flow:</span>
-                                        <span className="ml-2">{item.waterFlow}</span>
+                                        <span className="font-semibold max-[768px]:text-base">Water Flow:</span>
+                                        <span className="ml-2 max-[768px]:text-base">{item.waterFlow}</span>
                                     </div>
                                     <div className="flex items-center mt-2">
-                                        <span className="font-semibold">Light:</span>
-                                        <span className="ml-2">{item.light}</span>
+                                        <span className="font-semibold max-[768px]:text-base">Light:</span>
+                                        <span className="ml-2 max-[768px]:text-base">{item.light}</span>
                                     </div>
+                                    <button className="mt-4 px-4 py-2 max-[768px]:px-1 max-[768px]:py-1 text-black border-2 border-gray-300 rounded-lg bg-rounded-lg hover:bg-gray-200"> Link</button>
                                 </div>
                             </div>
                         ))}
                     </div>
 
                     {visibleCount < ponds.length && (
-                        <button
-                            onClick={handleShowMore}
-                            className="mt-10 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                        >
+                        <button onClick={handleShowMore} className="mt-10 px-4 py-2 text-black border rounded-lg hover:bg-gray-200">
                             Show More
                         </button>
                     )}

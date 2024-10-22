@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa'; 
+import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
 
 const Footer = () => {
   return (
@@ -36,11 +36,11 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold mb-4">Newsletter</h3>
             <p className="mb-4">Subscribe to our newsletter for updates and offers.</p>
-            <form className="flex">
+            <form className="flex w-full">
               <input
                 type="email"
                 placeholder="Enter your email"
-                className="flex-grow px-4 py-2 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="flex-grow w-full px-4 py-2 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <button
                 type="submit"
@@ -49,6 +49,7 @@ const Footer = () => {
                 Subscribe
               </button>
             </form>
+
           </div>
         </div>
         <div className="border-t border-gray-700 mt-8 pt-4 text-center"> {/* Adjusted pt-8 to pt-4 */}

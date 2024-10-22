@@ -53,6 +53,8 @@ const NewsComponent = () => {
 
   return (
     <div ref={ref} className={`flex flex-col justify-center items-start w-full bg-gray-200 rounded-xl p-4 md:p-8 ${visible ? 'visible' : ''}`}>
+      <h2 className="text-2xl font-bold text-black">NEWS</h2>
+      <hr className="w-full h-1 mx-auto my-4 bg-gray-100 border-0 rounded dark:bg-gray-700" />
       {/* Main post */}
       {posts.length > 0 && posts[0].postStatus && (
         <div className="flex flex-col md:flex-row mb-4 w-full max-w-12xl p-2">
@@ -69,10 +71,10 @@ const NewsComponent = () => {
           </div>
           <div className="flex flex-col justify-center md:w-1/2 md:pl-4">
             <a href="#" className="block">
-              <h3 className="text-3xl font-bold text-black">{posts[0].title}</h3>
-              <p className="text-sm text-gray-600 mt-4">Updated at: {new Date(posts[0].updatedAt).toLocaleString()}</p>
-              <p className="text-sm text-gray-600 mt-4">Author: {posts[0].author.userName}</p>
-              <p className="text-justify text-xl text-black mt-4">{posts[0].context.replace(/<[^>]+>/g, '')}</p>
+              <h3 className="text-3xl max-[1300px]:text-xl font-bold text-black">{posts[0].title}</h3>
+              <p className="text-sm text-gray-600 mt-4 max-[1300px]:mt-1">Updated at: {new Date(posts[0].updatedAt).toLocaleString()}</p>
+              <p className="text-sm text-gray-600 mt-4 max-[1300px]:mt-1">Author: {posts[0].author.userName}</p>
+              <p className="text-justify text-xl max-[1300px]:text-base max-[1024px]:text-sm text-black mt-4 max-[1300px]:mt-1">{posts[0].context.replace(/<[^>]+>/g, '')}</p>
             </a>
           </div>
         </div>
@@ -81,7 +83,7 @@ const NewsComponent = () => {
       <hr className="w-full h-1 mx-auto my-4 bg-gray-100 border-0 rounded dark:bg-gray-700" />
 
       {/* Grid of smaller posts */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-full">
+      <div className="grid grid-cols-1 sm:grid-cols-2 min-[1100px]:grid-cols-3 gap-4 w-full max-w-full">
         {posts.slice(1).map((post, index) => (
           post.postStatus && (
             <div className="flex flex-col items-center p-4 rounded-lg" key={index}>
@@ -90,7 +92,7 @@ const NewsComponent = () => {
                   <img
                     src={post.imageThumbnail}
                     alt={post.title}
-                    className="absolute inset-0 w-full h-full object-cover rounded-lg mb-2"
+                    className="absolute inset-0 w-full h-full object-cover rounded-lg mb-4"
                   />
                 </div>
 
@@ -101,7 +103,7 @@ const NewsComponent = () => {
 
                 {/* Ensure consistent height for metadata */}
                 <div className="text-center text-gray-600">
-                  <p className="text-sm">Updated at: {new Date(post.updatedAt).toLocaleString()}</p>
+                  <p className="text-sm ">Updated at: {new Date(post.updatedAt).toLocaleString()}</p>
                   <p className="text-sm mt-1">Author: {post.author.userName}</p>
                 </div>
 

@@ -53,18 +53,35 @@ const ShowFish = () => {
         <div>
             <Navbar />
             <AnimationReveal>
-                <div className="flex flex-col items-center justify-center h-full w-full bg-white rounded-xl p-6 lg:max-w-[80%] max-w-screen mx-auto">
-                    <h2 className="text-4xl font-bold mb-10 text-black text-center">
-                        Koi Fish
+                <section className="mb-10 h-full w-full bg-white rounded-xl p-6 lg:max-w-[80%] max-w-screen mx-auto bg-stone-200 p-6 rounded-xl shadow-md fade-in">
+                    <h2 className="text-3xl max-[425px]:text-xl max-[768px]:text-md font-bold text-center text-black mb-4">
+                        What is a Koi Fish?
                     </h2>
+                    <p className="text-lg max-[425px]:text-sm max-[768px]:text-base text-justify text-gray-700">
+                        Koi fish, a domesticated variety of the common carp, are known for their striking colors and are often kept for decorative purposes in outdoor koi ponds or water gardens. Originating in Japan, koi fish have become symbols of luck, prosperity, and perseverance in Japanese culture. These resilient fish can live for decades, sometimes even surpassing a century. Their vivid color patterns, serene nature, and unique appearance make them a popular addition to ornamental ponds around the world.
+                    </p>
+                </section>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-y-20 gap-x-10">
+                <section className="mb-10 h-full w-full bg-white rounded-xl p-6 lg:max-w-[80%] max-w-screen mx-auto bg-stone-200 p-6 rounded-xl shadow-md fade-in">
+                    <h2 className="text-3xl max-[425px]:text-xl max-[768px]:text-md font-bold text-center text-black mb-4">
+                        Why Do We Need Feng Shui Koi Fish?
+                    </h2>
+                    <p className="text-lg max-[425px]:text-sm max-[768px]:text-base text-justify text-gray-700">
+                        Feng Shui koi fish are highly regarded for their ability to bring harmony, prosperity, and positive energy into a space. According to Feng Shui principles, koi fish symbolize wealth, good fortune, and resilience. The graceful movement of koi fish in a pond is believed to generate life-affirming energy, known as Chi, that enhances the flow of abundance and success. By incorporating koi fish into a Feng Shui-designed environment, individuals aim to attract balance, serenity, and prosperity, making them a powerful element in the pursuit of a harmonious and successful life.
+                    </p>
+                </section>
+
+                <h2 className="text-5xl lg:text-4xl sm:text-4xl max-[1024px]:text-2xl max-[1024px]:text-center max-[1024px]:ml-0 font-bold mb-10 text-black text-left w-full ml-20 xl:ml-20 mx-auto">
+                    Koi Fish
+                </h2>
+                <div className="flex flex-col items-center justify-center h-full w-full bg-white rounded-xl p-6 lg:max-w max-w-screen min-[1921px]:max-w-[80%] mx-auto">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-y-20 gap-x-10 max-[1921px]:gap-x-0">
                         {fishs.slice(0, visibleCount).map((item, index) => (
                             <div
                                 key={item.id || index}
-                                className="flex flex-col group relative shadow bg-white text-black rounded-xl overflow-hidden h-[800px] w-full sm:w-[80%] mx-auto fade-in border-2 border-gray-300"
+                                className="flex flex-col group relative shadow bg-white text-black rounded-xl overflow-hidden h-[600px] max-[1920px]:h-[500px] max-[768px]:h-[400px] w-full sm:w-[80%] mx-auto fade-in border-2 border-gray-300"
                             >
-                                <div className="h-[60%] w-full bg-white bg-center bg-no-repeat flex items-center justify-center">
+                                <div className="h-[50%] max-[500px]:h-[40%] max-[768px]:h-[45%]  w-full bg-white bg-center bg-no-repeat flex items-center justify-center">
                                     <div
                                         className="h-full w-full bg-center bg-no-repeat"
                                         style={{
@@ -76,21 +93,23 @@ const ShowFish = () => {
                                     />
                                 </div>
 
-                                <div className="h-[40%] bg-white p-4 flex flex-col justify-between overflow-y-auto">
-                                    <h1 className="text-xl font-semibold">{item.koiName}</h1>
-                                    <p className="text-black text-justify overflow-y-auto max-h-[80%]">
+                                <div className="h-[50%] max-[500px]:h-[60%] max-[768px]:h-[55%] bg-white p-4 flex flex-col justify-between overflow-y-auto">
+                                    <h1 className="text-xl max-[768px]:text-lg font-semibold">{item.koiName}</h1>
+                                    <p className="text-black text-justify max-[768px]:text-sm overflow-y-auto max-h-[80%]">
                                         {item.description}
                                     </p>
                                     <div className="flex items-center mt-2">
-                                        <span className="font-semibold">Color:</span>
+                                        <span className="font-semibold max-[768px]:text-base">Color:</span>
                                         {item.colors.map((color, idx) => (
                                             <span
                                                 key={idx}
-                                                className="ml-2 w-4 h-4 rounded-full border border-black"
+                                                className="ml-2 w-4 h-4 max-[768px]rounded-full border border-black"
                                                 style={{ backgroundColor: colorToHex(color) }}
                                             />
                                         ))}
+
                                     </div>
+                                    <button className="mt-4 px-4 py-2 max-[768px]:px-1 max-[768px]:py-1 text-black border-2 border-gray-300 rounded-lg bg-rounded-lg hover:bg-gray-200"> Link</button>
                                 </div>
                             </div>
                         ))}
@@ -99,7 +118,7 @@ const ShowFish = () => {
                     {visibleCount < fishs.length && (
                         <button
                             onClick={handleShowMore}
-                            className="mt-10 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                            className="mt-10 px-4 py-2 text-black border rounded-lg hover:bg-gray-200"
                         >
                             Show More
                         </button>
