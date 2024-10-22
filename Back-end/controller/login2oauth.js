@@ -35,7 +35,7 @@ const SigninGoogle =  async (req ,res ) =>  {
           let user = await User.findOne({ email });
          
            if (!user) { 
-             user =  await new User({
+             user =  new User({
                email,
                Name: name,
                avatar : picture,
