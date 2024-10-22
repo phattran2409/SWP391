@@ -1,18 +1,22 @@
-import { useState, useEffect } from 'react';
-import { Search  , Menu as Menu1 ,X, User } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { Search, Menu as Menu1, X, User } from "lucide-react";
 import { json, Link, useNavigate } from "react-router-dom";
-import { Menu, Avatar, Button , Modal } from "antd";
+import { Menu, Avatar, Button, Modal, Image } from "antd";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import CSS của Toastify
 import {
   UserOutlined,
   CodeOutlined,
   LogoutOutlined,
+  StockOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState(null);
-    const [isModalLogOut  , setIsModalLogOut] = useState(null);    
+  const [isModalLogOut, setIsModalLogOut] = useState(null);
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -34,39 +38,50 @@ const Navbar = () => {
   };
   // lấy user từ local Storage
   useEffect(() => {
-    const  storeUser = localStorage.getItem("user");
+    const storeUser = localStorage.getItem("user");
     if (storeUser) {
-        setUser(JSON.parse(storeUser))
+      setUser(JSON.parse(storeUser));
     }
   }, []); // Chỉ chạy 1 lần khi component được mount
-    
-  
-  // show modal 
+
+  // show modal
   const showModal = () => {
-      setIsModalLogOut(true);
-    };  
-    // handleLogout
+    setIsModalLogOut(true);
+  };
+  // handleLogout
   const handleLogOut = async () => {
-     setIsModalLogOut(false)
+    setIsModalLogOut(false);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
     toast.success("Logged out successfully");
-
-    navigate("/?status=logout_success");
   };
   // khi an cancle
-    const handleCancel = () => {
-      setIsModalLogOut(false);
-    };
+  const handleCancel = () => {
+    setIsModalLogOut(false);
+  };
 
-
-// console.log("local  storage"+user.name);
+  // console.log("local  storage"+user.name);
 
   return (
     <nav className="sticky top-0 z-50 py-3 bg-black">
       <div className="container mx-auto px-4 flex justify-between items-center">
-        <span className="text-white text-lg font-semibold">Feng Shui Koi</span>
+        {/* Logo */}
+
+        <Link to={"/"} className="flex items-center space-x-5">
+          <img
+            src="https://res.cloudinary.com/ddqgjy50x/image/upload/v1729487633/di410srj2wapvp8ldyg8.jpg"
+            alt="logo"
+            style={{
+              width: "60px",
+              height: "60px",
+              borderRadius: "50%",
+            }}
+          />
+          <span className="text-white text-lg font-semibold">
+            Feng Shui Koi Consulting
+          </span>
+        </Link>
 
         {/* Mobile Menu Button */}
         <div className="lg:hidden">
@@ -89,20 +104,45 @@ const Navbar = () => {
                 </p>
               </Link>
             </li>
+            {!user?.memberStatus && (
+              <li>
+                <Link to={"/memberPackage"}>
+                  <p className="text-white hover:text-neutral-500 transition duration-300 cursor-pointer">
+                    Membership
+                  </p>
+                </Link>
+              </li>
+            )}
             <li>
-              <Link to={"/"}>
-                <p className="text-white hover:text-neutral-500 transition duration-300 cursor-pointer">
-                  About
-                </p>
-              </Link>
-            </li>
-            <li>
-              <Link to={"/"}>
+              <Link to={"/consulting"}>
                 <p className="text-white hover:text-neutral-500 transition duration-300 cursor-pointer">
                   Consulting
                 </p>
               </Link>
             </li>
+
+            <li className="relative group">
+              <p className="text-white hover:text-neutral-500 transition duration-300 cursor-pointer">
+                Categories
+              </p>
+              <ul className="absolute left-0 hidden group-hover:block bg-black ">
+                <li>
+                  <Link to="">
+                    <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
+                      News
+                    </p>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="">
+                    <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
+                      Blog
+                    </p>
+                  </Link>
+                </li>
+              </ul>
+            </li>
+
             <li>
               <Link to={"/"}>
                 <p className="text-white hover:text-neutral-500 transition duration-300 cursor-pointer">
@@ -151,7 +191,6 @@ const Navbar = () => {
                           className="w-5 h-5 mr-5"
                           src={user.avatar}
                           alt=""
-                          srcset=""
                         />
                       ) : (
                         <Avatar icon={<UserOutlined />} />
@@ -160,6 +199,13 @@ const Navbar = () => {
                     </>
                   }
                 >
+                  {user.admin && (
+                    <Menu.Item key="dashboard">
+                      <StockOutlined className="pr-2" />
+                      <Link to={"/dashboard"}>Dashboard</Link>
+                    </Menu.Item>
+                  )}
+
                   <Menu.Item key="project">
                     <UserOutlined className="pr-2" />
                     <Link to={"/profile"}>Profile</Link>
@@ -179,6 +225,9 @@ const Navbar = () => {
             onOk={handleLogOut}
             onCancel={handleCancel}
             okText="Yes"
+            okButtonProps={{
+              style: { backgroundColor: "#d9534f" },
+            }}
             cancelText="Cancel"
             icon={<ExclamationCircleOutlined />}
           >
@@ -205,31 +254,55 @@ const Navbar = () => {
           <ul className="space-y-4">
             <li>
               <a
-                href="#"
+                href="/"
                 className="text-white hover:text-neutral-500 transition duration-300"
                 onClick={handleLinkClick}
               >
                 Home
               </a>
             </li>
+            {!user?.memberStatus && (
+              <li>
+                <a
+                  href="/memberPackage"
+                  className="text-white hover:text-neutral-500 transition duration-300"
+                  onClick={handleLinkClick}
+                >
+                  Membership
+                </a>
+              </li>
+            )}
             <li>
               <a
-                href="#"
-                className="text-white hover:text-neutral-500 transition duration-300"
-                onClick={handleLinkClick}
-              >
-                About
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
+                href="/consulting"
                 className="text-white hover:text-neutral-500 transition duration-300"
                 onClick={handleLinkClick}
               >
                 Consulting
               </a>
             </li>
+            <li className="relative group">
+  <p className="text-white hover:text-neutral-500 transition duration-300 cursor-pointer">
+    Categories
+  </p>
+  <ul className="absolute left-0 hidden group-hover:flex bg-black ">
+    <li>
+      <Link to="">
+        <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
+          News
+        </p>
+      </Link>
+    </li>
+    <li>
+      <Link to="">
+        <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
+          Blog
+        </p>
+      </Link>
+    </li>
+  </ul>
+</li>
+
             <li>
               <a
                 href="#"
@@ -279,7 +352,6 @@ const Navbar = () => {
                             className="w-5 h-5 mr-5"
                             src={user.avatar}
                             alt=""
-                            srcset=""
                           />
                         ) : (
                           <Avatar icon={<UserOutlined />} />
@@ -289,8 +361,16 @@ const Navbar = () => {
                       </>
                     }
                   >
+                    {user.admin && (
+                      <Menu.Item key="dashboard">
+                        <StockOutlined className="pr-2" />
+                        <Link to={"/dashboard"}>Dashboard</Link>
+                      </Menu.Item>
+                    )}
                     <Menu.Item key="about-us">
-                      <UserOutlined className="pr-2" /> Profile
+                      <a href="/profile">
+                        <UserOutlined className="pr-2" /> Profile
+                      </a>
                     </Menu.Item>
                     <Menu.Item key="log-out" onClick={showModal}>
                       <LogoutOutlined className="pr-2" /> Logout
@@ -302,6 +382,15 @@ const Navbar = () => {
           )}
         </div>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={1000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="light"
+      />
     </nav>
   );
 };

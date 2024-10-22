@@ -217,6 +217,13 @@ function ManagePonds() {
       title: "Description",
       dataIndex: "description",
       key: "description",
+      render: (description) => {
+        // const name = author?.name || "Admin";
+        const maxLength = 50;
+        return description.length > maxLength
+          ? `${description.slice(0, maxLength)}...`
+          : description;
+      },
     },
     {
       title: "Trees",
@@ -391,14 +398,15 @@ function ManagePonds() {
             <Input placeholder="Enter the shape of the pond" />
           </Form.Item>
 
-          <Form.Item
+          <Form.Item 
+            
             name="description"
             label="Description"
             rules={[
               { required: true, message: "Please enter the description!" },
             ]}
           >
-            <Input.TextArea placeholder="Enter a description of the Koi pond" />
+            <Input.TextArea placeholder="Enter a description of the Koi pond" style={{height:"100px"}} />
           </Form.Item>
 
           <Form.Item

@@ -141,8 +141,9 @@ export default function Calculator({ setvalue  , setLoading }) {
                 <Item>
                   <Button
                     type="primary"
+                    
                     htmlType="submit"
-                    style={{ width: "100%" }
+                    style={{ width: "100%", backgroundColor: "#d9534f" }
                     }
                     disabled = { loading1}
                   >

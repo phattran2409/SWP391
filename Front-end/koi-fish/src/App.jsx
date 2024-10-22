@@ -27,6 +27,9 @@ import ThankYou from "./page/thankYou/thankYou.jsx";
 import ManageOrder from "./page/admin/manage-orders/manageOrders.jsx";
 import Consulting from "./page/consulting/consulting.jsx";
 
+
+import  {ChangeEmail } from "./components/update-profile/EditProfile/ChangeEmail.jsx"
+import ProfileUser from "./page/ProfileUser/ProfileUser.jsx";
 function App() {
   const router = createBrowserRouter([
     {
@@ -117,6 +120,14 @@ function App() {
     {
       path: "/consulting",
       element: <Consulting />,
+    },
+    {
+      path: "/profile",
+      element: <ProfileUser />,
+    },
+    {
+      path: "/changeEmail",
+      element: <ChangeEmail />,
     },
   ]);
 

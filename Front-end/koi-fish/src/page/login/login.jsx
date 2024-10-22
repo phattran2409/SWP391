@@ -7,9 +7,10 @@ import "./index.scss";
 
 import {  useNavigate } from "react-router-dom";
 import api from "../../config/axios";
-import { toast } from "react-toastify";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import CSS của Toastify
 
 
 function LoginPage() {
@@ -34,12 +35,12 @@ function LoginPage() {
       if (admin) {
         navigate("/dashboard");
       } else {
-        navigate("");
+        navigate("/");
       }
     } catch (err) {
 
      
-     toast.error(err.code);
+     toast.error("Login Failed. Please check your username or password");
      
     }
    };
@@ -59,6 +60,8 @@ function LoginPage() {
 
     const handleLoginError = () => {
       console.log("Login Failed");
+      toast.error("Login Failed");
+      
     };
 
     const sendTokenToAPI = async (data) => {
@@ -171,17 +174,27 @@ function LoginPage() {
           </div>
 
           <Button
-            color="danger"
-            variant="solid"
-            className="custom-button"
-            type="primary"
-            htmlType="submit"
+           className="w-full h-[50px] mt-5 border rounded-[32px]"
+           htmlType="submit"
+           color="danger"
+           variant="solid"
+        
           >
             Sign in
           </Button>
         </Form>
       </div>
+      <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          closeOnClick
+          pauseOnHover
+          draggable
+          theme="light"
+        />
     </AuthenTemplate>
+    
   );
 }
 
