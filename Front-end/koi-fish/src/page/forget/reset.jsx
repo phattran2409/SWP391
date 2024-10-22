@@ -119,7 +119,7 @@ function ResetPasswordPage() {
                 type="primary"
                 htmlType="submit"
                 variant="solid"
-                color="danger"
+                style={{ backgroundColor: '#d9534f' }}
                 className="w-full h-12 rounded-[32px]"
                 loading={loading}
               >

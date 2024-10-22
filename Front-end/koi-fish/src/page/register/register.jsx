@@ -264,36 +264,7 @@ function RegisterPage() {
             </Form.Item>
 
 
-            <Form.Item style={{ marginTop: "28px" }}>
-              <Button
-                className="mt-5"
-                type="primary"
-                htmlType="submit"
-                style={{
-                  backgroundColor: "gray",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "2rem",
-                  width: "100%",
-                  height: "50px",
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.backgroundColor = "red")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.backgroundColor = "gray")
-                }
-                
-            // <Form.Item style={{ marginTop: '28px' }}>
-            //   <Button className="w-full h-[50px] mt-5 border rounded-[32px]"
-            //     htmlType="submit"
-            //     color="danger"
-            //     variant="solid"
-                >
-              
-                Sign up
-              </Button>
-            </Form.Item>
+          
 
 
 
@@ -320,7 +291,6 @@ function RegisterPage() {
             <Form.Item style={{ marginTop: "28px" }}>
               <Button
                 className="w-full h-[50px] mt-5 border rounded-[32px]"
-
                 htmlType="submit"
                 color="danger"
                 variant="solid"

@@ -223,7 +223,7 @@ function ManageNews() {
         statusData
       );
       console.log(statusData);
-      toast.success("Approved successfully!");
+      toast.success("Changed successfully!");
       fetchData();
     } catch (err) {
       toast.error(err.response?.data?.data || "An error occurred");
