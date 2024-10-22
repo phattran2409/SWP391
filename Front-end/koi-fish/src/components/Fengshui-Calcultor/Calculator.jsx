@@ -57,9 +57,14 @@ export default function Calculator({ setvalue  , setLoading }) {
         `v1/user/calculateElement?gender=${gender}&y=${birthdate.$y}`
       );
 
+     if (  localStorage.getItem("elementUser") ) {
+      console.log(" Ton tai elementUser");
+      localStorage.removeItem("elementUser");
+     }
 
-      console.log(res.data);
-    
+
+      localStorage.setItem("elementUser" , JSON.stringify(res.data));
+        
        setvalue(JSON.stringify(res.data) , name)
       if (res.status == 200) {
         toast.success("Calcuate success your elements is " + res.data.element)

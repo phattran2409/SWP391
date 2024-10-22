@@ -44,9 +44,11 @@ import { IoFish } from "react-icons/io5";
 import { SiSpond } from "react-icons/si";
 import api from "../../config/axios";
 import { toast } from "react-toastify";
+import ContentLoader from "react-content-loader";
 
 export default function Consulting() {
   const [value, setvalue] = useState({});
+  // const [valueElement , setValueElement] = useState(0);
   const [loading, setLoading] = useState(false);
   const [koi , setKoi] = useState([])
   const [pond , setPond] = useState([])
@@ -106,8 +108,8 @@ var settings = {
      console.log("value element ID : "+value.elementID);
      
     try {
-      const res = await api.get(`v1/fish/getKoiElement/${value.elementID}`);
-      const resPond = await api.get(`v1/pond/getByElement/${value.elementID}`);
+      const res = await api.get(`v1/fish/getKoiElement/${value.elementID || elementID}`);
+      const resPond = await api.get(`v1/pond/getByElement/${value.elementID || elementID}`);
       console.log(res.data);
       setKoi(res.data.data);
       setPond(resPond.data.data)
@@ -122,14 +124,12 @@ var settings = {
     }
   } , [value.elementID])
 
-  koi.map((koi) => {
-    console.log(koi.koiName);
-    console.log(koi.image);
-    
-  });
+  useEffect(() => {
+    // setValueElement(JSON.stringify(localStorage.getItem("elementUser")));
+    setvalue(JSON.parse(localStorage.getItem("elementUser")))
+    console.log("hooks "+value);
+  } , [])
 
-  console.log(typeof koi);
-  
 
 
   
@@ -262,6 +262,10 @@ var settings = {
             </div>
           </div>
         </div>
+      </div>
+
+      <div>
+       
       </div>
     </>
   );
