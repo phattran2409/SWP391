@@ -4,7 +4,7 @@ import { FaClock, FaUser } from 'react-icons/fa';
 import Pagination from '../../../components/Paginition/Pagination';
 import AdvertisementTemplate from '../../../components/news-template/AdvertiseTemplate';
 import Search from '../search';
-import Banner from '../../../assets/image/Banner1.png'
+import Banner from '../../../assets/image/Banner1.jpg'
 
 export default function BlogPage() {
     const [blogsArticles, setBlogsArticles] = useState([]);

@@ -39,7 +39,8 @@ export default function NewsPage() {
             <div className='flex mt-4 lg:mt-16 px-4 lg:px-96 absolute top-0 left-0 right-0 z-20'>
                 <Search />
             </div>
-            <NewsContent />
+            <div className='mt-10'><NewsContent /></div>
+
         </div>
     );
 }

@@ -9,6 +9,7 @@ import NewsPage from "./page/new/news/news";
 import BlogPage from "./page/new/blogs/blog";
 import DetailsPage from "./page/new/details/details";
 import Search from "./page/new/search";
+import FishPage from "./page/fish/FishPage";
 // import Search from "./page/new/search";
 
 function App() {
@@ -48,6 +49,10 @@ function App() {
     {
       path: "/search",
       element: <Search />,
+    },
+    {
+      path: "/FishPage",
+      element: <FishPage />,
     }
 
   ]);

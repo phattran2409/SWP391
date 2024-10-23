@@ -7,9 +7,15 @@ export default function AdvertisementTemplate() {
 
     const fetchAd = async () => {
         try {
-            setLoading(true); // Sửa lại từ `loading(true)` thành `setLoading(true)`
-            const response = await axios.get(`http://localhost:8081/v1/post/getPost/3`);
-            setArticles(response.data.datas);
+            setLoading(true);
+            const response = await axios.get(`http://localhost:8081/v1/post/getRandomAd/3`);
+            const allArticles = response.data.datas;
+            // Trộn ngẫu nhiên danh sách bài viết
+            const shuffledArticles = allArticles.sort(() => Math.random() - 0.5);
+            // Lấy 6 bài viết đầu tiên
+            const limitedArticles = shuffledArticles.slice(0, 6);
+
+            setArticles(limitedArticles);
         } catch (error) {
             console.log("Error fetching:", error);
         } finally {
@@ -22,7 +28,8 @@ export default function AdvertisementTemplate() {
     }, []);
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 lg:mt-10">
+            <div className="text-center text-2xl font-bold ">Advertise</div>
             {loading ? (
                 <div className="flex justify-center items-center h-40">
                     <span className="text-blue-500 text-lg font-semibold">Loading...</span>
