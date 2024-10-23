@@ -11,17 +11,15 @@ const Input = ({ onChangeCallback }) => {
     }
 
     return (
-        <div className="flex">
-            <FaSearch />
-
+        <div className="relative w-full min-w-[300px]">
+            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 " />
             <input
                 type="text"
-                className="w-full min-w-[300px] p-2 rounded-2xl px-4 relative border-e-4"
+                className="pl-10 pr-4 py-2 w-full border-2 border-black rounded-2xl outline outline-2 outline-white "
                 value={value}
                 onChange={handleChange}
-                placeholder='Type to search'
+                placeholder="Type to search"
             />
-
         </div>
 
     )

@@ -20,7 +20,7 @@ const ArticleCard = ({ article, formatDate }) => {
                     <p className="text-sm text-gray-500 mt-2">Author: Admin</p>
                 )}
                 <h3 className="text-xl font-semibold mb-2">{article.title}</h3>
-                <p className="text-sm text-gray-500 mb-2">{formatDate(article.updatedAt)}</p>
+                <p className="text-sm text-gray-500 mb-2">{new Date(article.updatedAt).toLocaleDateString()}</p>
             </div>
         </a>
     );
