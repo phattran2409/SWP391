@@ -127,28 +127,28 @@ const Navbar = () => {
               </p>
               <ul className="absolute left-0 hidden group-hover:block bg-black ">
                 <li>
-                  <Link to="">
+                  <Link to="/news">
                     <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
                       News
                     </p>
                   </Link>
                 </li>
                 <li>
-                  <Link to="">
+                  <Link to="/blog">
                     <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
                       Blog
                     </p>
                   </Link>
                 </li>
                 <li>
-                  <Link to="">
+                  <Link to="/showfish">
                     <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
                       Koi
                     </p>
                   </Link>
                 </li>
                 <li>
-                  <Link to="">
+                  <Link to="/showpond">
                     <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
                       Pond
                     </p>
@@ -158,7 +158,7 @@ const Navbar = () => {
             </li>
 
             <li>
-              <Link to={"/"}>
+              <Link to={"/contactus"}>
                 <p className="text-white hover:text-neutral-500 transition duration-300 cursor-pointer">
                   Contact Us
                 </p>
@@ -294,28 +294,28 @@ const Navbar = () => {
               </p>
               <ul className="absolute left-0 hidden group-hover:flex bg-black ">
                 <li>
-                  <Link to="">
+                  <Link to="/news">
                     <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
                       News
                     </p>
                   </Link>
                 </li>
                 <li>
-                  <Link to="">
+                  <Link to="/blog">
                     <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
                       Blog
                     </p>
                   </Link>
                 </li>
                 <li>
-                  <Link to="">
+                  <Link to="/showfish">
                     <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
                       Koi
                     </p>
                   </Link>
                 </li>
                 <li>
-                  <Link to="">
+                  <Link to="/showpond">
                     <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
                       Pond
                     </p>

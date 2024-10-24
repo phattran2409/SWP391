@@ -23,9 +23,9 @@ import Home from "./page/Home/Home.jsx";
 
 import RecoverPage from "./page/forget/forget";
 import ResetPasswordPage from "./page/forget/reset";
-import NewsPage from "./page/new/news";
-import BlogPage from "./page/new/blog";
-import DetailsPage from "./page/new/details";
+
+
+
 import KoiDetails from "./page/testpage/consulting-detail/koidetail.jsx";
 import PondDetails from "./page/testpage/consulting-detail/ponddetail.jsx";
 import MemberPackage from "./page/MemberPackage/package.jsx";
@@ -36,6 +36,13 @@ import NotFoundPage from "./page/NotFound/404.jsx";
 
 import  {ChangeEmail } from "./components/update-profile/EditProfile/ChangeEmail.jsx"
 import ProfileUser from "./page/ProfileUser/ProfileUser.jsx";
+
+import NewsPage from "./page/Category/news/news.jsx";
+import BlogPage from "./page/Category/blogs/blog.jsx";
+import DetailsPage from "./page/Category/details/details.jsx";
+
+
+
 
 function App() {
   const router = createBrowserRouter([
@@ -124,9 +131,10 @@ function App() {
       element: <BlogPage />,
     },
     {
-      path: "/details",
+      path: "/details/:id",
       element: <DetailsPage />,
     },
+
 
     {
       path: "/koidetail/:id",
