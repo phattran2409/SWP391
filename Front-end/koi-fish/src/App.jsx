@@ -13,12 +13,12 @@ import ManageNews from "./page/admin/manage-post/manage-news/manageNews";
 import ManageBlogs from "./page/admin/manage-post/manage-blogs/manageBlogs";
 import ManageAds from "./page/admin/manage-post/manage-ads/manageAds";
 
-<<<<<<< HEAD
-import Home from "./page/Home/Home";
+
+
 import ContactUs from "./page/contactus/contactus";
 import ShowFish from "./page/showdetails/showfish";
 import ShowPond from "./page/showdetails/ShowPond";
-=======
+
 import Home from "./page/Home/Home.jsx";
 
 import RecoverPage from "./page/forget/forget";
@@ -32,24 +32,21 @@ import MemberPackage from "./page/MemberPackage/package.jsx";
 import ThankYou from "./page/thankYou/thankYou.jsx";
 import ManageOrder from "./page/admin/manage-orders/manageOrders.jsx";
 import Consulting from "./page/consulting/consulting.jsx";
-
+import NotFoundPage from "./page/NotFound/404.jsx";
 
 import  {ChangeEmail } from "./components/update-profile/EditProfile/ChangeEmail.jsx"
 import ProfileUser from "./page/ProfileUser/ProfileUser.jsx";
->>>>>>> develop
+
 function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-<<<<<<< HEAD
-      element: <Home/>,
+
+      element: <Home />,
     },
     {
       path: "/home",
-      element: <Home/>,
-=======
       element: <Home />,
->>>>>>> develop
     },
     {
       path: "/login",
@@ -107,10 +104,10 @@ function App() {
       ],
     },
     {
-<<<<<<< HEAD
       path: "/contactus",
       element: <ContactUs />,
-=======
+    },
+    {
       path: "/forget",
       element: <RecoverPage />,
     },
@@ -155,7 +152,10 @@ function App() {
     {
       path: "/changeEmail",
       element: <ChangeEmail />,
->>>>>>> develop
+    },
+    {
+      path: "*",
+      element: <NotFoundPage />,
     },
   ]);
 

@@ -4,10 +4,12 @@ import App from "./App.jsx";
 import "./index.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { CartProvider } from "./components/context/Cart.jsx";
 createRoot(document.getElementById("root")).render(
   <>
-    <App />
-    <ToastContainer />
+    <CartProvider>
+      <App />
+    </CartProvider>
+  
   </>
 );

@@ -2,17 +2,17 @@ import React, { useState, useEffect } from 'react';
 import Fullpage from '@fullpage/react-fullpage';
 import Navbar from '../../components/navbar/Navbar';
 
-import HeroSection from '../Home/home/HeroSection';
-import News from '../Home/home/News';
-import Footer from '../../components/footer/Footer';
-import KoiFish from '../Home/home/KoiFish';
-import KoiPond from '../Home/home/KoiPond';
+
+
+import Footer from '../../components/footer/Footer.jsx';
+import KoiFish from './homeSub/KoiFish.jsx';
+import KoiPond from './homeSub/KoiPond.jsx';
 import AnimationReveal from '../../components/animation/AnimationReveal'; // Assuming you have the AnimationReveal component
 
-import HeroSection from './homeSub/HeroSection';
-import News from './homeSub/News';
+import HeroSection from './homeSub/HeroSection.jsx';
+import News from './homeSub/News.jsx';
 // import Posts from '../Home/home/Posts';
-import Footer from '../../components/footer/Footer';
+
 import { useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
