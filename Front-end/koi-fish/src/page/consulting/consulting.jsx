@@ -101,7 +101,7 @@ var settings = {
     const handleSetLoading = (data) => {
       setLoading(data);
     };
-    console.log("value element ID" + value.elementID);
+
     
   //  API get koi by element ID 
   const handleAPIKoi = async () => { 
