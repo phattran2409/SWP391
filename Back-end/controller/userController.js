@@ -574,6 +574,23 @@ const useController = {
     }
   },
 
+  getNotification: async (req, res) => {
+    try {
+      const userId = req.user.id;
+  
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json("User not found");
+      }
+  
+     
+      const unreadNotifications = user.notification.filter(notification => notification.status === true);
+  
+      return res.status(200).json(unreadNotifications);
+    } catch (err) {
+      return res.status(500).json(err);
+    }
+  },
   
   calculateElement : async (req , res) => { 
       const year = req.query.y; 

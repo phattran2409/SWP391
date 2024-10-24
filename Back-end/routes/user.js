@@ -93,6 +93,7 @@ router.get("/send-change-email/:token", (req, res) => {
 router.post("/confirmEmail", useController.confirmChangeEmail);
 
 router.post("/notificationStatus" ,  useController.NotificationStatus);
+router.get("/getNotification" ,middlewareController.verifyToken, useController.getNotification);
 
 // Calculate Element 
 router.get("/calculateElement"  , useController.calculateElement);

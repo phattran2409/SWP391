@@ -4,6 +4,7 @@ const upload = require("../middleware/multerConfig");
 const { UploadStream } = require("cloudinary");
 const { set } = require("mongoose");
 const fs = require("fs").promises; // Use promises for cleaner async code
+const users = require("../models/user");
 
 const postController = {
   //Get all post and author
@@ -74,11 +75,14 @@ const postController = {
       const skip = (page - 1) * limit;
 
       const postByCategory = await posts
-        .find({ categoryID: req.params.id})
+        .find({ categoryID: req.params.id })
         .populate("author")
         .skip(skip)
+        .sort({ updatedAt: -1 })
         .limit(limit);
-      const totalDocuments = await posts.countDocuments({ categoryID: req.params.id });
+      const totalDocuments = await posts.countDocuments({
+        categoryID: req.params.id,
+      });
       res.status(200).json({
         currentPage: page,
         totalPages: Math.ceil(totalDocuments / limit),
@@ -89,7 +93,6 @@ const postController = {
       return res.status(500).json(error);
     }
   },
-  
 
   getApprovedPost: async (req, res) => {
     try {
@@ -104,7 +107,10 @@ const postController = {
         .skip(skip)
         .sort({ updatedAt: -1 })
         .limit(limit);
-      const totalDocuments = await posts.countDocuments({ categoryID: req.params.id, postStatus: "true" });
+      const totalDocuments = await posts.countDocuments({
+        categoryID: req.params.id,
+        postStatus: "true",
+      });
       res.status(200).json({
         currentPage: page,
         totalPages: Math.ceil(totalDocuments / limit),
@@ -119,16 +125,47 @@ const postController = {
   //setStatus
   setStatus: async (req, res) => {
     try {
-      
       const status = req.body.postStatus;
       const id = req.params.id;
-      const updateStatus = await posts.findByIdAndUpdate(id, { postStatus: status }, { new: true, runValidators: true });
+      const updateStatus = await posts.findByIdAndUpdate(
+        id,
+        { postStatus: status },
+        { new: true, runValidators: true }
+      ).populate("author");
+      console.log(updateStatus);
+
+      if (status === true) {
+        const newnotification = {
+          content: `Your post "${updateStatus.title}" has been approved by admin`,
+          status: true,
+        };
+        const userUpdateMemberStatus = await users.findByIdAndUpdate(
+          updateStatus.author._id,
+          { $push: { notification: newnotification } },
+          { new: true, runValidators: true }
+        );
+
+        console.log(userUpdateMemberStatus);
+      }
+      else{
+        const newnotification = {
+          content: `Your post "${updateStatus.title}" has been rejected by admin`,
+          status: true,
+        };
+        const userUpdateMemberStatus = await users.findByIdAndUpdate(
+          updateStatus.author._id,
+          { $push: { notification: newnotification } },
+          { new: true, runValidators: true }
+        );
+
+        console.log(userUpdateMemberStatus);
+      }
+
       res.status(200).json(updateStatus);
     } catch (error) {
       return res.status(500).json(error);
     }
   },
-  
 
   //Delete Post
   deletePost: async (req, res) => {
@@ -238,7 +275,6 @@ const postController = {
       sortOrder = "asc", // 'asc' or 'desc'
     } = req.query;
     try {
-      
       const filter = {};
 
       if (categoryID) {
@@ -260,7 +296,7 @@ const postController = {
       const postList = await posts
         .find(filter)
         .populate("author")
-      
+
         .sort({ [sortBy]: sortOrderValue })
         .exec();
       const totalDocuments = await posts.countDocuments(filter);
@@ -273,7 +309,6 @@ const postController = {
     }
   },
 
-
   //Search post
   searchPost: async (req, res) => {
     const {
@@ -284,37 +319,37 @@ const postController = {
       sortBy = "elementID", // Trường để sắp xếp chính
       sortOrder = "asc", // 'asc' hoặc 'desc'
     } = req.query;
-  
+
     try {
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 2;
       const skip = (page - 1) * limit;
       const filter = {};
-  
+
       if (categoryID) {
         filter.categoryID = categoryID;
       }
-  
+
       if (title) {
         filter.title = { $regex: title, $options: "i" };
       }
-  
+
       if (elementID) {
         filter.elementID = elementID;
       }
-  
+
       if (postStatus) {
         filter.postStatus = postStatus;
       }
-  
+
       const sortOrderValue = sortOrder === "asc" ? 1 : -1;
-  
+
       // Xây dựng đối tượng sắp xếp với cả sortBy và postStatus
       const sortCriteria = {
         [sortBy]: sortOrderValue,
         postStatus: sortOrderValue, // Thêm postStatus vào tiêu chí sắp xếp
       };
-  
+
       const postList = await posts
         .find(filter)
         .populate("author")
@@ -322,9 +357,9 @@ const postController = {
         .limit(limit)
         .sort(sortCriteria) // Sử dụng đối tượng sắp xếp đã xây dựng
         .exec();
-  
+
       const totalDocuments = await posts.countDocuments(filter);
-  
+
       return res.status(200).json({
         currentPage: page,
         totalPages: Math.ceil(totalDocuments / limit),
@@ -335,7 +370,6 @@ const postController = {
       return res.status(500).json(error);
     }
   },
-  
 
   // uploadImage: async (req, res) => {
   //   console.log(req.file);
