@@ -42,7 +42,7 @@ const pondDetails = () => {
   const ponById = async () => {
     try {
       const response = await api.get(
-        `http://localhost:8081/v1/pond/getById/${id}`
+        `v1/pond/getById/${id}`
       );
       setPondDetail(response.data); // Save the fetched object
     } catch (err) {
@@ -70,7 +70,7 @@ const pondDetails = () => {
   ) => {
     try {
       const response = await api.get(
-        `http://localhost:8081/v1/pond/getByElement/${pondetail.elementID}?page=${page}&limit=${limit}`
+        `v1/pond/getByElement/${pondetail.elementID}?page=${page}&limit=${limit}`
       );
 
       // Update state with fetched data

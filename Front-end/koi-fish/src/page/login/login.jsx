@@ -25,7 +25,7 @@ function LoginPage() {
 
   const handleLogin = async (values) => {
     try {
-      const response = await api.post("/v1/auth/login", values);
+      const response = await api.post("v1/auth/login", values);
       console.log(values);
       console.log(response.data);
       const { admin, accessToken } = response.data;
@@ -68,7 +68,7 @@ function LoginPage() {
       console.log(import.meta.env.API_SIGNIN);
 
       try {
-        const response = await api.post("http://localhost:8081/v1/Oauth/signin",{
+        const response = await api.post("v1/Oauth/signin",{
           data: data, // Gửi token trong body của request
         });
         const { accessToken } = response.data;  

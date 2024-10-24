@@ -146,7 +146,7 @@ function ManageNews() {
   ) => {
     try {
       const response = await api.get(
-        `http://localhost:8081/v1/post/getPostByCategory/1?page=${page}&limit=${limit}`
+        `v1/post/getPostByCategory/1?page=${page}&limit=${limit}`
       );
 
       // Update state with fetched data
@@ -219,7 +219,7 @@ function ManageNews() {
   const handleStatus = async (_id, statusData) => {
     try {
       await api.put(
-        `http://localhost:8081/v1/post/setStatus/${_id}`,
+        `v1/post/setStatus/${_id}`,
         statusData
       );
       console.log(statusData);
@@ -253,7 +253,7 @@ function ManageNews() {
         return;
       }
       const res = await api.get(
-        `http://localhost:8081/v1/post/searchPost?categoryID=1&title=${encodeURIComponent(
+        `v1/post/searchPost?categoryID=1&title=${encodeURIComponent(
           value
         )}&page=${pagination.current}&limit=${pagination.pageSize}`
       );

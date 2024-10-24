@@ -45,7 +45,7 @@ const koiDetails = () => {
   const koiById = async () => {
     try {
       const response = await api.get(
-        `http://localhost:8081/v1/fish/getKoiById/${id}`
+        `v1/fish/getKoiById/${id}`
       );
       setKoiDetail(response.data); // Save the fetched object
     } catch (err) {
@@ -73,7 +73,7 @@ const koiDetails = () => {
   ) => {
     try {
       const response = await api.get(
-        `http://localhost:8081/v1/fish/getKoiElement/${koiDetail.elementID}?page=${page}&limit=${limit}`
+        `v1/fish/getKoiElement/${koiDetail.elementID}?page=${page}&limit=${limit}`
       );
 
       // Update state with fetched data

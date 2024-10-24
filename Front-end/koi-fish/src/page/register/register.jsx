@@ -28,7 +28,7 @@ function RegisterPage() {
     //submit xuong backend
     try {
       values.role = "CUSTOMER"; //cho nay dang de tam la customer de test
-      const response = await api.post("/v1/auth/register", values);
+      const response = await api.post("v1/auth/register", values);
       toast.success("Successfully register new account!");
       navigate("/login");
     } catch (err) {
@@ -52,7 +52,7 @@ function RegisterPage() {
     console.log(import.meta.env.API_SIGNIN);
 
     try {
-      const response = await api.post("http://localhost:8081/v1/Oauth/signin", {
+      const response = await api.post("v1/Oauth/signin", {
         data: data, // Gửi token trong body của request
       });
       const { accessToken } = response.data;
