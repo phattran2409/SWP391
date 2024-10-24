@@ -111,18 +111,13 @@ var settings = {
       const res = await api.get(`v1/fish/getKoiElement/${value.elementID || elementID}`);
       const resPond = await api.get(`v1/pond/getByElement/${value.elementID || elementID}`);
       console.log(res.data);
-      setKoi(res.data.data);
-      setPond(resPond.data.data)
+      setKoi(res.data.data || []);
+      setPond(resPond.data.data|| [])
     } catch (err) {
       toast.error(err.errorCode);
     }
   }
 //  handleAPIKoi();
-  useEffect(() => {
-    if (value) {
-       handleAPIKoi();
-    }
-  } , [value.elementID])
 
   useEffect(() => {
     // setValueElement(JSON.stringify(localStorage.getItem("elementUser")));
@@ -130,6 +125,15 @@ var settings = {
     console.log("hooks "+value);
   } , [])
 
+    useEffect(() => {
+      if (value) {
+        console.log("thuc hien call api ");
+        
+        handleAPIKoi();
+      }
+    }, [value]);
+    console.log(value);
+    
 
 
   
@@ -195,28 +199,30 @@ var settings = {
             <div className="container">
               <Slider {...settings}>
                 {/* Ensure JSX is returned in the map */}
-                {koi.map((kois) => (
-                  <div key={kois.id} className="card">
-                    <div className="imgBx">
-                      <Image src={kois.image} alt={kois.koiName} />
+                { 
+                  koi.map((kois) => (
+                    <div key={kois.id} className="card">
+                      <div className="imgBx">
+                        <Image src={kois.image} alt={kois.koiName} />
+                      </div>
+                      <div className="content">
+                        <span className="price">
+                          <a href={`/koidetail/${kois._id}`}>Read more</a>
+                        </span>
+                        <ul className="">
+                          <li>
+                            <b className="mt-20 text-3xl ">{kois.koiName}</b>
+                          </li>
+                          <li>{kois.color}</li>
+                          <br />
+                          <p className="description">
+                            {kois.description.substring(0, 100)}...
+                          </p>
+                        </ul>
+                      </div>
                     </div>
-                    <div className="content">
-                      <span className="price">
-                        <a href={`/koidetail/${kois._id}`}>Read more</a>
-                      </span>
-                      <ul className="">
-                        <li>
-                          <b className="mt-20 text-3xl ">{kois.koiName}</b>
-                        </li>
-                        <li>{kois.color}</li>
-                        <br />
-                        <p className="description">
-                          {kois.description.substring(0, 100)}...
-                        </p>
-                      </ul>
-                    </div>
-                  </div>
-                ))}
+                  ))
+                 }
               </Slider>
             </div>
           </div>
@@ -264,9 +270,7 @@ var settings = {
         </div>
       </div>
 
-      <div>
-       
-      </div>
+      <div></div>
     </>
   );
 }
