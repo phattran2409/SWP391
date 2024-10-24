@@ -10,7 +10,7 @@ router.get("/getPostByAuthor/:id", postController.getPostByAuthor);
 //Get all posts by category
 router.get("/getPostByCategory/:id", postController.getPostByCategory);
 
-//Get all posts by status
+//Get approved post by category
 router.get("/getPost/:id", postController.getApprovedPost);
 
 
@@ -36,4 +36,5 @@ router.get("/searchPost", postController.searchPost);
 router.put("/setStatus/:id", postController.setStatus);
 
 router.get("/searchPage", postController.searchPostnotPagination);
+
 module.exports = router;

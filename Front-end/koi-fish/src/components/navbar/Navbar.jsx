@@ -140,6 +140,20 @@ const Navbar = () => {
                     </p>
                   </Link>
                 </li>
+                <li>
+                  <Link to="">
+                    <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
+                      Koi
+                    </p>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="">
+                    <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
+                      Pond
+                    </p>
+                  </Link>
+                </li>
               </ul>
             </li>
 
@@ -150,14 +164,7 @@ const Navbar = () => {
                 </p>
               </Link>
             </li>
-            <li>
-              {/* thêm Path  */}
-              <Link to={"/"}>
-                <p className="text-white hover:text-neutral-500 transition duration-300 cursor-pointer">
-                  News
-                </p>
-              </Link>
-            </li>
+           
           </ul>
 
           <div className="h-6 border-l border-neutral-500 mx-4"></div>
@@ -282,26 +289,40 @@ const Navbar = () => {
               </a>
             </li>
             <li className="relative group">
-  <p className="text-white hover:text-neutral-500 transition duration-300 cursor-pointer">
-    Categories
-  </p>
-  <ul className="absolute left-0 hidden group-hover:flex bg-black ">
-    <li>
-      <Link to="">
-        <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
-          News
-        </p>
-      </Link>
-    </li>
-    <li>
-      <Link to="">
-        <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
-          Blog
-        </p>
-      </Link>
-    </li>
-  </ul>
-</li>
+              <p className="text-white hover:text-neutral-500 transition duration-300 cursor-pointer">
+                Categories
+              </p>
+              <ul className="absolute left-0 hidden group-hover:flex bg-black ">
+                <li>
+                  <Link to="">
+                    <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
+                      News
+                    </p>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="">
+                    <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
+                      Blog
+                    </p>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="">
+                    <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
+                      Koi
+                    </p>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="">
+                    <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
+                      Pond
+                    </p>
+                  </Link>
+                </li>
+              </ul>
+            </li>
 
             <li>
               <a
@@ -312,15 +333,7 @@ const Navbar = () => {
                 Contact Us
               </a>
             </li>
-            <li>
-              <a
-                href="#"
-                className="text-white hover:text-neutral-500 transition duration-300"
-                onClick={handleLinkClick}
-              >
-                News
-              </a>
-            </li>
+        
           </ul>
 
           {/* Login and Signup in Mobile Menu */}
