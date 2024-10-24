@@ -19,7 +19,7 @@ const BASE_URL = URL.DEPLOY_URL;
 const api = axios.create({
 
   baseURL: BASE_URL,
-  
+
 
 });
 
