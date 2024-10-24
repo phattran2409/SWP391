@@ -11,7 +11,7 @@ const URL = {
 };
 
 
-const BASE_URL = URL.DEPLOY_URL;
+const BASE_URL = URL.DEPLOY_URL ;
 
 
 
