@@ -1,4 +1,5 @@
 
+const { query } = require("express");
 const fishkois = require("../models/fishkoi"); 
 
 const { search } = require("../routes/oauth");
@@ -159,6 +160,7 @@ const fishController = {
   //  getKoiByElement  : async(req ,res) => {
   //      try {
      
+
   //        console.log("query " + req.params.id);
   //        console.log("query  "  + typeof req.params.id);
   //        //get bang body
@@ -215,6 +217,41 @@ const fishController = {
       return res.status(500).json(error);
     }
   },
+
+
+  //        console.log("query " + req.params.id);
+  //        console.log("query  "  + typeof req.params.id);
+  //        const page = (parseInt(req.query.page)||1 )
+  //       const limit = (parseInt(req.query.limit) || 5)
+  //      const  skip = ( page - 1 )  * limit
+
+      
+  //        //get bang body
+  //        // const fishkoi = await fishkois.find({elementID : parseInt(data.elementID) });
+
+  //        //get bang query
+  //        const fishkoi = await fishkois.find  ({  
+  //          elementID:  req.params.id})
+  //          .skip(skip)
+  //          .limit(limit)
+         
+  //        console.log(typeof fishkoi);
+  //        console.log(fishkoi.length);
+          
+  //        if (fishkoi.length === 0) {
+  //          return res.status(403).json("data is not found");
+  //        }
+  //        return res.status(200).json({
+  //          currentPage: page,
+  //          totalPages: Math.ceil(fishkoi.length / limit),
+  //          totalDocuments: fishkoi.length,
+  //          data: fishkoi,
+  //        });
+  //      } catch (err) {
+  //        return res.status(500).json(err);
+  //      }
+      
+  //  },
 
 };
 

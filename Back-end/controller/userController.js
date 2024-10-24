@@ -13,6 +13,9 @@ const nodemailer = require("nodemailer");
 const fs = require("fs");
 const { log, error } = require("console");
 const element = require("../models/element");
+const mutal = require("../models/mutal");
+const { MongoClient } = require("mongodb");
+const pond = require("../models/pond");
 
 require("dotenv").config();
 
@@ -597,7 +600,42 @@ const useController = {
       
       return res.status(500).json({err});
     }
+  },
+
+  //  
+  rateMutual : async (req ,res)=> {
+
+      // const elementID_koi  = req.query.elementKoi; 
+      // const elementID_pond  = req.query.elmentPond; 
+      // const elementID_user = req.query.elementID_user;
+    
+    const { elementID_koi, elementID_pond, elementID_user } = req.body;
+
+    try {
+      // Kiểm tra xem các trường cần thiết có được cung cấp đầy đủ hay không
+      if (!elementID_koi || !elementID_pond || !elementID_user) {
+        return res.status(400).json("Missing Required Parameters");
+      }
+
+      // Truy vấn để tìm tài liệu với cả 3 trường
+      const result = await mutal.findOne({
+        elementID_koi: elementID_koi,
+        elementID_pond: elementID_pond,
+        elementID_user: elementID_user,
+      });
+
+      // Kiểm tra kết quả
+      if (result) {
+        return res.status(200).json("Mutual Generation"); // Trả về tài liệu nếu tìm thấy
+      } else {
+        return res.status(404).json("Mutual Overcoming");
+      }
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json("Error system");
+    }
   }
+
 };
 
 module.exports = useController;

@@ -4,6 +4,7 @@ const useController = require("../controller/userController");
 const upload = require("../middleware/multer");
 const uploads = require("../middleware/multerConfig");
 const jwt = require("jsonwebtoken");
+const user = require("../models/user");
 // GET all USER
 //  /v1/user/all
 router.get(
@@ -95,6 +96,6 @@ router.post("/notificationStatus" ,  useController.NotificationStatus);
 
 // Calculate Element 
 router.get("/calculateElement"  , useController.calculateElement);
-
+router.post("/mutual" ,useController.rateMutual );
 
 module.exports = router;
