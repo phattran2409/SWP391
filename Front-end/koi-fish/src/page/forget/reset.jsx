@@ -2,8 +2,8 @@ import React from "react";
 import { useState } from "react";
 import { Button, Form, Input, notification } from "antd";
 import { useNavigate, useLocation } from "react-router-dom"; // Ensure useLocation is imported
-import axios from 'axios';
 
+import api from "../../config/axios.js";
 function ResetPasswordPage() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ function ResetPasswordPage() {
 
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:8081/v1/auth/resetNewPass', { token, password: newPassword });
+      const response = await api.post('v1/auth/resetNewPass', { token, password: newPassword });
 
       notification.success({
         message: 'Success',

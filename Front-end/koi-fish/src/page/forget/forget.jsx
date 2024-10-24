@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button, Form, Input } from "antd";
-import axios from "axios";
+import api from "../../config/axios.js";
+
 
 function RecoverPage() {
 
@@ -9,7 +10,7 @@ function RecoverPage() {
 
     const handleSubmit = async () => {
         try {
-            const response = await axios.post('http://localhost:8081/v1/auth/reset-password', { email }, {
+            const response = await api.post('v1/auth/reset-password', { email }, {
                 headers: {
                     'Content-Type': 'application/json',
                 }
