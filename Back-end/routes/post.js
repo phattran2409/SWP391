@@ -38,4 +38,8 @@ router.put("/setStatus/:id", middlewareController.verifyTokenAdminAuth, postCont
 
 router.get("/searchPage", postController.searchPostnotPagination);
 
+router.get("/searchPostnotPagination", postController.searchPostnotPagination);
+
+router.get("/getAllAd/:id", postController.getAllAd);
+
 module.exports = router;

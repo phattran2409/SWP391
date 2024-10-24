@@ -371,6 +371,23 @@ const postController = {
     }
   },
 
+  getAllAd: async (req, res) => {
+    try {
+      const postByCategory = await posts
+        .find({ categoryID: req.params.id, postStatus: "true" })
+        .populate("author");
+
+      const totalDocuments = postByCategory.length; // Tổng số tài liệu sẽ là chiều dài của mảng
+
+      res.status(200).json({
+        totalDocuments: totalDocuments,
+        data: postByCategory,
+      });
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  },
+
   // uploadImage: async (req, res) => {
   //   console.log(req.file);
   //   cloudinary.uploader.upload(
