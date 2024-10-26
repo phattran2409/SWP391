@@ -37,11 +37,13 @@ const useController = {
       const user = await User.find().sort(sortOptions).skip(skip).limit(limit);
 
       const totalDocuments = await User.countDocuments();
+      const members = await User.countDocuments({ memberStatus: true });
       return res.status(200).json({
         currentPage: page,
         totalPages: Math.ceil(totalDocuments / limit),
         totalDocuments: totalDocuments,
         data: user,
+        members: members,
       });
     } catch (err) {
       res.status(500).json(err);
@@ -650,6 +652,47 @@ const useController = {
     } catch (error) {
       console.error(error);
       return res.status(500).json("Error system");
+    }
+  },
+
+  getMonthlyUserCount: async (req, res) => {
+    try {
+      const monthlyOrderCounts = await User.aggregate([
+        {
+          $group: {
+            _id: {
+              year: { $year: "$createdAt" },
+              month: { $month: "$createdAt" },
+            },
+            count: { $sum: 1 },
+          },
+        },
+        {
+          $sort: {
+            "_id.year": 1,
+            "_id.month": 1,
+          },
+        },
+      ]);
+  
+      // Initialize array for all 12 months with count = 0
+      const currentYear = new Date().getFullYear(); // Or specify any year you need
+      const formattedResults = Array.from({ length: 12 }, (_, i) => ({
+        year: currentYear,
+        month: i + 1,
+        count: 0,
+      }));
+  
+      // Update array with actual data where available
+      monthlyOrderCounts.forEach((item) => {
+        const index = item._id.month - 1; // Convert month to 0-indexed
+        formattedResults[index].count = item.count;
+        formattedResults[index].year = item._id.year; // Ensure the correct year is set
+      });
+  
+      return res.status(200).json(formattedResults);
+    } catch (err) {
+      return res.status(500).json(err);
     }
   }
 

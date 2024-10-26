@@ -31,11 +31,17 @@ const postController = {
         .limit(limit);
 
       const totalDocuments = await posts.countDocuments();
+      const news = await posts.countDocuments({ categoryID: 1 });
+      const blog = await posts.countDocuments({ categoryID: 2 });
+      const ads = await posts.countDocuments({ categoryID: 3 });
       res.status(200).json({
         currentPage: page,
         totalPages: Math.ceil(totalDocuments / limit),
         totalDocuments: totalDocuments,
         data: allPost,
+        news: news,
+        blog: blog,
+        ads: ads,
       });
     } catch (error) {
       return res.status(500).json(error);

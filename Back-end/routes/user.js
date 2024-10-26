@@ -99,4 +99,6 @@ router.get("/getNotification" ,middlewareController.verifyToken, useController.g
 router.get("/calculateElement"  , useController.calculateElement);
 router.post("/mutual" ,useController.rateMutual );
 
+router.get("/userMonthCount" , useController.getMonthlyUserCount);
+
 module.exports = router;

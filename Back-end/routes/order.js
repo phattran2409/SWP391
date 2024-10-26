@@ -8,4 +8,5 @@ router.get("/", middlewareController.verifyTokenAdminAuth, orderController.getAl
 // v1/order/delete
 router.delete("/delete:id" ,  orderController.deleteOrder);
 router.get("/getProfile", orderController.viewProfileUser )
+router.get("/orderCount", orderController.getMonthlyOrderCount)
 module.exports  = router;
