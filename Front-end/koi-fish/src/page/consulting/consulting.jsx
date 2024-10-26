@@ -2,16 +2,10 @@ import React, { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import {
-  DesktopOutlined,
-  FileOutlined,
-  PieChartOutlined,
-  TeamOutlined,
-  UserOutlined,
-  LogoutOutlined,
-  ExclamationCircleOutlined,
+  
   LoadingOutlined,
 } from "@ant-design/icons";
-import { Breadcrumb, Flex, Layout, Menu, theme } from "antd";
+import { Layout, } from "antd";
 import {
   Table,
   Button,
@@ -31,7 +25,6 @@ import {
   Col, 
   Card
 } from "antd";
-import { Link, Outlet, useLocation, useOutlet } from "react-router-dom";
 import Navbar from "../../components/navbar/Navbar";
 import Calculator from "../../components/Fengshui-Calcultor/Calculator";
 import "./consulting.css"

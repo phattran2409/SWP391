@@ -1,40 +1,38 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
-  DesktopOutlined,
   FileOutlined,
-  PieChartOutlined,
-  TeamOutlined,
   UserOutlined,
   LogoutOutlined,
   ExclamationCircleOutlined,
   HomeOutlined,
+  AreaChartOutlined,
 } from "@ant-design/icons";
-import { Breadcrumb, Layout, Menu, theme } from "antd";
-import {
-  Table,
-  Button,
-  Modal,
-  Form,
-  Select,
-  Input,
-  Popconfirm,
-  Upload,
-  Image,
-  Pagination,
-  DatePicker,
-  Badge,
-  Tag,
-  Avatar,
-} from "antd";
-import { Link, Outlet, useLocation, useOutlet } from "react-router-dom";
+import { Layout, Menu, theme } from "antd";
+import { Modal, Image } from "antd";
+import { Link, Outlet, useLocation } from "react-router-dom";
 const { Header, Content, Footer, Sider } = Layout;
 import { FaFileInvoiceDollar } from "react-icons/fa";
 import { GiCirclingFish } from "react-icons/gi";
 import { SiSpond } from "react-icons/si";
+
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+import DashboardContainer from "../admin-dashboard/DashboardContainer";
 
 function getItem(label, key, icon, children) {
   return {
@@ -45,7 +43,8 @@ function getItem(label, key, icon, children) {
   };
 }
 const items = [
-  getItem("Home", "", <HomeOutlined />),
+  getItem("Home", "home", <HomeOutlined />),
+  getItem("Statistical Chart", "", <AreaChartOutlined />),
   getItem("Manage Member", "member", <UserOutlined />),
   getItem("Manage Pond", "pond", <SiSpond />),
   getItem("Manage Koi", "koi", <GiCirclingFish />),
@@ -57,9 +56,17 @@ const items = [
   ]),
 ];
 
-// path
-
-const pathSnippets = location.pathname.split("/").filter((i) => i);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -70,6 +77,9 @@ const Dashboard = () => {
   } = theme.useToken();
   const [avatarImage, setavatarImage] = useState(null);
   const [showModal, setShowModal] = useState(false);
+
+  const location = useLocation();
+  const showDashboard = location.pathname === "/dashboard"; // Thay đổi đường dẫn này nếu cần
   // USE Effect
   useEffect(() => {
     console.log(location.pathname);
@@ -78,15 +88,24 @@ const Dashboard = () => {
   useEffect(() => {
     const checkTokenValidity = () => {
       const token = localStorage.getItem("token"); // Get token from storage
-
+      const user = JSON.parse(localStorage.getItem("user"));
+      const userRole = user ? user.admin : false;
       if (!token) {
         // No token found, redirect to login
         console.log("No token found");
         toast.error("No token found!");
         setTimeout(() => {
           navigate("/login");
-        }, 3000);
+        }, 2000);
 
+        return;
+      }
+
+      if (userRole === false) {
+        toast.error("You don't have permission to access this page");
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
         return;
       }
       console.log(jwtDecode(token));
@@ -109,39 +128,6 @@ const Dashboard = () => {
   }, [navigate]);
 
   useEffect(() => {
-    const checkUserRole = () => {
-      const user = JSON.parse(localStorage.getItem("user"));
-      const userRole = user ? user.admin : false;
-      const token = localStorage.getItem("token"); // Get token from storage
-
-      if (userRole === false) {
-        console.log("You don't have permission to access this page");
-        toast.error("You don't have permission to access this page");
-        setTimeout(() => {
-          navigate("/");
-        }, 3000);
-        return;
-      }
-      console.log(jwtDecode(token));
-      console.log(Date.now() / 1000);
-
-      const tokenDecode = jwtDecode(token);
-      const currentTime = Date.now() / 1000;
-      console.log(tokenDecode.exp);
-      if (tokenDecode.exp > currentTime) {
-        console.log("token con han");
-      } else {
-        toast.error("Expired token! Please login again");
-        setTimeout(() => {
-          navigate("/login");
-        }, 3000);
-      }
-    };
-    checkUserRole();
-    // Call the function when the component mounts
-  }, [navigate]);
-
-  useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("user")));
     console.log(user);
     setavatarImage(user.avatar);
@@ -160,7 +146,7 @@ const Dashboard = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setUser(null);
-    // toast.success("Logged out successfully");
+    toast.success("Logged out successfully");
 
     navigate("/login");
   };
@@ -181,12 +167,10 @@ const Dashboard = () => {
           style={{ padding: "16px", textAlign: "center" }}
         >
           <Image
-            src="https://res.cloudinary.com/ddqgjy50x/image/upload/v1729487633/di410srj2wapvp8ldyg8.jpg" 
+            src="https://res.cloudinary.com/ddqgjy50x/image/upload/v1729487633/di410srj2wapvp8ldyg8.jpg"
             alt="Logo"
             style={{
               borderRadius: "50%",
-              
-             
 
               width: collapsed ? "40px" : "60px",
               transition: "width 0.2s",
@@ -195,7 +179,7 @@ const Dashboard = () => {
           {!collapsed && (
             <h2 style={{ color: "white", marginTop: "8px" }}>
               <strong>Feng Shui Koi Consulting</strong>
-            </h2> 
+            </h2>
           )}
         </div>
         <div className="mt-7">
@@ -204,10 +188,16 @@ const Dashboard = () => {
             defaultSelectedKeys={["1"]}
             mode="inline"
             items={items.map((item) => {
-              if (item.key === "") {
+              if (item.key === "home") {
                 return {
                   ...item,
                   label: <Link to="/">Home</Link>, // Define the link separately
+                };
+              }
+              if (item.key === "") {
+                return {
+                  ...item,
+                  label: <Link to="/dashboard">Statistical Chart</Link>, // Define the link separately
                 };
               }
               return item;
@@ -224,10 +214,6 @@ const Dashboard = () => {
         >
           <div className="flex w-full h-full justify-end">
             <div className="flex ">
-              {/* <div>
-                {avatarImage ? <Image src={avatarImage} /> : <UserOutlined />}
-              </div>
-              <p> {user.userName}</p> */}
               <Menu>
                 <Menu.SubMenu
                   title={
@@ -281,19 +267,11 @@ const Dashboard = () => {
             margin: "0 16px",
           }}
         >
-          {/* <Breadcrumb
-            style={{
-              margin: "16px 0",
-            }}
-          >
-            {pathSnippets.map((_, index) => (
-              <Breadcrumb.Item>{pathSnippets[index]}</Breadcrumb.Item>
-            ))}
-          </Breadcrumb> */}
+          {showDashboard && <DashboardContainer />}
           <div
             style={{
-              padding: 24,
-              minHeight: 360,
+              padding: 1,
+              minHeight: 3,
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
             }}
@@ -323,4 +301,5 @@ const Dashboard = () => {
     </Layout>
   );
 };
+
 export default Dashboard;

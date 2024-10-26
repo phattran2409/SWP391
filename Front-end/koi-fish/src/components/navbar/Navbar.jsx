@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Search, Menu as Menu1, X, User } from "lucide-react";
 import { json, Link, useNavigate } from "react-router-dom";
 import { Menu, Avatar, Button, Modal, Image } from "antd";
-
+import api from "../../config/axios.js";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import CSS của Toastify
 import {
@@ -38,11 +38,28 @@ const Navbar = () => {
   };
   // lấy user từ local Storage
   useEffect(() => {
-    const storeUser = localStorage.getItem("user");
+    const storeUser = JSON.parse(localStorage.getItem("user"));
     if (storeUser) {
-      setUser(JSON.parse(storeUser));
+     fetchUserData(storeUser._id);
+    
+    
     }
-  }, []); // Chỉ chạy 1 lần khi component được mount
+    else {
+      setUser(null);
+     }
+  }, []); 
+
+  const fetchUserData = async (id) => {
+    try {
+      const response = await api.get(`v1/user/id=${id}`);
+      const user = response.data;
+      setUser(user);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    
+    }
+  }
+
 
   // show modal
   const showModal = () => {

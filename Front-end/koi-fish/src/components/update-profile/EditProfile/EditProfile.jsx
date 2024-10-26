@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaUser, FaCamera } from "react-icons/fa";
 
 import axios from "axios";
-
+import moment from 'moment';
 import api from "../../../config/axios.js";
 
 import { toast } from "react-toastify";
@@ -17,12 +17,41 @@ export function EditProfile() {
     avatar: "",
   });
 
-  const [imagePreview, setImagePreview] = useState(null);
+
+ 
+
+
+  const [imagePreview, setImagePreview] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState(null);
+  const [userId, setUserId] = useState(null);
 
-  const user = JSON.parse(localStorage.getItem("user"));
-  const userId = user ? user._id : null;
+ 
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      setUserId(user._id);
+      fetchUserData(user._id);
+    }
+  }, []);
+
+  const fetchUserData = async (id) => {
+    try {
+      const response = await api.get(`v1/user/id=${id}`);
+      const user = response.data;
+      setFormData({
+        name: user.name || "",
+        phoneNumber: user.phoneNumber || "",
+        birthDate: moment(user.birthDate).format('YYYY-MM-DD') || "",
+        gender: user.gender || "",
+        avatar: user.avatar || "",
+      });
+      setImagePreview(user.avatar || "");
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      toast.error("Failed to load user data.");
+    }
+  };
 
   const handleImageReview = (e) => {
     const file = e.target.files[0];
@@ -32,6 +61,8 @@ export function EditProfile() {
       uploadImage(file);
     }
   };
+  // const formattedDate = moment(formData.birthDate).format('YYYY-MM-DD');
+
 
   const uploadImage = async (file) => {
     const url = `https://api.cloudinary.com/v1_1/ddqgjy50x/upload`;
@@ -103,6 +134,8 @@ export function EditProfile() {
     }));
   };
 
+  
+
   return (
     <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-md p-8">
       <div className="flex flex-col items-center mb-8">
@@ -143,7 +176,7 @@ export function EditProfile() {
           />
         </div>
 
-        <h1 className="text-3xl font-bold mt-4 text-gray-800">Your Profile</h1>
+        <h1 className="text-3xl font-bold mt-4 text-gray-800">Personal Information</h1>
       </div>
       {isUploading && <p>Uploading you avatar...</p>}
       {uploadError && <p className="text-red-500">{uploadError}</p>}
@@ -159,7 +192,7 @@ export function EditProfile() {
             type="text"
             id="name"
             name="name"
-            value={formData.name}
+            value={formData.name || ""}            
             onChange={handleInputChange}
             pattern="[A-Za-zÀ-ỹ ]+"
             placeholder="Name"
@@ -179,7 +212,7 @@ export function EditProfile() {
             id="phone"
             name="phoneNumber"
             placeholder="Phone number"
-            value={formData.phoneNumber}
+            value={formData.phoneNumber || ""}  
             onChange={handleInputChange}
             pattern="^(\+84|0)(9|8|7|5|3)[0-9]{8}$"
             title="Phone number must start with +84 or 0 and followed by 9, 8, 7, 5, or 3, with a total of 10 digits."
@@ -191,13 +224,13 @@ export function EditProfile() {
             htmlFor="birthdate"
             className="block text-sm font-medium text-gray-700"
           >
-            Birthdate
+            Birthdate 
           </label>
           <input
             type="date"
             id="birthdate"
             name="birthDate"
-            value={formData.birthDate}
+            value={formData.birthDate || ""}
             onChange={handleInputChange}
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
           />
@@ -212,14 +245,14 @@ export function EditProfile() {
           <select
             id="gender"
             name="gender"
-            value={formData.gender}
+            value={formData.gender || 0}
             onChange={handleInputChange}
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
           >
             <option value="">Select gender</option>
-            <option value="0">Male</option>
-            <option value="1">Female</option>
-            <option value="2">Other</option>
+            <option value={0}>Male</option>
+            <option value={1}>Female</option>
+            <option value={2}>Other</option>
           </select>
         </div>
         <div>

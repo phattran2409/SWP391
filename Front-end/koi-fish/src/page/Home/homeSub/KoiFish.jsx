@@ -62,7 +62,9 @@ const KoiFish = () => {
       Blue: '#0000FF',
       Red: '#FF0000',
       White: '#FFFFFF',
-      Green: '#008000',
+      Green: '#006400',
+      Yellow: '#FFD700',
+      Black: '#000000',
     };
     return colorMap[color] || '#000';
   };
@@ -118,7 +120,7 @@ const KoiFish = () => {
       >
         {fishs.map((item, index) => (
           <SwiperSlide key={item.id || index}>
-            <div className="flex flex-col group relative shadow bg-white text-white rounded-xl overflow-hidden cursor-pointer max-w-[95%] h-[450px] lg:h-[500px]">
+            <Link to={`/koidetail/${item._id}`} className="flex flex-col group relative shadow bg-white text-white rounded-xl overflow-hidden cursor-pointer max-w-[95%] h-[450px] lg:h-[500px]">
               {/* Top section: Image */}
               <div
                 className="h-[60%] bg-white bg-center bg-no-repeat"
@@ -154,7 +156,7 @@ const KoiFish = () => {
                 </div>
               </div>
 
-            </div>
+            </Link>
           </SwiperSlide>
         ))}
       </Swiper>

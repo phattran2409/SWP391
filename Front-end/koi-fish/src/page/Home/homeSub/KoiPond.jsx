@@ -114,7 +114,7 @@ const KoiPond = () => {
       >
         {ponds.map((pond, index) => (
           <SwiperSlide key={pond._id || index}>
-            <div className="flex flex-col group relative shadow bg-white rounded-xl overflow-hidden cursor-pointer max-w-[95%] h-[450px] lg:h-[500px] max-[768px]:h-[500px]">
+            <Link to={`/ponddetail/${pond._id}`} className="flex flex-col group relative shadow bg-white rounded-xl overflow-hidden cursor-pointer max-w-[95%] h-[450px] lg:h-[500px] max-[768px]:h-[500px]">
               {/* Top section: Image */}
               <div
                 className="h-[70%] bg-white bg-center bg-no-repeat rounded-t-xl"
@@ -145,7 +145,7 @@ const KoiPond = () => {
                 </div>
               </div>
 
-            </div>
+            </Link>
           </SwiperSlide>
         ))}
       </Swiper>
