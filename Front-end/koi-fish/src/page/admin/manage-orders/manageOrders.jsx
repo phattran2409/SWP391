@@ -25,6 +25,7 @@ import { castArray, debounce } from "lodash";
 import moment from "moment";
 import { Navigate, useNavigate } from "react-router-dom";
 import  useAxiosInterceptor from "../../../config/axiosInterceptor"
+import { m } from "framer-motion";
 
 
 export default function ManageOrder() {
@@ -131,33 +132,40 @@ export default function ManageOrder() {
         width: "20%",
       },
       {
+        title: "Package name",
+        dataIndex: "packageType",
+        width :  "10%"
+      } ,
+      {
         title: "Message",
         dataIndex: "message",
         key: "message",
         width: "10%",
-        render : (message) => {
+        render: (message) => {
           console.log(message);
-          
+
           return message === "Successful." ? (
             <Tag color="green">{message}</Tag>
           ) : (
             <Tag color="red">{message}</Tag>
           );
-        }
+        },
       },
       {
         title: "Status",
         dataIndex: "resultCode",
-        key: "resultCode",  
-        render : (number) =>{ 
-         return (
-          <> 
-            {
-              (number == 0) ? (<Tag color="green">Success</Tag> ) :(<Tag color="Red">Fail</Tag>)
-            } 
-          </>
-         )
-        }
+        key: "resultCode",
+        render: (number) => {
+          return (
+            <>
+              {number == 0 ? (
+                <Tag color="green">Success</Tag>
+              ) : (
+                <Tag color="Red">Fail</Tag>
+              )}
+            </>
+          );
+        },
       },
       {
         title: "amount",
@@ -168,11 +176,11 @@ export default function ManageOrder() {
         title: "Action",
         dataIndex: "accountID",
         key: "accountID",
-        align : "center",
-        
-        render :  (accountID , order) => {
-          console.log("order id"+order._id);
-          
+        align: "center",
+
+        render: (accountID, order) => {
+          console.log("order id" + order._id);
+
           return (
             <>
               <div className="flex gap-2">
@@ -195,7 +203,7 @@ export default function ManageOrder() {
               </div>
             </>
           );
-        }
+        },
       },
     ];
 

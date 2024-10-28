@@ -21,10 +21,11 @@ export const CartProvider = ({ children }) => {
     );
     const isKoi = item.koiName;
     const isPond = item.shape;
-
+   
     const koiInCart = cartItems.some((item) => item.koiName);
     const pondInCart = cartItems.some((item) => item.shape);
-
+    isKoi && toast.success("The Koi was added  Assess Suitability");
+    isPond &&  toast.success("The Pond was added Assess Suitability")
     if (cartItems.length <= 2) {
       if (isKoi && koiInCart) {
         alert("just add one koi ");
@@ -58,6 +59,10 @@ export const CartProvider = ({ children }) => {
 
   const clearCart = () => {
     setCartItems([]);
+    setResult(null);
+    setKoi(0); 
+    setPond(0);
+    
   };
 
   const getCartTotal = () => {
@@ -81,6 +86,10 @@ export const CartProvider = ({ children }) => {
       console.log(result);
     } catch (err) {
       console.log("Error at Cart Context "+err);
+      toast.error(err.response.message)
+      
+      console.log(err);
+      
     }
   };
   // lưu cart vô storage mỗi lần bị thay đổi 
