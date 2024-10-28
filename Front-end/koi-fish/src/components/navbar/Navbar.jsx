@@ -13,6 +13,8 @@ import {
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
 
+import SearchBar from "../searchbar/SearchBar";
+
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState(null);
@@ -64,7 +66,7 @@ const Navbar = () => {
   // console.log("local  storage"+user.name);
 
   return (
-    <nav className="sticky top-0 z-50 py-3 bg-black">
+    <nav className="sticky h-[84px] top-0 z-50 py-3 bg-black">
       <div className="container mx-auto px-4 flex justify-between items-center">
         {/* Logo */}
 
@@ -144,7 +146,7 @@ const Navbar = () => {
             </li>
 
             <li>
-              <Link to={"/"}>
+              <Link to={"/contactus"}>
                 <p className="text-white hover:text-neutral-500 transition duration-300 cursor-pointer">
                   Contact Us
                 </p>
@@ -162,9 +164,10 @@ const Navbar = () => {
 
           <div className="h-6 border-l border-neutral-500 mx-4"></div>
 
-          <button className="text-white hover:text-neutral-500 focus:outline-none">
-            <Search className="w-5 h-5" />
-          </button>
+          <div className="hidden lg:flex items-center space-x-6">
+
+            <SearchBar />
+          </div>
           {!user ? (
             <>
               <Link
@@ -238,9 +241,8 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       <div
-        className={` lg:hidden fixed top-0 right-0 w-64 h-full bg-black z-50 p-6 transform transition-transform duration-300 ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={` lg:hidden fixed top-0 right-0 w-64 h-full bg-black z-50 p-6 transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         <div className="relative w-full h-full">
           <button
@@ -250,7 +252,9 @@ const Navbar = () => {
           >
             <X className="w-6 h-6" />
           </button>
-
+          <div className="mb-4">
+            <SearchBar />
+          </div>
           <ul className="space-y-4">
             <li>
               <a
@@ -282,26 +286,26 @@ const Navbar = () => {
               </a>
             </li>
             <li className="relative group">
-  <p className="text-white hover:text-neutral-500 transition duration-300 cursor-pointer">
-    Categories
-  </p>
-  <ul className="absolute left-0 hidden group-hover:flex bg-black ">
-    <li>
-      <Link to="">
-        <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
-          News
-        </p>
-      </Link>
-    </li>
-    <li>
-      <Link to="">
-        <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
-          Blog
-        </p>
-      </Link>
-    </li>
-  </ul>
-</li>
+              <p className="text-white hover:text-neutral-500 transition duration-300 cursor-pointer">
+                Categories
+              </p>
+              <ul className="absolute left-0 hidden group-hover:flex bg-black ">
+                <li>
+                  <Link to="">
+                    <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
+                      News
+                    </p>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="">
+                    <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
+                      Blog
+                    </p>
+                  </Link>
+                </li>
+              </ul>
+            </li>
 
             <li>
               <a

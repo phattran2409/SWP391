@@ -12,7 +12,7 @@ import AnimationReveal from '../../components/animation/AnimationReveal'; // Ass
 import HeroSection from './homeSub/HeroSection.jsx';
 import News from './homeSub/News.jsx';
 // import Posts from '../Home/home/Posts';
-
+import Welcome from './homeSub/Welcome.jsx';
 import { useLocation, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

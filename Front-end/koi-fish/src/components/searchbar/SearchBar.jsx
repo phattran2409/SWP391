@@ -1,73 +1,209 @@
-import React, { useState } from 'react';
-import { FaSearch } from 'react-icons/fa';
-import api from '../../config/axios'; // Adjust the path as necessary
-import './SearchBar.css';
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Search, X } from "lucide-react";
+import api from "../../config/axios";
 
-const SearchBar = ({ setResults }) => {
-  const [input, setInput] = useState('');
+const SearchBar = () => {
+    const [isSearching, setIsSearching] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [ponds, setPonds] = useState([]);
+    const [fish, setFish] = useState([]);
+    const [posts, setPosts] = useState([]);
+    const [filteredResults, setFilteredResults] = useState([]);
 
-  // Function to fetch Koi names
-  const fetchKoiNames = async () => {
-    try {
-      const response = await api.get('/v1/fish');
-      return response.data.data; // Adjust based on your API response structure
-    } catch (error) {
-      console.error("Error fetching koi names:", error.response?.status, error.response?.data || error.message);
-      return [];
-    }
-  };
+    // Fetch data
+    useEffect(() => {
+        fetchKoiPonds();
+        fetchKoiFish();
+        fetchPosts();
+    }, []);
 
-  // Function to fetch post titles
-  const fetchPostTitles = async () => {
-    try {
-      const response = await api.get('/v1/post/getAllPost');
-      return response.data; // Adjust based on your API response structure
-    } catch (error) {
-      console.error("Error fetching post titles:", error.response?.status, error.response?.data || error.message);
-      return [];
-    }
-  };
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (isSearching && e.key === "Escape") {
+                handleSearchClose();
+            }
+        };
 
-  // Function to fetch data for search
-  const fetchData = async (value) => {
-    const [koiNames, postTitles] = await Promise.all([
-      fetchKoiNames(),
-      fetchPostTitles(),
-    ]);
+        window.addEventListener("keydown", handleKeyDown);
+        
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [isSearching]);
 
-    // Filter results based on input value
-    const results = [
-      ...koiNames.filter((koi) =>
-        koi.koiName.toLowerCase().includes(value.toLowerCase())
-      ),
-      ...postTitles.filter((post) =>
-        post.title.toLowerCase().includes(value.toLowerCase())
-      ),
-    ];
+    const fetchKoiPonds = async () => {
+        try {
+            const pondRequests = Array.from({ length: 5 }, (_, i) => api.get(`v1/pond/getByElement/${i + 1}`));
+            const responses = await Promise.all(pondRequests);
+            setPonds(responses.flatMap(res => res.data.data));
+        } catch (error) {
+            console.error("Error fetching koi ponds:", error.response?.status, error.response?.data || error.message);
+        }
+    };
 
-    setResults(results);
-  };
+    const fetchKoiFish = async () => {
+        try {
+            const response = await api.get('/v1/fish');
+            setFish(response.data.data);
+        } catch (error) {
+            console.error("Error fetching koi fish:", error.response?.status, error.response?.data || error.message);
+        }
+    };
 
-  const handleChange = (value) => {
-    setInput(value);
-    if (value) {
-      fetchData(value);
-    } else {
-      setResults([]); // Clear results if input is empty
-    }
-  };
+    const fetchPosts = async () => {
+        try {
+            const response = await api.get('/v1/post/getAllPost?page=1&limit=50');
+            setPosts(response.data.data);
+        } catch (error) {
+            console.error("Error fetching posts:", error.response?.status, error.response?.data || error.message);
+        }
+    };
 
-  return (
-    <div className="input-wrapper">
-      <FaSearch id="search-icon" />
-      <input
-        type="text"
-        placeholder="Type to search..."
-        value={input}
-        onChange={(e) => handleChange(e.target.value)}
-      />
-    </div>
-  );
+    const colorToHex = (color) => {
+        const colorMap = {
+            Blue: '#0000FF',
+            Red: '#FF0000',
+            White: '#FFFFFF',
+            Green: '#008000',
+        };
+        return colorMap[color] || '#000';
+    };
+
+    // Handle Search Query
+    const handleSearchChange = (e) => {
+        const query = e.target.value.toLowerCase();
+        setSearchQuery(query);
+
+        if (query.trim() === "") {
+            setFilteredResults([]);
+            return;
+        }
+
+        // Filter results
+        const isKoiSearch = query.includes("koi");
+        const isFishSearch = query.includes("fish");
+        const isPondSearch = query.includes("pond");
+        const isPostSearch = query.includes("post");
+
+        const filteredPonds = isPondSearch ? ponds.filter(pond => pond.shape.toLowerCase().includes(query.replace("pond", "").trim())) : [];
+        const filteredFish = (isKoiSearch || isFishSearch) ? fish.filter(fish => fish.koiName.toLowerCase().includes(query.replace(/koi|fish/, "").trim())) : [];
+        const filteredPosts = isPostSearch ? posts.filter(post => post.title.toLowerCase().includes(query.replace("post", "").trim())) : [];
+
+        const Ponds = ponds.filter(pond =>
+            pond.shape.toLowerCase().includes(query)
+        );
+
+        const Fishs = fish.filter(fish =>
+            fish.koiName.toLowerCase().includes(query)
+        );
+
+        const Posts = posts.filter(post =>
+            post.title.toLowerCase().includes(query)
+        );
+
+        setFilteredResults([...filteredPonds, ...filteredFish, ...filteredPosts, ...Ponds, ...Fishs, ...Posts]);
+    };
+
+
+    const handleSearchClose = () => {
+        setIsSearching(false);
+        setSearchQuery("");
+        setFilteredResults([]);
+    };
+
+    const truncateText = (text, length) => {
+        if (!text) return ""; 
+        return text.length > length ? `${text.substring(0, length)}...` : text;
+    };
+    
+    
+    const handleWheel = (e) => {
+        e.stopPropagation(); // Prevent scroll page when hovering over results
+    };
+
+    return (
+        <div className="relative flex flex-col items-center">
+            {isSearching ? (
+                <div className="flex items-center space-x-2">
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        placeholder="Search koi, fish, ponds, or posts..."
+                        className="px-3 py-1 border rounded-2xl bg-white text-black focus:outline-none"
+                    />
+                    <button onClick={handleSearchClose} className="text-gray-500 hover:text-gray-200 transition duration-300">
+                        <X size={20} />
+                    </button>
+                </div>
+            ) : (
+                <button onClick={() => setIsSearching(true)} className="text-white hover:text-gray-300 focus:outline-none">
+                    <Search size={20} />
+                </button>
+            )}
+    
+            {/* Display search results */}
+            {filteredResults.length > 0 && (
+                <div
+                    className="absolute bg-white border mt-2 rounded-lg shadow-md max-h-[600px] max-[1440px]:max-w-full w-[400px] overflow-y-auto z-10"
+                    style={{ top: '100%' }} 
+                    onWheel={handleWheel} 
+                >
+                    {filteredResults.map((item, index) => (
+                        <div key={index} className="p-2">
+                            {item.koiName && (
+                                <Link to={`/koidetail/${item._id}`} className="bg-zinc-200 rounded-xl p-2 hover:bg-gray-400 block">
+                                    <div className="flex space-x-2">
+                                        <div className="flex justify-center items-center">
+                                            <img src={item.image} alt={item.koiName} className="w-20 h-20 object-cover rounded-xl" />
+                                        </div>
+                                        <div>
+                                            <strong>Koi Fish:</strong> {item.koiName}
+                                            <p>{truncateText(item.description, 50)}</p>
+                                            <div className="flex items-center mt-2">
+                                                <span className="font-semibold text-black">Color:</span>
+                                                {item.colors?.map((color, idx) => (
+                                                    <span
+                                                        key={idx}
+                                                        className="ml-2 w-4 h-4 rounded-full border border-black"
+                                                        style={{ backgroundColor: colorToHex(color) }}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Link>
+                            )}
+                            {item.shape && (
+                                <Link to={`/ponddetail/${item._id}`} className="bg-zinc-200 rounded-xl p-2 hover:bg-gray-400 block">
+                                    <div className="flex space-x-2">
+                                        <div className="flex justify-center items-center">
+                                            <img src={item.image} alt={item.shape} className="w-20 h-20 object-cover rounded-xl" />
+                                        </div>
+                                        <div>
+                                            <strong>Pond Shape:</strong> {item.shape}
+                                            <p>{truncateText(item.description, 50)}</p>
+                                            <p><strong>Direction:</strong> {item.direction?.join(", ")}</p>
+                                        </div>
+                                    </div>
+                                </Link>
+                            )}
+                            {item.title && (
+                                // /postdetail/${item._id}
+                                <Link to={`/`} className="bg-zinc-200 rounded-xl p-2 hover:bg-gray-400 block">
+                                    <div>
+                                        <strong>Post:</strong> {item.title}
+                                        <p>{truncateText(item.context ? item.context.replace(/<[^>]+>/g, '') : '', 50)}</p>
+                                    </div>
+                                </Link>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
 };
 
 export default SearchBar;
