@@ -21,137 +21,159 @@ import {
   Tag,
   Avatar,
   Spin,
-  Row,  
-  Col, 
-  Card
+  Row,
+  Col,
+  Card,
+  Skeleton,
 } from "antd";
 import Navbar from "../../components/navbar/Navbar";
 import Calculator from "../../components/Fengshui-Calcultor/Calculator";
-import "./consulting.css"
+import "./consulting.css";
 import { CgEnter } from "react-icons/cg";
-const { Header, Content, Footer, Sider } = Layout;
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { IoFish } from "react-icons/io5";
+import { IoFish, IoNewspaper } from "react-icons/io5";
 import { SiSpond } from "react-icons/si";
 import api from "../../config/axios";
 import { toast } from "react-toastify";
 import ContentLoader from "react-content-loader";
-
+import Item from "antd/es/list/Item";
+import parse from "html-react-parser";
+import Loading from "../../components/loading/Loading";
+import Footer from "../../components/footer/Footer";
+import AdPopUp from "../../components/Ads/PopUp-ads";
+import SliderPopUp from "../../components/Ads/slideAds";
+import AnimationReveal from "../../components/animation/AnimationReveal"
 export default function Consulting() {
   const [value, setvalue] = useState({});
   // const [valueElement , setValueElement] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [koi , setKoi] = useState([])
-  const [pond , setPond] = useState([])
-  const colorArray = ["yellow", "green", "blue", "red", "#450803"];
-  const textColor = ["#3333" , "#ffff" , "#ffff",  "#ffff" , "#ffff" ]
+  const [loadingCard , setLoadingCard] = useState(false);
+  const [koi, setKoi] = useState([]);
+  const [pond, setPond] = useState([]);
+  const [post, setPost] = useState([]);
+  const [ads , setAds] = useState([]);
+  const colorArray = ["gray", "green", "blue", "red", "#450803"];
+  const textColor = ["#3333", "#ffff", "#ffff", "#ffff", "#ffff"];
 
-var settings = {
-  dots: true,
-  infinite: true,
-  slidesToShow: 3,
-  slidesToScroll: 1,
-  autoplay: true,
-  speed: 2000,
-  autoplaySpeed: 2000,
-  cssEase: "linear",
-  responsive: [
-    {
-      breakpoint: 1024,
-      settings: {
-        slidesToShow: 3,
-        slidesToScroll: 3,
-        infinite: true,
-        dots: true,
+  var settings = {
+    dots: true,
+    infinite: true,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    autoplay: true,
+    speed: 2000,
+    autoplaySpeed: 2000,
+    cssEase: "linear",
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+          infinite: true,
+          dots: true,
+        },
       },
-    },
-    {
-      breakpoint: 600,
-      settings: {
-        slidesToShow: 2,
-        slidesToScroll: 2,
-        initialSlide: 2,
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          initialSlide: 2,
+        },
       },
-    },
-    {
-      breakpoint: 480,
-      settings: {
-        slidesToShow: 1,
-        slidesToScroll: 1,
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
       },
-    },
-  ],
-};
+    ],
+  };
 
-    const handleSetValue = (data) => {
-      console.log("data callback" + data);
-      console.log();
+  const handleSetValue = (data) => {
+    setvalue(JSON.parse(data));
+  };
 
-      setvalue(JSON.parse(data));
-    };
-    const handleSetLoading = (data) => {
-      setLoading(data);
-    };
+  const handleSetLoading = (data) => {
+    setLoading(data);
+  };
 
-    
-  //  API get koi by element ID 
-  const handleAPIKoi = async () => { 
-     console.log("value element ID : "+value.elementID);
-     
+  //  API get koi by element ID
+  const handleAPIKoi = async () => {
+    console.log("value element ID : " + value.elementID);
+
     try {
-      const res = await api.get(`v1/fish/getKoiElement/${value.elementID || elementID}`);
-      const resPond = await api.get(`v1/pond/getByElement/${value.elementID || elementID}`);
-      console.log(res.data);
+      const res = await api.get(
+        `v1/fish/getKoiElement/${value.elementID || elementID}`
+      );
+      const resPond = await api.get(
+        `v1/pond/getByElement/${value.elementID || elementID}`
+      );
+      const resPost = await api.get(
+        `http://localhost:8081/v1/post/getPostByElementID/${value.elementID}?categoryID=${2}`
+      );
+      const resAds = await api.get(
+        `http://localhost:8081/v1/post/getPostByElementID/${value.elementID}?categoryID=3`
+      );
+      
+      console.log("ADS object"+ typeof resAds.data);
+      
+
       setKoi(res.data.data || []);
-      setPond(resPond.data.data|| [])
+      setPond(resPond.data.data || []);
+      setPost(resPost.data.data || []);
+      setAds(resAds.data.data ||  []);
+      setLoadingCard(false)
+      
+      console.log(ads);
+      
     } catch (err) {
       toast.error(err.errorCode);
     }
-  }
-//  handleAPIKoi();
+  };
+  //  handleAPIKoi();
 
   useEffect(() => {
     // setValueElement(JSON.stringify(localStorage.getItem("elementUser")));
-    setvalue(JSON.parse(localStorage.getItem("elementUser")))
-    console.log("hooks "+value);
-  } , [])
+    setvalue(JSON.parse(localStorage.getItem("elementUser")));
+    console.log("hooks " + value);
+  }, []);
 
-    useEffect(() => {
-      if (value) {
-        console.log("thuc hien call api ");
-        
+  useEffect(() => {
+    if (value) {
+      console.log("thuc hien call api ");
+      setLoadingCard(true);
+      setTimeout(() => {
         handleAPIKoi();
-      }
-    }, [value]);
-    console.log(value);
-    
-
+      }, 1000);
+      
+      
+    }
+  }, [value]);
+  
 
   
+
   return (
     <>
-      <Navbar />
-      <Layout style={{ minHeight: "100vh", minwidth: "100vh" }}>
-        <Layout
-          style={{
-            padding: 0,
-          }}
-        >
-          <Content
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Calculator
-              setvalue={handleSetValue}
-              setLoading={handleSetLoading}
-            />
-            <div className="container  mt-5">
-              <div className="tag-result  mt-12">
+      <div className="w-full overflow-visible sm:overflow-visible">
+        <Navbar className="w-full" />
+
+        <div className="max-w-full h-full">
+          
+            <div className="flex justify-center">
+              <Calculator
+                setvalue={handleSetValue}
+                setLoading={handleSetLoading}
+              />
+            </div>
+
+            <div className="container  mx-auto">
+              <div className="tag-result mt-12">
                 {value &&
                   (loading ? (
                     <Spin
@@ -160,110 +182,352 @@ var settings = {
                       size="large"
                     />
                   ) : (
-                    <h1 className="lg:text-4xl md:text-3xl sm:text-xl font-bold text-center">
-                      {" "}
+                    <h1 className="text-xl lg:text-4xl md:text-3xl sm:text-xl font-bold text-center">
                       Your Element is{" "}
                       <Tag
-                        className="text-4xl"
+                        className="text-xl sm:text-4xl lg:text-4xl"
                         color={colorArray[value.elementID - 1]}
                       >
-                        {value.element}{" "}
+                        {value.element}
                       </Tag>
                     </h1>
                   ))}
               </div>
             </div>
-          </Content>
-        </Layout>
-      </Layout>
-      <div className="container-parent w-full h-screen ">
-        <div className="container-list flex justify-center w-full h-full">
-          {/* Koi FISH */}
-          <div className="container ">
-            <div className="title ">
-              <h1 className=" flex text-left text-4xl text-slate-700 ml-5 my-20 font-bold">
-                {" "}
-                Your Suggesting Koi{" "}
-                <span className="text-center flex items-center  ml-5 text-slate-700 text-4xl">
-                  <IoFish />
-                </span>
-              </h1>
-            </div>
-            <div className="container">
-              <Slider {...settings}>
-                {/* Ensure JSX is returned in the map */}
-                { 
-                  koi.map((kois) => (
-                    <div key={kois.id} className="card">
-                      <div className="imgBx">
-                        <Image src={kois.image} alt={kois.koiName} />
-                      </div>
-                      <div className="content">
-                        <span className="price">
-                          <a href={`/koidetail/${kois._id}`}>Read more</a>
-                        </span>
-                        <ul className="">
-                          <li>
-                            <b className="mt-20 text-3xl ">{kois.koiName}</b>
-                          </li>
-                          <li>{kois.color}</li>
-                          <br />
-                          <p className="description">
-                            {kois.description.substring(0, 100)}...
-                          </p>
-                        </ul>
-                      </div>
-                    </div>
-                  ))
-                 }
-              </Slider>
-            </div>
-          </div>
-        </div>
-        {/*  POND  */}
-        <div className="container-list flex justify-center w-full h-full">
-          <div className="container ">
-            <div className="title ">
-              <h1 className=" flex text-left text-4xl text-slate-700 ml-5 my-20 font-bold">
-                {" "}
-                Your Suggesting Koi Pond{" "}
-                <span className="text-center flex items-center  ml-5 text-slate-700 text-4xl">
-                  <IoFish />
-                </span>
-              </h1>
-            </div>
-            <div className="container">
-              <Slider {...settings}>
-                {/* Ensure JSX is returned in the map */}
-                {pond.map((pond) => (
-                  <div key={pond.id} className="card">
-                    <div className="imgBx">
-                      <Image src={pond.image} alt={pond.image} />
-                    </div>
-                    <div className="content">
-                      <span className="price">
-                        <a href={`/ponddetail/${pond._id}`}>Read more</a>
-                      </span>
-                      <ul className="">
-                        <li>
-                          <b className="mt-20 text-3xl ">{pond.shape}</b>
-                        </li>
-                        <li>{pond.direction}</li>
-                        <br />
-                        <p className="description">
-                          {pond.description.substring(0, 100)}...
-                        </p>
-                      </ul>
-                    </div>
-                  </div>
-                ))}
-              </Slider>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div></div>
+            <div className="w-full h-full">
+              {/* Koi Fish */}
+              <div className="container mx-auto px-4">
+                {loadingCard ? (
+                  <ContentLoader
+                    viewBox="0 0 1644 360"
+                    height={360}
+                    width={1644}
+                  >
+                    <rect
+                      x="448"
+                      y="30"
+                      rx="0"
+                      ry="0"
+                      width="750"
+                      height="300"
+                    />
+                    <rect
+                      x="239"
+                      y="53"
+                      rx="0"
+                      ry="0"
+                      width="643"
+                      height="254"
+                    />
+                    <rect
+                      x="30"
+                      y="76"
+                      rx="0"
+                      ry="0"
+                      width="527"
+                      height="208"
+                    />
+                    <rect
+                      x="762"
+                      y="53"
+                      rx="0"
+                      ry="0"
+                      width="643"
+                      height="254"
+                    />
+                    <rect
+                      x="1087"
+                      y="76"
+                      rx="0"
+                      ry="0"
+                      width="527"
+                      height="208"
+                    />
+                  </ContentLoader>
+                ) : (
+                  <h1 className="text-left text-xl sm:text-4xl text-slate-700 my-10 font-bold flex items-center">
+                    Your Suggested Koi{" "}
+                    <IoFish className="ml-5 text-2xl sm:text-4xl" />
+                  </h1>
+                )}
+                <div>
+                  {loading ? (
+                    <ContentLoader
+                      viewBox="0 0 1644 360"
+                      height={360}
+                      width={1644}
+                    >
+                      <rect
+                        x="448"
+                        y="30"
+                        rx="0"
+                        ry="0"
+                        width="750"
+                        height="300"
+                      />
+                      <rect
+                        x="239"
+                        y="53"
+                        rx="0"
+                        ry="0"
+                        width="643"
+                        height="254"
+                      />
+                      <rect
+                        x="30"
+                        y="76"
+                        rx="0"
+                        ry="0"
+                        width="527"
+                        height="208"
+                      />
+                      <rect
+                        x="762"
+                        y="53"
+                        rx="0"
+                        ry="0"
+                        width="643"
+                        height="254"
+                      />
+                      <rect
+                        x="1087"
+                        y="76"
+                        rx="0"
+                        ry="0"
+                        width="527"
+                        height="208"
+                      />
+                    </ContentLoader>
+                  ) : (
+                    <Slider {...settings}>
+                      {koi.map((kois) => (
+                        <div key={kois.id} className="card">
+                          <div className="imgBx">
+                            <Image src={kois.image} alt={kois.koiName} />
+                          </div>
+                          <div className="content text-[10px] px-0 sm:text-xs">
+                            <span className="price  md:outline lg:outline-none">
+                              <a href={`/koidetail/${kois._id}`}>Read more</a>
+                            </span>
+                            <ul className="card-body sm:h-[200px] sm:pb-2">
+                              <li className="text-xl md:text-3xl font-bold">
+                                {kois.koiName}
+                              </li>
+
+                              <p className="description mt-5 text-[10px] sm:text-[10px] md:text-[10px] lg:text-[15px]  ">
+                                {kois.description.substring(0, 100)}...
+                              </p>
+                            </ul>
+                          </div>
+                        </div>
+                      ))}
+                    </Slider>
+                  )}
+                </div>
+              </div>
+              {/* Koi Pond */}
+              <div className="container mx-auto px-4">
+                {loadingCard ? (
+                  <ContentLoader
+                    viewBox="0 0 1644 360"
+                    height={360}
+                    width={1644}
+                  >
+                    <rect
+                      x="448"
+                      y="30"
+                      rx="0"
+                      ry="0"
+                      width="750"
+                      height="300"
+                    />
+                    <rect
+                      x="239"
+                      y="53"
+                      rx="0"
+                      ry="0"
+                      width="643"
+                      height="254"
+                    />
+                    <rect
+                      x="30"
+                      y="76"
+                      rx="0"
+                      ry="0"
+                      width="527"
+                      height="208"
+                    />
+                    <rect
+                      x="762"
+                      y="53"
+                      rx="0"
+                      ry="0"
+                      width="643"
+                      height="254"
+                    />
+                    <rect
+                      x="1087"
+                      y="76"
+                      rx="0"
+                      ry="0"
+                      width="527"
+                      height="208"
+                    />
+                  </ContentLoader>
+                ) : (
+                  <h1 className="text-left text-xl sm:text-4xl text-slate-700 my-10 font-bold flex items-center">
+                    Your Suggested Koi Pond{" "}
+                    <IoFish className="ml-5 text-2xl sm:text-4xl" />
+                  </h1>
+                )}
+                <div>
+                  <Slider {...settings}>
+                    {pond.map((pond) => (
+                      <div key={pond.id} className="card">
+                        <div className="imgBx">
+                          <Image src={pond.image} alt={pond.image} />
+                        </div>
+                        <div className="content text-[10px] px-0 sm:text-xs">
+                          <span className="price">
+                            <a href={`/ponddetail/${pond._id}`}>Read more</a>
+                          </span>
+                          <ul>
+                            <li className="text-xl md:text-3xl font-bold">
+                              {pond.shape}
+                            </li>
+                            <li className="text-xs md:text-xl">
+                              {pond.direction}
+                            </li>
+                            <li className="w-full h-full  mt-3">
+                              <p className="description text-[10px] md:text-[15px]">
+                                {pond.description.substring(0, 100)}...
+                              </p>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    ))}
+                  </Slider>
+                </div>
+              </div>
+              {/* News Post */}
+              <div className="container   mx-auto px-4">
+                {loadingCard ? (
+                  <ContentLoader
+                    viewBox="0 0 1644 360"
+                    height={360}
+                    width={1644}
+                  >
+                    <rect
+                      x="448"
+                      y="30"
+                      rx="0"
+                      ry="0"
+                      width="750"
+                      height="300"
+                    />
+                    <rect
+                      x="239"
+                      y="53"
+                      rx="0"
+                      ry="0"
+                      width="643"
+                      height="254"
+                    />
+                    <rect
+                      x="30"
+                      y="76"
+                      rx="0"
+                      ry="0"
+                      width="527"
+                      height="208"
+                    />
+                    <rect
+                      x="762"
+                      y="53"
+                      rx="0"
+                      ry="0"
+                      width="643"
+                      height="254"
+                    />
+                    <rect
+                      x="1087"
+                      y="76"
+                      rx="0"
+                      ry="0"
+                      width="527"
+                      height="208"
+                    />
+                  </ContentLoader>
+                ) : (
+                  <h1 className="text-left text-xl sm:text-4xl text-slate-700 my-10 font-bold flex items-center">
+                    Your Suggested News{" "}
+                    <IoNewspaper className="ml-5 text-2xl sm:text-4xl" />
+                  </h1>
+                )}
+                <div>
+                  <Slider {...settings}>
+                    {post.map((newsItem) => (
+                      <div key={newsItem.id} className="card">
+                        <div className="imgBx">
+                          <Image
+                            src={newsItem.imageThumbnail}
+                            alt={newsItem.imageThumbnail}
+                          />
+                        </div>
+                        <div className="content text-[10px] px-0 sm:text-xs">
+                          <span className="price">
+                            <a href={`/newsdetail/${newsItem._id}`}>
+                              Read more
+                            </a>
+                          </span>
+                          <ul>
+                            <li className="">
+                              <h1 className="text-[12px] sm:text-xs md:text-xs lg:text-xl font-bold">
+                                {newsItem.title}
+                              </h1>
+                            </li>
+                            <li className="text-[10px] sm:text-xs md:text-xs lg:text-xs text-gray-400">
+                              <div className="flex justify-between">
+                                {new Date(newsItem.createdAt).toDateString()}
+                                <span>Author : {newsItem.author.name}</span>
+                              </div>
+                            </li>
+                            <li className="w-full h-[50px] mt-3 overflow-hidden  ">
+                              <p className="description text-[10px]  sm:text-[13px] ">
+                                {/* {newsItem.description.substring(0, 100)}... */}
+                                {parse(newsItem.context)}
+                              </p>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    ))}
+                  </Slider>
+                </div>
+              </div>
+              {/* ADS */}
+              <div className="container flex-col mx-auto w-full px-4 h-fit ">
+                <h1 className="text-left text-xl sm:text-4xl text-slate-700 my-10 font-bold flex items-center">
+                  {" "}
+                  Your Suggested Advertising
+                </h1>
+
+                <div className="mx-auto h-[100vh] md:w-[400px] lg:w-[600px] mb-4 ">
+                  <SliderPopUp ADS={ads}></SliderPopUp>
+                </div>
+              </div>
+              <Footer />
+            </div>
+         
+        </div>
+        {value && (
+          <>
+            <AdPopUp ADS={ads} value={value} />
+          </>
+        )}
+      </div>
     </>
   );
 }

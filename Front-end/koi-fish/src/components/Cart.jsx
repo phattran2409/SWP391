@@ -12,7 +12,8 @@ export default function Cart({ showModal, toggle }) {
   const { cartItems, handleMutual, removeFromCart, clearCart, result} =
     useContext(CartContext);
     console.log("show modal at cart "+ showModal);
-
+    console.log("result :  "+ result);
+    
      const colorToHex = (color) => {
        const colorMap = {
          Blue: "#0000FF",
@@ -42,7 +43,10 @@ export default function Cart({ showModal, toggle }) {
       };
       return elementColor[elementID] || "";
      }
- 
+     
+     const  resultCode = result;
+  
+    console.log(resultCode);
     
       {/* <div className="absolute  w-full h-full flex  justify-center">
         <div className="w-1/2 h-1/2 justify-center flex-col flex items-center fixed   bg-white dark:bg-black gap-8  p-10  text-black dark:text-white font-normal uppercase text-sm">
@@ -255,11 +259,14 @@ export default function Cart({ showModal, toggle }) {
      {cartItems.length > 0 ? (
        <div className="flex w-full justify-center items-center text-2xl font-bold">
          {cartItems.length >= 2 &&
-           (result === 1 ? (
+           (result != null  &&
+           ((resultCode === 1)? (
              <iframe src="https://lottie.host/embed/f0cf59e2-3927-4526-aaed-8d60dd79f1d8/p8QuDeZL3Z.json"></iframe>
            ) : (
              <iframe src="https://lottie.host/embed/aac9744d-2c28-4445-a409-b04b92c6e69b/w7fWbIHaur.json"></iframe>
-           ))}
+           ))
+          )
+        }
        </div>
      ) : (
        <div className="flex  w-full h-full  justify-center">

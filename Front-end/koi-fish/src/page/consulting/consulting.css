@@ -2,7 +2,18 @@
     
      padding: 10px;
 }
- 
+
+ * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+
+ }
+
+body { 
+    width: 100%;
+}
+
 .ant-card-cover > img { 
     
     width: 100px;
@@ -91,7 +102,6 @@
     position: relative;
     width: 100%;
     height: 160px;
-    
     background: #344e41;
     border-radius: 15px;
     border-top-left-radius:0 ;
@@ -105,9 +115,9 @@
     list-style: none;
 }
 
-.card .content p{
+/* .card .content p{
     font-size: 15px;
-}
+} */
 
 .card .content .price{
     position: absolute;
@@ -183,3 +193,74 @@
 }
 
 
+@media  (max-width :400px )   {
+    
+    .card .content p{ 
+        font-size: 10px;
+    }
+    .card .content .price a{
+    position: relative;
+    background: #fff;
+    padding: 10px 2px;
+        margin:20px 5px;
+    display: block;
+    border-radius: 7px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    color: #344e41;
+    transition: 0.5s;
+    border: 2px solid #344e41;
+    }
+
+ 
+
+}
+
+@media  (max-width :800px )   {
+    
+ 
+    .card .content .price a{
+    position: relative;
+    background: #fff;
+    padding: 5px 2px;
+    margin:20px 5px;
+    display: block;
+    border-radius: 7px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    color: #344e41;
+    transition: 0.5s;
+    border: 2px solid #344e41;
+    }
+
+    
+
+ 
+
+}
+
+
+/* @media  (min-width :750px )   {
+    
+    .card .content p{ 
+        font-size: 10px;
+    }
+    .card .content .price a{
+    position: relative;
+    background: #fff;
+    padding: 10px 2px;
+        margin:20px 5px;
+    display: block;
+    border-radius: 7px;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    color: #344e41;
+    transition: 0.5s;
+    border: 2px solid #344e41;
+    }
+
+}
+ */

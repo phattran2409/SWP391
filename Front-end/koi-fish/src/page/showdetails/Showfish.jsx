@@ -175,7 +175,6 @@ const ShowFish = () => {
             </button>
           )}
         </div>
-        <div></div>
       </AnimationReveal>
       <Footer />
     </div>

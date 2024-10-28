@@ -40,10 +40,13 @@ function MemberPackage() {
         packageType: packageType.packageType,
         id: user._id,
       });
+      console.log(res);
+      
       if (res.status == 200) {
         const resPayment = await api.post(`/v1/pay/paymentMomo`, {
           _id: user._id,
           amount_1: packageType.amount,
+          packageType : packageType.packageType 
         });
 
         console.log(resPayment.data.payUrl);
@@ -58,6 +61,8 @@ function MemberPackage() {
          await api.post("/v1/user/subcribe/del" , {id : user._id});
         }
       }
+      toast.error(err.response.data+" Login Again");
+      
       console.log(err.response.data);
     }
   }
