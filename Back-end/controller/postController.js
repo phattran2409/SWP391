@@ -17,6 +17,25 @@ const postController = {
     }
   },
 
+  getPostByElemet : async(req , res) => {
+    try {
+      const post = await posts
+        .find({
+          elementID: parseInt(req.params.id),
+          categoryID: 1,
+        })
+        .populate("author");
+
+      if (post) {
+        return res.status(200).json({data : post}); 
+      }
+
+      return res.status(406).json("Not found")
+    } catch (error) {
+      return res.status(500).json(error)
+    }
+  },
+
   getAllPost: async (req, res) => {
     try {
       const page = parseInt(req.query.page) || 1;

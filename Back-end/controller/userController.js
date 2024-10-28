@@ -635,7 +635,8 @@ const useController = {
       if (!elementID_koi || !elementID_pond || !elementID_user) {
         return res.status(400).json("Missing Required Parameters");
       }
-
+      console.log({elementID_koi , elementID_pond  , elementID_user});
+      
       // Truy vấn để tìm tài liệu với cả 3 trường
       const result = await mutal.findOne({
         elementID_koi: elementID_koi,
@@ -645,9 +646,9 @@ const useController = {
 
       // Kiểm tra kết quả
       if (result) {
-        return res.status(200).json("Mutual Generation"); // Trả về tài liệu nếu tìm thấy
+        return res.status(200).json({success : 1 , message : "Mutual Generation"}); // Trả về tài liệu nếu tìm thấy
       } else {
-        return res.status(404).json("Mutual Overcoming");
+        return res.status(200).json({success : 0 , message :"Mutual Overcoming"});
       }
     } catch (error) {
       console.error(error);

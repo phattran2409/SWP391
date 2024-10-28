@@ -14,12 +14,14 @@ router.get("/getPostByCategory/:id", postController.getPostByCategory);
 //Get approved post by category
 router.get("/getPost/:id", postController.getApprovedPost);
 
+// Get post by elmentID 
+router.get("/getPostByElementID/:id", postController.getPostByElemet);
 
 //Delete Post
 router.delete("/deletePost/:id", middlewareController.verifyTokenAdminAuth, postController.deletePost);
 
 //Create Post
-router.post( "/createPost",  postController.createPost);
+router.post( "/createPost",middlewareController.verifyTokenMember, postController.createPost);
 
 //Upload Image
 router.post("/uploadImage", upload.single("postArticle_Thumbnail"), postController.uploadImage);
