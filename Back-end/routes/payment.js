@@ -30,16 +30,12 @@ router.post("/paymentMomo", async (req, res) => {
   var orderId =  requestId;   
   var orderInfo = "pay with MoMo";
   var redirectUrl = "http://localhost:5173/memberPackage/thankyou";
-<<<<<<< Updated upstream
 
-  var ipnUrl = "https://swp391-feng-shui.onrender.com/v1/pay/callback";
 
-  // var ipnUrl ="https://d83b-2402-800-6319-e70-cf1-c465-e7f3-3c59.ngrok-free.app/v1/pay/callback";
-  // var ipnUrl ="https://swp391-jruy.onrender.com/v1/pay/callback";
+  // var ipnUrl = "https://swp391-feng-shui.onrender.com/v1/pay/callback";
 
-=======
   var ipnUrl ="https://1b01-2402-800-6318-724f-e4f6-ed32-632c-2714.ngrok-free.app/v1/pay/callback";
->>>>>>> Stashed changes
+
   // var ipnUrl = redirectUrl = "https://webhook.site/454e7b77-f177-4ece-8236-ddf1c26ba7f8";
   var amount = amount_1;
   var requestType = "payWithMethod";
