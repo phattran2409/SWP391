@@ -195,14 +195,14 @@ const fishController = {
       .skip(skip)
       .limit(limit);
     const totalDocuments = await fishkois.countDocuments({ elementID: req.params.id });
-    res.status(200).json({
+        res.status(200).json({
       currentPage: page,
       totalPages: Math.ceil(totalDocuments / limit),
       totalDocuments: totalDocuments,
       data: koi,
     });
     } catch (error) {
-      return res.status(500).json(error);
+       res.status(500).json(error);
     }
   },
 

@@ -47,36 +47,55 @@ const middlewareController =  {
         ///  neu trong token co member status la true kiem tra con han cho package member ko 
         //   neu het han  thi  xoa pacckage cu va set lai membersatus
         if (req.user.memberStatus) {
+          try  {
           const packageMem = await packageMember.find({accountID : req.user.id}).populate('accountID');
           console.log(packageMem);
-          
-            if (packageMem ) { 
+
+       
+            if (packageMem.length > 0 ) { 
             const currentDate = new Date();
-            if (new Date(packageMember.expires) < currentDate) {
+            const expiresDate = new Date(packageMem[0].expires);
+            console.log("date member : " + expiresDate.toISOString() );
+            console.log(" Current date : "+currentDate.toISOString());
+        
+            if (expiresDate < currentDate) {
               // xóa đi cái packageMember cũ 
-                const result = await packageMember.deleteOne({
-                  accountID: req.body.id,
-                });
+                const result = await packageMember.findByIdAndDelete(packageMem[0]._id);
+                console.log("result  of delete package"+ result);
+                
                 if (result.deletedCount > 0) {
                   console.log("member package was clear");
                 }
+                // cap nhat notification cho user
+                const newnotification = {
+                  content: "Membership expried , Please register again",
+                  status: true,
+                };
                 await user.findByIdAndUpdate(
                   req.user.id,
-                  { memberStatus: false },
+                  {
+                    memberStatus: false,
+                    $push: { notification: newnotification },
+                  },
                   { new: true }
                 );
               return  res.status(403).json("Membership expired , Please register again")
             } else {
-               res.status(200).json("You are member");
-             return next();
+               next();
             }
           }else {
             return res.status(404).json("Not found memberShip");
           }
+          }catch(err) { 
+            console.error("Error verifying membership:", err);
+            return res.status(500).json("Server error");
+          } 
 
         }else{
           return  res.status(403).json("You need join Member ")
         }
+      
+        
       })
     }
 

@@ -204,7 +204,7 @@ router.post("/paymentZalo" , async (req ,res) => {
      amount: amount_1,
      description: `FengShuiKoi - Payment for the Member  #${transID}`,
      bank_code: "",
-     callback_url:"https://b4fa-2402-800-6318-724f-e4f6-ed32-632c-2714.ngrok-free.app/v1/pay/callbackZalo",
+     callback_url:"https://1c7c-171-240-246-45.ngrok-free.app/v1/pay/callbackZalo",
    };
 
    // appid|app_trans_id|appuser|amount|apptime|embeddata|item

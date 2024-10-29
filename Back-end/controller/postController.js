@@ -22,13 +22,13 @@ const postController = {
       const post = await posts
         .find({
           elementID: parseInt(req.params.id),
-          categoryID: 1,
+          categoryID:  parseInt(req.query.categoryID),
         })
         .populate("author");
 
       if (post) {
         return res.status(200).json({data : post}); 
-      }
+      }   
 
       return res.status(406).json("Not found")
     } catch (error) {

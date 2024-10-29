@@ -29,6 +29,7 @@ router.post("/uploadImage", upload.single("postArticle_Thumbnail"), postControll
 //Get post by ID
 router.get("/getPostById/:id", postController.getPostById);
 
+
 //Update post
 router.put("/updatePost/:id", middlewareController.verifyTokenAdminAuth, postController.updatePost);
 
