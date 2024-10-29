@@ -17,7 +17,7 @@ const orderController = {
       const totalDocuments = await Orders.countDocuments();
       const basic = await Orders.countDocuments({ packageType: "Basic" });
       const plus = await Orders.countDocuments({ packageType: "Plus" });
-      const advanced = await Orders.countDocuments({ packageType: "Advanced" });
+      const advanced = await Orders.countDocuments({ packageType: "Advance" });
       return res.status(200).json({
         currentPage: page,
         totalPages: Math.ceil(totalDocuments / limit),
@@ -75,7 +75,7 @@ const orderController = {
           },
         },
       ]);
-  
+
       // Initialize array for all 12 months with count = 0
       const currentYear = new Date().getFullYear(); // Or specify any year you need
       const formattedResults = Array.from({ length: 12 }, (_, i) => ({
@@ -83,20 +83,39 @@ const orderController = {
         month: i + 1,
         count: 0,
       }));
-  
+
       // Update array with actual data where available
       monthlyOrderCounts.forEach((item) => {
         const index = item._id.month - 1; // Convert month to 0-indexed
         formattedResults[index].count = item.count;
         formattedResults[index].year = item._id.year; // Ensure the correct year is set
       });
-  
+
       return res.status(200).json(formattedResults);
     } catch (err) {
       return res.status(500).json(err);
     }
+  },
+
+  getOrderByUser: async (req, res) => {
+    try {
+      const user = req.params.id;
+      const orders = await Orders.find({ accountID: user });
+      return res.status(200).json(orders);
+    } catch (error) {
+      return res.status(500).json(error);
+    }
+  },
+
+  getOrderById: async (req, res) => {
+    try {
+      const id = req.params.id;
+      const order = await Orders.findById(id);
+      res.status(200).json(order);
+    } catch (error) {
+      return res.status(500).json(error);
+    }
   }
-  
 };
 
 module.exports = orderController;

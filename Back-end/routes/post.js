@@ -23,6 +23,7 @@ router.delete("/deletePost/:id", middlewareController.verifyTokenAdminAuth, post
 //Create Post
 router.post( "/createPost",middlewareController.verifyTokenMember, postController.createPost);
 
+
 //Upload Image
 router.post("/uploadImage", upload.single("postArticle_Thumbnail"), postController.uploadImage);
 
