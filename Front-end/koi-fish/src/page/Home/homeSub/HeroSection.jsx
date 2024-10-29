@@ -10,12 +10,12 @@ const HeroSection = () => {
             description: "Best Koi"
         },
         {
-            image: "https://res.cloudinary.com/ddqgjy50x/image/upload/v1727929081/koi_fish_fish_water_174744_1920x1080_qm843r.jpg",
+            image: "https://res.cloudinary.com/ddqgjy50x/image/upload/v1729765188/pexels-quang-nguyen-vinh-222549-6130074_neujum.jpg",
             title: "Feng Shui Koi Consultant",
             description: "Experience serenity"
         },
         {
-            image: "https://res.cloudinary.com/ddqgjy50x/image/upload/v1726740825/two-koi-fish-in-pond_ae9hor.jpg",
+            image: "https://res.cloudinary.com/ddqgjy50x/image/upload/v1729765277/pexels-saturnus99-28536474-topaz-sharpen_kwvl8r.jpg",
             title: "Feng Shui Koi Consultant",
             description: "Dive into rich culture"
         }
@@ -38,7 +38,7 @@ const HeroSection = () => {
 
     return (
         <div id="carouselDarkVariant" className="relative h-screen mt-[-60px]">
-            
+
             {/* Carousel indicators */}
             <div className="absolute inset-x-0 bottom-0 z-[2] mx-[15%] mb-4 flex list-none justify-center p-0">
                 {slides.map((_, index) => (
@@ -60,7 +60,7 @@ const HeroSection = () => {
                     >
                         <img
                             src={slide.image}
-                            className="block w-full h-screen object-cover" 
+                            className="block w-full h-screen object-cover"
                             alt={slide.title}
                         />
                         <div className="absolute inset-x-[5%] bottom-5 py-5 text-center text-white">

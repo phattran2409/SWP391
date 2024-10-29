@@ -171,20 +171,19 @@ const Dashboard = () => {
             alt="Logo"
             style={{
               borderRadius: "50%",
-
               width: collapsed ? "40px" : "60px",
               transition: "width 0.2s",
             }}
           />
           {!collapsed && (
             <h2 style={{ color: "white", marginTop: "8px" }}>
-              <strong>Feng Shui Koi Consulting</strong>
+              <strong>Feng Shui Koi Consultant</strong>
             </h2>
           )}
         </div>
         <div className="mt-7">
           <Menu
-            theme="dark"
+            theme="dark "
             defaultSelectedKeys={["1"]}
             mode="inline"
             items={items.map((item) => {

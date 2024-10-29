@@ -96,7 +96,7 @@ const Navbar = () => {
             }}
           />
           <span className="text-white text-lg font-semibold">
-            Feng Shui Koi Consulting
+            Feng Shui Koi Consultant
           </span>
         </Link>
 
@@ -181,7 +181,7 @@ const Navbar = () => {
                 </p>
               </Link>
             </li>
-           
+
           </ul>
 
           <div className="h-6 border-l border-neutral-500 mx-4"></div>
@@ -262,9 +262,8 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       <div
-        className={` lg:hidden fixed top-0 right-0 w-64 h-full bg-black z-50 p-6 transform transition-transform duration-300 ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={` lg:hidden fixed top-0 right-0 w-64 h-full bg-black z-50 p-6 transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         <div className="relative w-full h-full">
           <button
@@ -350,7 +349,7 @@ const Navbar = () => {
                 Contact Us
               </a>
             </li>
-        
+
           </ul>
 
           {/* Login and Signup in Mobile Menu */}

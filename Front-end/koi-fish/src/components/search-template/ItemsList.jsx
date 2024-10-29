@@ -4,7 +4,7 @@ const ItemsList = ({ items }) => {
     return (
         <>
             {items.length === 0
-                ? <p>No users found</p>
+                ? <p>No articles found</p>
                 : <ul>
                     {items.map(item => <li key={item.id}>
                         <a href={`/details/${item._id}`}>{item.title}</a>
