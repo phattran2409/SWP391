@@ -6,19 +6,21 @@ import api from "../../config/axios.js";
 import { toast } from "react-toastify";
 import { Package } from "lucide-react";
 import { json, Link, Outlet, redirect, useNavigate, useOutlet } from "react-router-dom";
-import { Modal , Button } from "antd";
+import { Modal, Button } from "antd";
 function MemberPackage() {
   const [user, setUser] = useState({});
+  const [selectedPayment, setSelectedPayment] = useState(null);
+  const [isHovered, setIsHovered] = useState(false);
   const [packageType, setPackageType] = useState({
     packageType: "",
     amount: "",
-    expiresDays : "",
+    expiresDays: "",
   });
   const Navigate = useNavigate();
   const [isModalVisible, setIsModalVisible] = useState(false);
-   const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const outLet = useOutlet();
-   
+
   // mỗi lần load page sẽ lấy về user trong local Stroage
   useEffect(() => {
     const savedMember = localStorage.getItem("user");
@@ -34,19 +36,19 @@ function MemberPackage() {
   console.log(packageType.packageType);
 
   async function handleCreateMemberPackage() {
-     setLoading(!loading)
+    setLoading(!loading)
     try {
       const res = await api.post("/v1/user/subcribe", {
         packageType: packageType.packageType,
         id: user._id,
       });
       console.log(res);
-      
+
       if (res.status == 200) {
         const resPayment = await api.post(`/v1/pay/paymentMomo`, {
           _id: user._id,
           amount_1: packageType.amount,
-          packageType : packageType.packageType 
+          packageType: packageType.packageType
         });
 
         console.log(resPayment.data.payUrl);
@@ -58,33 +60,33 @@ function MemberPackage() {
         setLoading(false)
         toast.error(err.response.data.error);
         if (err.response.data.errorCode == 1) {
-         await api.post("/v1/user/subcribe/del" , {id : user._id});
+          await api.post("/v1/user/subcribe/del", { id: user._id });
         }
       }
-      toast.error(err.response.data+" Login Again");
-      
+      toast.error(err.response.data + " Login Again");
+
       console.log(err.response.data);
     }
   }
 
 
-   const showModal = () => {
-     setIsModalVisible(true);
-   };
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
 
-   const handleCancel = () => {
-     setIsModalVisible(false);
-   };
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
 
-     const handleCheckout = (values) => {
-       console.log("Checkout form submitted:", values);
-       // Process checkout here (e.g., call API)
-       setIsModalVisible(false); // Close the modal after checkout
-     };
+  const handleCheckout = (values) => {
+    console.log("Checkout form submitted:", values);
+    // Process checkout here (e.g., call API)
+    setIsModalVisible(false); // Close the modal after checkout
+  };
 
-   
 
-  
+
+
 
   // if (packageType.packageType.length > 0) {
   //   handleCreateMemberPackage();
@@ -206,11 +208,22 @@ function MemberPackage() {
             visible={isModalVisible}
             onCancel={handleCancel}
             footer={[
-              <Button danger key="cancel" onClick={handleCancel}>
+              <Button default key="cancel"
+                onClick={handleCancel}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                style={{
+                  backgroundColor: isHovered ? '#4a5568' : 'transparent',
+                  color: isHovered ? 'white' : '#4a5568',
+                  fontWeight: isHovered ? 'bold' : 'normal',
+                  border: isHovered ? '1px solid white' : '1px solid #4a5568'
+                }}>
                 Cancel
               </Button>,
               <Button
                 key="submit"
+                color="danger"
+                variant="solid"
                 type="primary"
                 loading={loading}
                 onClick={handleCreateMemberPackage}
@@ -229,10 +242,49 @@ function MemberPackage() {
               <p className="text-gray-600 mb-6 text-center font-bold">
                 1 user, {packageType.expiresDays} days
               </p>
-              <div className="flex justify-center ">
-                <button className="btn-subcribe bg-cyan-600 hover:bg-white hover:text-cyan-500 text-white font-bold py-2 px-4 rounded">
-                  Process to Payment
-                </button>
+              <div className="flex flex-col items-center gap-4">
+                <label
+                  className={`w-48 border border-gray-300 rounded  text-gray-800 font-bold py-3 pr-10 pl-3 flex items-center gap-2 cursor-pointer transition-all duration-300 ease-in-out ${selectedPayment === "momo"
+                    ? "bg-red-500 text-white border-white"
+                    : ""
+                    }`}
+                  onClick={() => setSelectedPayment("momo")}
+                >
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="momo"
+                    className="hidden"
+                    onChange={() => setSelectedPayment("momo")}
+                  />
+                  <img
+                    src="https://res.cloudinary.com/ddqgjy50x/image/upload/v1730102252/MoMo_Logo_nwbyu7.png"
+                    alt="Momo"
+                    className="h-10"
+                  />
+                  Momo
+                </label>
+                <label
+                  className={`w-48 border border-gray-300 rounded text-gray-800 font-bold py-3 pr-10 pl-3 flex items-center gap-2 cursor-pointer transition-all duration-300 ease-in-out ${selectedPayment === "zalopay"
+                    ? "bg-red-500 text-white border-white"
+                    : ""
+                    }`}
+                  onClick={() => setSelectedPayment("zalopay")}
+                >
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="zalopay"
+                    className="hidden"
+                    onChange={() => setSelectedPayment("zalopay")}
+                  />
+                  <img
+                    src="https://res.cloudinary.com/ddqgjy50x/image/upload/v1730202814/Logo-ZaloPay-Square_f0zjno.webp"
+                    alt="ZaloPay"
+                    className="h-10"
+                  />
+                  Zalopay
+                </label>
               </div>
               <div className="flex justify-center">
                 <ul className="mt-8 list-disc">

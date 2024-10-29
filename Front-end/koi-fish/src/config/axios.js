@@ -10,12 +10,7 @@ const URL = {
   LOCALHOST: "http://localhost:8081/",
 };
 
-
-
-const BASE_URL = URL.DEPLOY_URL ;
-
-
-
+const BASE_URL = URL.LOCALHOST;
 
 
 const api = axios.create({
@@ -25,12 +20,12 @@ const api = axios.create({
 
 });
 
- const showTokenExpiredNotification = () => {
-   notification.error({
-     message: "Session Expired",
-     description: "Your session has expired. Please log in again.",
-   });
- };
+const showTokenExpiredNotification = () => {
+  notification.error({
+    message: "Session Expired",
+    description: "Your session has expired. Please log in again.",
+  });
+};
 
 //lam 1 hanh dong gi do truoc khi call api
 const handleBefore = (config) => {
@@ -42,14 +37,14 @@ const handleBefore = (config) => {
 
 const handleError = (error) => {
   console.log("api config");
-  
+
   console.log(error);
 
-    if (error.response && error.response.status === 403) {
-      showTokenExpiredNotification();
-      // Optionally, redirect the user to the login page
-       
-    }
+  if (error.response && error.response.status === 403) {
+    showTokenExpiredNotification();
+    // Optionally, redirect the user to the login page
+
+  }
 
 };
 

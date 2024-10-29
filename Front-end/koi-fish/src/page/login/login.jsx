@@ -5,7 +5,7 @@ import { Form, Input, Button, Divider, Typography, } from "antd";
 
 import "./index.scss";
 
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from "../../config/axios";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
@@ -31,7 +31,7 @@ function LoginPage() {
       const { admin, accessToken } = response.data;
 
       localStorage.setItem("token", accessToken);
-      localStorage.setItem("user" ,JSON.stringify(response.data))
+      localStorage.setItem("user", JSON.stringify(response.data))
       if (admin) {
         navigate("/dashboard");
       } else {
@@ -39,54 +39,54 @@ function LoginPage() {
       }
     } catch (err) {
 
-     
-     toast.error("Login Failed. Please check your username or password");
-     
+
+      toast.error("Login Failed. Please check your username or password");
+
     }
-   };
+  };
 
   const handleLinktoForgetPass = () => {
     navigate("/forget");
   };
 
 
-// Login google 
-    const handleLoginSuccess = (response) => {
-      const token = jwtDecode(response.credential);
-      console.log(token);
-      sendTokenToAPI(token);
-      // Bạn có thể gửi mã token để xác thực ở backend
-    };
+  // Login google 
+  const handleLoginSuccess = (response) => {
+    const token = jwtDecode(response.credential);
+    console.log(token);
+    sendTokenToAPI(token);
+    // Bạn có thể gửi mã token để xác thực ở backend
+  };
 
-    const handleLoginError = () => {
-      console.log("Login Failed");
-      toast.error("Login Failed");
-      
-    };
+  const handleLoginError = () => {
+    console.log("Login Failed");
+    toast.error("Login Failed");
 
-    const sendTokenToAPI = async (data) => {
-      console.log(import.meta.env.API_SIGNIN);
+  };
 
-      try {
-        const response = await api.post("v1/Oauth/signin",{
-          data: data, // Gửi token trong body của request
-        });
-        const { accessToken } = response.data;  
+  const sendTokenToAPI = async (data) => {
+    console.log(import.meta.env.API_SIGNIN);
 
-        console.log("API Response:", response.data); 
-       if (response.data) { 
-          localStorage.setItem("token", accessToken)
-          localStorage.setItem("user" , JSON.stringify(response.data))
-        
-          
-          navigate("/?status=login_gg_success" , {state : {message : JSON.stringify(response.data.message)}})
-       } 
-  
-      } catch (error) {
-        toast.error(error.response.data);
+    try {
+      const response = await api.post("v1/Oauth/signin", {
+        data: data, // Gửi token trong body của request
+      });
+      const { accessToken } = response.data;
 
+      console.log("API Response:", response.data);
+      if (response.data) {
+        localStorage.setItem("token", accessToken)
+        localStorage.setItem("user", JSON.stringify(response.data))
+
+
+        navigate("/?status=login_gg_success", { state: { message: JSON.stringify(response.data.message) } })
       }
-    };
+
+    } catch (error) {
+      toast.error(error.response.data);
+
+    }
+  };
 
 
   return (
@@ -174,27 +174,27 @@ function LoginPage() {
           </div>
 
           <Button
-           className="w-full h-[50px] mt-5 border rounded-[32px]"
-           htmlType="submit"
-           color="danger"
-           variant="solid"
-        
+            className="w-full h-[50px] mt-5 border rounded-[32px]"
+            htmlType="submit"
+            color="danger"
+            variant="solid"
+
           >
             Sign in
           </Button>
         </Form>
       </div>
       <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          closeOnClick
-          pauseOnHover
-          draggable
-          theme="light"
-        />
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="light"
+      />
     </AuthenTemplate>
-    
+
   );
 }
 
