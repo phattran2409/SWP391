@@ -8,6 +8,7 @@ import Banner from '../../../assets/image/Banner1.jpg'
 import api from "../../../config/axios.js";
 import Navbar from "../../../components/navbar/Navbar";
 import Footer from '../../../components/footer/Footer.jsx';
+import { Link } from 'react-router-dom';
 export default function BlogPage() {
     const [blogsArticles, setBlogsArticles] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -79,7 +80,7 @@ export default function BlogPage() {
 
                                         .map((article, index) => (
                                             <div key={index} className="border-b-2 border-gray-300 p-4 bg-white mb-6">
-                                                <a href={`/details/${article._id}`} className="text-4xl font-medium mt-4 hover:underline hover:text-red-600">{article.title}</a>
+                                                <Link to={`/details/${article._id}`} className="text-4xl font-medium mt-4 hover:underline hover:text-red-600">{article.title}</Link>
                                                 <div className='flex justify-between'>
                                                     <p className="flex text-xl my-10">
                                                         <FaClock className="mr-2 text-red-500" />
