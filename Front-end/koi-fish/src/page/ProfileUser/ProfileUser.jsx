@@ -1,13 +1,12 @@
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./ProfileUser.css";
-
+import { toast } from "react-toastify";
 import { EditProfile } from "/src/components/update-profile/EditProfile/EditProfile";
 import { Notifications } from "/src/components/update-profile/notification";
 import { PostMember } from "../../components/update-profile/PostMember";
-
-// import { VscDebugBreakpointUnsupported } from "react-icons/vsc";
-// import { IoMdAdd } from "react-icons/io";
+import { OrderHistory } from "../../components/update-profile/OrderHistory";
+import Footer from "../../components/footer/Footer";
 import { ChangeEmail } from "/src/components/update-profile/EditProfile/ChangeEmail";
 import { ChangePassword } from "/src/components/update-profile/EditProfile/ChangePassword";
 import Tab from "@mui/material/Tab";
@@ -20,12 +19,32 @@ import TabPanel from "@mui/lab/TabPanel";
 import Navbar from "../../components/navbar/Navbar";
 
 function ProfileUser() {
+  const navigate = useNavigate();
   //  state value for tab
   const [value, setValue] = useState("1");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  useEffect(() => {
+    const checkTokenValidity = () => {
+      const token = localStorage.getItem("token"); // Get token from storage
+   
+      if (!token) {
+        // No token found, redirect to login
+        console.log("No token found");
+        toast.error("No token found!");
+        setTimeout(() => {
+          navigate("/login");
+        }, 2000);
+
+        return;
+      }
+    };
+    checkTokenValidity();
+    // Call the function when the component mounts
+  }, [navigate]);
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -85,6 +104,15 @@ function ProfileUser() {
                       sx={{ color: "white", fontWeight: "bold" }}
                     />
                   )}
+                  {!user?.memberStatus ? (
+                    <Tab label="Order History" value="6" disabled />
+                  ) : (
+                    <Tab
+                      label="Order History"
+                      value="6"
+                      sx={{ color: "white", fontWeight: "bold" }}
+                    />
+                  )}
                 </Tabs>
               </Box>
               <TabPanel value="1">
@@ -102,10 +130,14 @@ function ProfileUser() {
               <TabPanel value="5">
                 <PostMember />
               </TabPanel>
+              <TabPanel value="6">
+                <OrderHistory />
+              </TabPanel>
             </TabContext>
           </Box>
         </div>
       </div>
+      <Footer />
     </>
   );
 }
