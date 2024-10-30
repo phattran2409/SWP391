@@ -157,6 +157,17 @@ const Navbar = () => {
                     </p>
                   </Link>
                 </li>
+              
+              
+              </ul>
+            </li>
+
+            <li className="relative group">
+              <p className="text-white hover:text-neutral-500 transition duration-300 cursor-pointer">
+                Evaluate
+              </p>
+              <ul className="absolute left-0 hidden group-hover:block bg-black ">
+               
                 <li>
                   <Link to="/showfish">
                     <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
@@ -173,6 +184,7 @@ const Navbar = () => {
                 </li>
               </ul>
             </li>
+
 
             <li>
               <Link to={"/contactus"}>
@@ -308,7 +320,7 @@ const Navbar = () => {
               <p className="text-white hover:text-neutral-500 transition duration-300 cursor-pointer">
                 Categories
               </p>
-              <ul className="absolute left-0 hidden group-hover:flex bg-black ">
+              <ul className=" left-0 hidden group-hover:flex bg-black ">
                 <li>
                   <Link to="/news">
                     <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
@@ -323,10 +335,21 @@ const Navbar = () => {
                     </p>
                   </Link>
                 </li>
+             
+              </ul>
+            </li>
+
+            <li className="relative group">
+              <p className="text-white hover:text-neutral-500 transition duration-300 cursor-pointer">
+                Evaluate
+              </p>
+              <ul className=" left-0 hidden group-hover:flex bg-black ">
+              
+               
                 <li>
                   <Link to="/showfish">
                     <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
-                      Koi
+                      Koi 
                     </p>
                   </Link>
                 </li>
