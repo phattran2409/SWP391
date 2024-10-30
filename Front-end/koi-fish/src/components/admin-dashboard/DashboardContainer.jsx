@@ -180,7 +180,7 @@ const DashboardContainer = () => {
               <span className="font-semibold">{orders.plus} sold</span>
             </li>
             <li className="flex justify-between items-center py-2 border-b last:border-b-0">
-              <span>Advanced</span>
+              <span>Advance</span>
               <span className="font-semibold">{orders.advanced} sold</span>
             </li>
           </ul>

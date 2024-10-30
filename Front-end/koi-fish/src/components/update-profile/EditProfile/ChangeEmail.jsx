@@ -141,7 +141,7 @@ export function ChangeEmail() {
           </button>
 
           {submitted && (
-            <div className="mt-4 text-green-500 font-semibold">
+            <div className="mt-4 text-green-500 font-semibold">             
               <p>
                 {pathName === "/changeEmail"
                   ? "Your email has been updated!"
