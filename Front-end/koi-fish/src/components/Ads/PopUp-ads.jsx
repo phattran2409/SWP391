@@ -36,6 +36,11 @@ const AdPopUp = ({ ADS }) => {
         title={randomAds?.title}
         visible={ModalVisible}
         onCancel={handleClose}
+        footer={[
+          <Button key="back" onClick={handleClose}>
+            oke
+          </Button>,
+        ]}
       >
         <Image src={randomAds?.imageThumbnail}></Image>
 
