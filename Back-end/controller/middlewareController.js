@@ -16,6 +16,9 @@ const middlewareController =  {
           
             jwt.verify(accessToken, process.env.JWT_ACCESS_KEY, (err, user ) => {
               if (err) {
+                console.log(err);
+                console.log("Loi token");
+                
                return res.status(403).json("Token is not valid");
               }
               console.log("Decoded User:", user); // Log decoded user

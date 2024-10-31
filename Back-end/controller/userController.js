@@ -179,8 +179,8 @@ const useController = {
       const packageType = req.body.packageType;
       const id = req.body.id;
 
-      console.log(id);
-      console.log(packageType);
+      // console.log(id);
+      // console.log(packageType);
 
       // check account id da dk goi member hay chua
       const isExist = await packageMember

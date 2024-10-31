@@ -190,8 +190,11 @@ router.post("/paymentZalo" , async (req ,res) => {
       packageType, 
       amount_1
     } = req.body
+    const embed_data = {
+      //sau khi hoàn tất thanh toán sẽ đi vào link này (thường là link web thanh toán thành công của mình)
+      redirecturl: "http://localhost:5173/memberPackage/thankyou",
+    };
 
-   const embed_data = {};
    const items = [{_id , packageType }];
    const transID = Math.floor(Math.random() * 1000000);
    const order = {

@@ -10,7 +10,7 @@ const fishRouter = require("./routes/fish");
 const pondRouter = require("./routes/pond");
 
 const postRouter = require("./routes/post");
-
+const packageRouter  = require("./routes/package")
 const memberRouter =require("./routes/member");
 const paymentRouter  =require("./routes/payment");
 const orderRouter  =  require("./routes/order");
@@ -52,6 +52,8 @@ app.use("/v1/pond" , pondRouter);
 
 app.use("/v1/post" , postRouter);
 app.use("/v1/order" , orderRouter);
+
+app.use("/v1/package",packageRouter);
 
 (async () => {
   try {
