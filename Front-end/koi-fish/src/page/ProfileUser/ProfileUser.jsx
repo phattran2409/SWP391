@@ -6,6 +6,7 @@ import { EditProfile } from "/src/components/update-profile/EditProfile/EditProf
 import { Notifications } from "/src/components/update-profile/notification";
 import { PostMember } from "../../components/update-profile/PostMember";
 import { OrderHistory } from "../../components/update-profile/OrderHistory";
+import { PostHistory } from "../../components/update-profile/PostHistory";
 import Footer from "../../components/footer/Footer";
 import { ChangeEmail } from "/src/components/update-profile/EditProfile/ChangeEmail";
 import { ChangePassword } from "/src/components/update-profile/EditProfile/ChangePassword";
@@ -17,10 +18,11 @@ import TabContext from "@mui/lab/TabContext";
 import TabPanel from "@mui/lab/TabPanel";
 // import { patch } from "@mui/material";
 import Navbar from "../../components/navbar/Navbar";
+import api from "../../config/axios.js";
 
 function ProfileUser() {
   const navigate = useNavigate();
-  //  state value for tab
+ const [user,setUser] = useState(null);
   const [value, setValue] = useState("1");
 
   const handleChange = (event, newValue) => {
@@ -46,7 +48,31 @@ function ProfileUser() {
     // Call the function when the component mounts
   }, [navigate]);
 
-  const user = JSON.parse(localStorage.getItem("user"));
+ 
+
+  useEffect(() => {
+ 
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      fetchNotifications(user._id); 
+    }
+  }, []);
+
+  // Function to fetch notifications with status: true
+  const fetchNotifications = async (id) => {
+    try {
+      const response = await api.get(`v1/user/id=${id}`);
+      if (response.status === 200) {
+        setUser(response.data)
+      } else {
+        toast.error("Failed to fetch notifications");
+      }
+    } catch (error) {
+    
+      console.error(error);
+    }
+  };
+
 
   return (
     <>
@@ -77,23 +103,34 @@ function ProfileUser() {
                   <Tab
                     label="Profile"
                     value="1"
+                    className="tab-label"
                     sx={{ color: "white", fontWeight: "bold" }}
                   />
                   <Tab
                     label="Change Email"
                     value="2"
+                     className="tab-label"
                     sx={{ color: "white", fontWeight: "bold" }}
                   />
                   <Tab
                     label="Change Password"
                     value="3"
+                     className="tab-label"
                     sx={{ color: "white", fontWeight: "bold" }}
                   />
                   <Tab
                     label="Notification"
                     value="4"
+                     className="tab-label"
                     sx={{ color: "white", fontWeight: "bold" }}
-                  />
+                  />               
+                    <Tab
+                      label="Order History"
+                      value="6"
+                       className="tab-label"
+                      sx={{ color: "white", fontWeight: "bold" }}
+                    />
+           
                   {/* lay thuoc tinh memberStatus de set */}
                   {!user?.memberStatus ? (
                     <Tab label="MemberShip" value="5" disabled />
@@ -101,15 +138,18 @@ function ProfileUser() {
                     <Tab
                       label="MemberShip"
                       value="5"
+                       className="tab-label"
                       sx={{ color: "white", fontWeight: "bold" }}
                     />
                   )}
-                  {!user?.memberStatus ? (
-                    <Tab label="Order History" value="6" disabled />
+                
+                     {!user?.memberStatus ? (
+                    <Tab label="Post History" value="7" disabled />
                   ) : (
                     <Tab
-                      label="Order History"
-                      value="6"
+                      label="Post History"
+                      value="7"
+                       className="tab-label"
                       sx={{ color: "white", fontWeight: "bold" }}
                     />
                   )}
@@ -132,6 +172,9 @@ function ProfileUser() {
               </TabPanel>
               <TabPanel value="6">
                 <OrderHistory />
+              </TabPanel>
+              <TabPanel value="7">
+                <PostHistory/>
               </TabPanel>
             </TabContext>
           </Box>

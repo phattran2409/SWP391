@@ -28,7 +28,7 @@ function MemberPackage() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const outLet = useOutlet();
-
+const redirectURL = selectedPayment  === "momo" ?  "payurl" : "order_url"
   // mỗi lần load page sẽ lấy về user trong local Stroage
   useEffect(() => {
     const savedMember = localStorage.getItem("user");
@@ -43,10 +43,6 @@ function MemberPackage() {
   console.log(packageType.packageType);
 
   async function handleCreateMemberPackage() {
-    if (!selectedPayment) {
-      toast.error("Please select one method");
-      return;
-    }
     setLoading(!loading);
     try {
       const res = await api.post("/v1/user/subcribe", {
@@ -54,21 +50,35 @@ function MemberPackage() {
         id: user._id,
       });
       console.log(res);
-
+  
       if (res.status == 200) {
+        // đường dẫn để fetch api
         const paymentUrl =
           selectedPayment === "momo"
             ? "/v1/pay/paymentMomo"
             : "/v1/pay/paymentZalo";
+        // redirect URL
+        const RedirectField = selectedPayment === "momo" ? "payUrl" : "order_url";
+        // call api payment
         const resPayment = await api.post(paymentUrl, {
           _id: user._id,
           amount_1: packageType.amount,
           packageType: packageType.packageType,
         });
-
-        console.log(resPayment.data.payUrl);
-        redirect(resPayment.data.payUrl);
-        window.location.href = resPayment.data.payUrl;
+  
+        // console.log(resPayment.data.RedirectURL);
+        // redirect(resPayment.data.RedirectURL);
+        // window.location.href = resPayment.data.RedirectURL;
+  
+        
+          const redirectUrl = resPayment.data[RedirectField];
+          if (redirectUrl) {
+            console.log(`Redirecting to: ${redirectUrl}`);
+            window.location.href = redirectUrl;
+          } else {
+            throw new Error("Redirect URL not found in payment response");
+          }
+        
       }
     } catch (err) {
       if (err.status == 403) {
@@ -79,11 +89,10 @@ function MemberPackage() {
         }
       }
       toast.error(err.response.data + " Login Again");
-
+  
       console.log(err.response.data);
     }
   }
-
   const showModal = () => {
     setIsModalVisible(true);
   };
@@ -234,6 +243,7 @@ function MemberPackage() {
                 Cancel
               </Button>,
               <Button
+                disabled = {!selectedPayment}
                 key="submit"
                 color="danger"
                 variant="solid"

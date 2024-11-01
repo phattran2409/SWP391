@@ -1,0 +1,84 @@
+
+          .preview-content h1 {
+            font-size: 2.5em;
+            font-weight: bold;
+          }
+          .preview-content h2 {
+            font-size: 1.8em;
+            font-weight: bold;
+          }
+          .preview-content p {
+            margin: 0.5em 0;
+          }
+
+          .preview-content ol {
+            list-style-type: decimal; /* Displays numbers */
+            padding-left: 30px; /* Adjust indentation */
+            margin: 1em 0;
+          }
+          
+          /* Ensure unordered lists show bullet points */
+          .preview-content ul {
+            list-style-type: disc; /* Displays bullet points */
+            padding-left: 30px;
+            margin: 1em 0;
+          }
+          
+          .preview-content ul,
+          .preview-content ol {
+            padding-left: 30px; /* Adjust indentation for readability */
+            margin: 1em 0;
+          }
+          
+          .preview-content ul li,
+          .preview-content ol li {
+            margin-bottom: 0.5em;
+          }
+          
+          /* Ensure nested list styles are clear */
+          .preview-content ul ul,
+          .preview-content ol ol {
+            padding-left: 20px;
+          }
+
+
+
+          .preview-content .ql-size-small {
+            font-size: 0.75em;
+          }
+          .preview-content .ql-size-large {
+            font-size: 1.5em;
+          }
+          .preview-content .ql-size-huge {
+            font-size: 2.5em;
+          }
+          .preview-content strong {
+            font-weight: bold;
+          }
+          .preview-content em {
+            font-style: italic;
+          }
+          .preview-content u {
+            text-decoration: underline;
+          }
+
+          .preview-content .ql-font-serif {
+            font-family: serif;
+          }
+          
+          .preview-content .ql-font-sans-serif {
+            font-family: sans-serif;
+          }
+          
+          .preview-content .ql-font-monospace {
+            font-family: monospace;
+          }
+
+          .preview-content blockquote {
+            padding: 10px 20px;
+            margin: 1em 0;
+            background-color: #f9f9f9;
+            border-left: 5px solid #ccc;
+            font-style: italic;
+            color: #555;
+          }

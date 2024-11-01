@@ -1,5 +1,6 @@
-import  { useState, useEffect, useCallback } from "react";
-import api from "../../../../config/axios";
+import React, { useState, useEffect, useCallback } from "react";
+import api from "../../config/axios";
+import { Tag } from "antd";
 import {
   Button,
   Table,
@@ -7,17 +8,19 @@ import {
   Input,
   Popconfirm,
   Pagination,
-
+  Image,
 } from "antd";
 import { toast } from "react-toastify";
 import { debounce } from "lodash";
 import "quill/dist/quill.snow.css"; // Import Quill CSS
 
 // Import NewsModal and NewsTableColumns
-import NewsModal from "../../../../components/admin-dashboard/ModalPost";
-import NewsTableColumns from "../../../../components/admin-dashboard/TableColumn";
+import NewsModal from "../../components/admin-dashboard/ModalPost";
+import NewsTableColumns from "../../components/admin-dashboard/TableColumn";
 
-function ManageNews() {
+import "../../page/testpage/consulting-detail/animate.css";
+
+export function PostHistory() {
   const [datas, setDatas] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [form] = Form.useForm();
@@ -40,14 +43,13 @@ function ManageNews() {
   const [createdAt, setCreatedAt] = useState("");
   const [updatedAt, setUpdatedAt] = useState("");
 
-  // const reactQuillRef = useRef(null);
   useEffect(() => {
     form.setFieldsValue({ context: content }); // Cập nhật giá trị vào form
   }, [content, form]);
   // Upload function
   const uploadToCloudinary = async (file) => {
     const cloudName = "ddqgjy50x";
-    const uploadPreset = "postAdmin";
+    const uploadPreset = "postMember";
 
     if (!cloudName || !uploadPreset) {
       throw new Error("Cloudinary configuration is missing.");
@@ -79,7 +81,7 @@ function ManageNews() {
   ) => {
     try {
       const response = await api.get(
-        `v1/post/getPostByCategory/3?page=${page}&limit=${limit}`
+        `v1/post/getPostByAuthor/${userId}?page=${page}&limit=${limit}`
       );
 
       // Update state with fetched data
@@ -114,15 +116,10 @@ function ManageNews() {
         }
       }
 
-      if (values._id) {
-        // Update existing post
-        await api.put(`v1/post/updatePost/${values._id}`, values);
-        toast.success("News updated successfully!");
-      } else {
-        // Create new post
-        await api.post("v1/post/createPost", values);
-        toast.success("News created successfully!");
-      }
+     
+        await api.put(`v1/post/updatePostByMember/${values._id}`, values);
+        toast.success("Post updated successfully, wait for approval of admin!");
+     
 
       fetchData();
       form.resetFields();
@@ -149,16 +146,6 @@ function ManageNews() {
     }
   };
 
-  const handleStatus = async (_id, statusData) => {
-    try {
-      await api.put(`v1/post/setStatus/${_id}`, statusData);
-      console.log(statusData);
-      toast.success("Changed successfully!");
-      fetchData();
-    } catch (err) {
-      toast.error(err.response?.data?.data || "An error occurred");
-    }
-  };
 
   // Handle search input
   const handleSearch = (e) => {
@@ -183,7 +170,7 @@ function ManageNews() {
         return;
       }
       const res = await api.get(
-        `v1/post/searchPost?categoryID=3&title=${encodeURIComponent(
+        `v1/post/searchPost?author=${userId}&title=${encodeURIComponent(
           value
         )}&page=${pagination.current}&limit=${pagination.pageSize}`
       );
@@ -261,34 +248,7 @@ function ManageNews() {
             Delete
           </Button>
         </Popconfirm>
-        <Popconfirm
-          title="Update Status"
-          description="Do you want to approve or reject this news?"
-          onConfirm={() => handleStatus(_id, { postStatus: true })}
-          onCancel={() => handleStatus(_id, { postStatus: false })}
-          okText="Approve"
-          cancelText="Reject"
-          okButtonProps={{
-            style: { backgroundColor: "#4CAF50", borderColor: "#4CAF50" },
-          }}
-          cancelButtonProps={{
-            style: {
-              backgroundColor: "#FF4D4F",
-              borderColor: "#FF4D4F",
-              color: "white",
-            },
-          }}
-        >
-          <Button
-            type="primary"
-            style={{
-              background: "#FFD700",
-              marginLeft: 8,
-            }}
-          >
-            Censorship
-          </Button>
-        </Popconfirm>
+       
       </>
     ),
   };
@@ -300,40 +260,25 @@ function ManageNews() {
     }),
     actionColumn,
   ];
+ 
 
-  // Render the component
   return (
-    <div>
+    <div className="max-w-7xl mx-auto   bg-white border border-gray-200 rounded-lg shadow-lg">
+        <h1 className="text-2xl font-semibold text-center p-4">Post History</h1>
       <div className="group-search flex">
         {/* Search News by Title */}
         <div className="search-name">
-          <label className="mr-4"> Search Advertising :</label>
-          <Input
+          <label className="ml-4"> Search Post :</label>
+          <Input className="ml-4"
             value={searchValue}
-            placeholder="Search advertising by title"
+            placeholder="Search post by title"
             style={{ width: 300, marginBottom: 20 }}
             onChange={handleSearch}
           />
         </div>
       </div>
 
-      <Button
-        type="primary"
-        onClick={() => {
-          form.resetFields(); // Clear form fields when adding a new post
-          setThumbnailFile(null); // Reset thumbnail file
-          setExistingThumbnail(""); // Reset existing thumbnail
-          setShowModal(true);
-          setTitle(""); // Set title for preview
-          setContent("");
-          setAuthor("admin");
-          setCreatedAt(""); // Set createdAt for preview
-          setUpdatedAt(""); // Set updatedAt for preview
-        }}
-        style={{ marginBottom: 16 }}
-      >
-        Create New Post
-      </Button>
+      
 
       <Table
         dataSource={datas}
@@ -372,8 +317,7 @@ function ManageNews() {
         createdAt={createdAt}
         updatedAt={updatedAt}
       />
+    
     </div>
   );
 }
-
-export default ManageNews;

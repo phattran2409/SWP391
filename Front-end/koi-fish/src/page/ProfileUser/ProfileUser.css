@@ -8,4 +8,16 @@
     background-position: center;
   }
 
+  .tab-label {
+   
+    transition: color 0.3s, transform 0.3s;
+  }
+  
+  .tab-label:hover {
+    color: #000000; /* Change to your desired hover color */
+    transform: scale(1.05); /* Slightly enlarge the tab on hover */
+  }
+  
+  
+  
   

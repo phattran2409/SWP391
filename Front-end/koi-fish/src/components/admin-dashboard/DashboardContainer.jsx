@@ -90,9 +90,9 @@ const DashboardContainer = () => {
     datasets: [
       {
         data: [
-          Math.round(((posts.news / posts.totalDocuments) * 100).toFixed(2)),
-          Math.round(((posts.blog / posts.totalDocuments) * 100).toFixed(2)),
-          Math.round(((posts.ads / posts.totalDocuments) * 100).toFixed(2))
+          Math.round(((posts.news / posts.totalDocuments) * 100).toFixed(1)),
+          Math.round(((posts.blog / posts.totalDocuments) * 100).toFixed(1)),
+          Math.round(((posts.ads / posts.totalDocuments) * 100).toFixed(1))
         ],
         backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
       },
