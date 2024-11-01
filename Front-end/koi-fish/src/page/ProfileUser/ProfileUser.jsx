@@ -133,7 +133,7 @@ function ProfileUser() {
            
                   {/* lay thuoc tinh memberStatus de set */}
                   {!user?.memberStatus ? (
-                    <Tab label="MemberShip" value="5" disabled />
+                    <Tab label="black" value="5" disabled />
                   ) : (
                     <Tab
                       label="MemberShip"

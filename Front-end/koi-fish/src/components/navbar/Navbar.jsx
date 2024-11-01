@@ -72,6 +72,8 @@ const Navbar = () => {
     setIsModalLogOut(false);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("cartItems");
+    localStorage.removeItem("elementUser");
     setUser(null);
     toast.success("Logged out successfully");
   };

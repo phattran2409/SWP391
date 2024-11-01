@@ -9,11 +9,15 @@ import { CartContext } from "../../components/context/Cart";
 import Cart from "../../components/Cart.jsx";
 import { Card } from "antd";
 import { yellow } from "@mui/material/colors";
+import { Link , redirect , useNavigate} from "react-router-dom";
+import { toast } from "react-toastify";
 const ShowFish = () => {
   const [fishs, setFish] = useState([]);
   const [visibleCount, setVisibleCount] = useState(6);
   const { cartItems, addToCart } = useContext(CartContext);
   const [showModal, setshowModal] = useState(false);
+  const [activeItemId , setActiveItemId] = useState(null);
+  const  navigate = new useNavigate();
   // Fetch Koi Fish from API
   const fetchKoiFish = async () => {
     try {
@@ -57,6 +61,9 @@ const ShowFish = () => {
   const handleShowMore = () => {
     setVisibleCount((prevCount) => prevCount + 6);
   };
+  const handleActiveItem = (id) => { 
+    setActiveItemId(id)
+  }
 
   const toggle = () => {
     console.log(showModal);
@@ -64,6 +71,8 @@ const ShowFish = () => {
     setshowModal(!showModal);
   };
 
+  console.log( "active  item id " + activeItemId);
+  
   return (
     <div>
       <Navbar />
@@ -119,8 +128,10 @@ const ShowFish = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-y-20 gap-x-10 max-[1921px]:gap-x-0">
             {fishs.slice(0, visibleCount).map((item, index) => (
               <div
-                key={item.id || index}
-                className="flex flex-col group relative shadow bg-white text-black rounded-xl overflow-hidden h-[600px] max-[1920px]:h-[500px] max-[768px]:h-[400px] w-full sm:w-[80%] mx-auto fade-in border-2 border-gray-300"
+                key={item._id || index}
+                className={`flex flex-col group relative shadow bg-white text-black rounded-xl overflow-hidden h-[600px] max-[1920px]:h-[500px] max-[768px]:h-[400px] w-full sm:w-[80%] mx-auto fade-in border-2 border-gray-600 ${
+                  activeItemId === item._id ? "active border-red-800 shadow-xl shadow-red-500" : ""
+                }`}
               >
                 <div className="h-[50%] max-[500px]:h-[40%] max-[768px]:h-[45%]  w-full bg-white bg-center bg-no-repeat flex items-center justify-center">
                   <div
@@ -130,8 +141,11 @@ const ShowFish = () => {
                       backgroundSize: "contain",
                       backgroundPosition: "center",
                       backgroundColor: "white",
+                      cursor : "pointer"
                     }}
+                    onClick={() => {navigate(`/koidetail/${item._id}`)}}
                   />
+                  
                 </div>
 
                 <div className=" h-[50%] max-[500px]:h-[60%] max-[768px]:h-[55%] bg-white p-4 flex flex-col justify-between overflow-y-auto">
@@ -154,7 +168,7 @@ const ShowFish = () => {
                     ))}
                   </div>
                   <button
-                    onClick={() => addToCart(item)}
+                    onClick={() => { addToCart(item); handleActiveItem(item._id) } }
                     className="mt-4 px-4 py-2 max-[768px]:px-1 max-[768px]:py-1 text-black border-2 border-gray-300 rounded-lg bg-rounded-lg hover:bg-gray-200"
                   >
                     assess
@@ -164,10 +178,8 @@ const ShowFish = () => {
             ))}
           </div>
 
-            
-              <Cart showModal={showModal} toggle={toggle} />
-            
-        
+          <Cart showModal={showModal} toggle={toggle} />
+
           {visibleCount < fishs.length && (
             <button
               onClick={handleShowMore}

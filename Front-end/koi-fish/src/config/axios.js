@@ -52,6 +52,37 @@ const handleError = (error) => {
 api.interceptors.request.use(handleBefore, handleError);
 
 
+  // api.interceptors.response.use(
+  //   (response) => response,
+  //   async (error) => {
+  //     const originalRequest = error.config;
+  //     console.log("api interceptors : "+originalRequest);
+  //     if (error.response?.status === 403 && !originalRequest._retry) {
+  //       originalRequest._retry = true;
+  //       try {
+  //         const response = await axios.post(
+  //           "http://localhost:8081/v1/auth/refresh",
+  //           {},
+  //           { withCredentials: true }
+  //         );
+  //         const token = response.data.accessToken;
+  //         localStorage.setItem("token", token);
+  //         api.defaults.headers.common[
+  //           "Authorization"
+  //         ] = `Bearer ${token}`;
+  //         return api(originalRequest); // Retry the original request
+  //       } catch (refreshError) {
+  //         // Handle refresh token expiration or other errors
+  //         console.log("Refresh token expired. Redirect to login.");
+  //         localStorage.removeItem("token");
+  //         window.location.href = "/login"; // Redirect to login
+  //         return Promise.reject(refreshError);
+  //       }
+  //     }
+  //     return Promise.reject(error);
+  //   }
+  // );
+
 // Alter defaults after instance has been created
 
 

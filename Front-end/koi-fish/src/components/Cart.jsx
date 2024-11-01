@@ -121,7 +121,7 @@ export default function Cart({ showModal, toggle }) {
      onCancel={toggle}
      centered
      width="100%"
-     bodyStyle={{
+     styles={{
        height: "500px",
        overflow: "scroll",
        overflowX: "hidden",

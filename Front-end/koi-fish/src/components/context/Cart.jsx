@@ -24,17 +24,20 @@ export const CartProvider = ({ children }) => {
    
     const koiInCart = cartItems.some((item) => item.koiName);
     const pondInCart = cartItems.some((item) => item.shape);
-    isKoi && toast.success("The Koi was added  Assess Suitability");
-    isPond &&  toast.success("The Pond was added Assess Suitability")
+   
     if (cartItems.length <= 2) {
-      if (isKoi && koiInCart) {
-        alert("just add one koi ");
-        return;
-      }
       if (isPond && pondInCart) {
-        alert("just add one pond");
+        toast.error("just add one pond");
         return;
       }
+      if (isKoi && koiInCart) {
+        toast.error("just add one koi ");
+        return;
+      }
+       isKoi && toast.success("The Koi was added  Assess Suitability");
+     
+        isPond && toast.success("The Pond was added Assess Suitability");
+     
 
       if (isItemInCart) {
     
@@ -82,7 +85,7 @@ export const CartProvider = ({ children }) => {
       console.log(res.data);
     ;
       setResult(res.data.success)  
-      result === 1 ? toast.success(res.data.message) :  toast.error(res.data.message)
+      res.data.success === 1 ? toast.success(res.data.message) :  toast.error(res.data.message)
       console.log(result);
     } catch (err) {
       console.log("Error at Cart Context "+err);

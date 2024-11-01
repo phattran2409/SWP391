@@ -7,13 +7,15 @@ import Navbar from '../../components/navbar/Navbar';
 import Footer from '../../components/footer/Footer';
 import { CartContext } from '../../components/context/Cart'
 import Cart from '../../components/Cart'
+import { useNavigate } from "react-router-dom";
 const ShowPond = () => {
     const [ponds, setPonds] = useState([]);
     const [visibleCount, setVisibleCount] = useState(6);
     const { cartItems, addToCart } = useContext(CartContext);
     const [showModal, setshowModal] = useState(false);
+    const [activeItemId, setActiveItemId] = useState(null);
     const ref = useRef();
-
+    const navigate = new useNavigate();
     // Fetch Koi Ponds from multiple API endpoints
     const fetchKoiPonds = async () => {
         try {
@@ -50,6 +52,9 @@ const ShowPond = () => {
     const handleShowMore = () => {
         setVisibleCount(ponds.length);
     };
+    const handleActiveItem = (id) => { 
+      setActiveItemId(id)
+    }
     //  toggle Modal assess
     const toggle = () => {
     console.log(showModal);
@@ -117,7 +122,12 @@ const ShowPond = () => {
               {ponds.slice(0, visibleCount).map((item, index) => (
                 <div
                   key={item._id || index}
-                  className="flex flex-col group relative shadow bg-white text-black rounded-xl overflow-hidden sm:h-[800px] h-[600px] w-full sm:w-[80%] mx-auto fade-in border-2 border-gray-300"
+                  className={`flex flex-col group relative shadow bg-white text-black rounded-xl overflow-hidden sm:h-[800px] h-[600px] w-full sm:w-[80%] mx-auto fade-in border-2 border-gray-600
+                   ${
+                     activeItemId === item._id
+                       ? "active  border-red-800 shadow-xl shadow-red-500"
+                       : ""
+                   }`}
                 >
                   <div className="h-[50%] max-[500px]:h-[40%] max-[768px]:h-[45%]  w-full bg-white bg-center bg-no-repeat flex items-center justify-center">
                     <div
@@ -127,7 +137,9 @@ const ShowPond = () => {
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                         backgroundColor: "white",
+                        cursor : "pointer"
                       }}
+                      onClick={() => navigate(`/ponddetail/${item._id}`)}
                     />
                   </div>
 
@@ -177,7 +189,13 @@ const ShowPond = () => {
                         {item.light}
                       </span>
                     </div>
-                    <button onClick={() => addToCart(item)} className="mt-4 px-4 py-2 max-[768px]:px-1 max-[768px]:py-1 text-black border-2 border-gray-300 rounded-lg bg-rounded-lg hover:bg-gray-200">
+                    <button
+                      onClick={() => {
+                        addToCart(item);
+                        handleActiveItem(item._id);
+                      }}
+                      className="mt-4 px-4 py-2 max-[768px]:px-1 max-[768px]:py-1 text-black border-2 border-gray-300 rounded-lg bg-rounded-lg hover:bg-gray-200"
+                    >
                       {" "}
                       Assess
                     </button>
@@ -195,7 +213,7 @@ const ShowPond = () => {
               </button>
             )}
           </div>
-        <Cart showModal={showModal} toggle={toggle} />
+          <Cart showModal={showModal} toggle={toggle} />
         </AnimationReveal>
         <Footer />
       </div>

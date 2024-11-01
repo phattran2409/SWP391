@@ -1,7 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
+
 import { Modal, Button, Image, Spin } from "antd";
 import { Link } from "react-router-dom";
 import "../../page/testpage/consulting-detail/animate.css"
+
+
+
+
+
+
+
 const AdPopUp = ({ ADS }) => {
   const [loading, setLoading] = useState(true);
   const [ModalVisible, setshowModalVisible] = useState(true);
@@ -17,7 +25,9 @@ const AdPopUp = ({ ADS }) => {
   //    setADS(resAds.data.data);
 
   // }
-
+  function handleLinkToDetail() { 
+    <Link to={`/details/${randomAds._id}`}/>
+  }
   useEffect(() => {
     if (ADS && ADS.length > 0) { // Kiểm tra nếu ADS có dữ liệu
       const randomIndex = Math.floor(Math.random() * ADS.length);
@@ -39,6 +49,9 @@ const AdPopUp = ({ ADS }) => {
           <Button key="back" onClick={handleClose} danger>
             Cancel
           </Button>,
+          <Link to={`/details/${randomAds?._id}`}>
+            <Button key="back">oke</Button>
+          </Link>,
         ]}
       >
         {loading ? (
