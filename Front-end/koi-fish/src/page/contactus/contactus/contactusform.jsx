@@ -53,7 +53,11 @@ const ContactUsForm = () => {
             <p className='mt-4 text-center md:text-left text-sm md:text-base lg:text-lg font-medium leading-relaxed text-secondary`-100`'>
               We blend the timeless principles of Feng Shui with the elegance of koi fish to bring harmony, prosperity, and tranquility to your home or business.
             </p>
-            <form className='mt-8 md:mt-10 text-sm flex flex-col max-w-sm mx-auto md:mx-0'>
+            <form
+  action="https://formspree.io/f/xpwzplwd"
+  method="POST"
+  className='mt-8 md:mt-10 text-sm flex flex-col max-w-sm mx-auto md:mx-0'
+>
               <input type="email" name="email" placeholder='Your Email Address' className='mt-6 border-b-2 py-3 focus:outline-none font-medium transition duration-300 hover:border-primary-500'/>
               <input type="text" name="name" placeholder='Full Name' className='mt-6 border-b-2 py-3 focus:outline-none font-medium transition duration-300 hover:border-primary-500'/>
               <input type="text" name="subject" placeholder='Subject' className='mt-6 border-b-2 py-3 focus:outline-none font-medium transition duration-300 hover:border-primary-500'/>

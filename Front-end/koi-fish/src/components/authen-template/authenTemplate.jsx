@@ -3,7 +3,7 @@ import React from "react";
 import "./index.scss";
 
 // eslint-disable-next-line react/prop-types
-function AuthenTemplate({ children }) {
+function AuthenTemplate ({ children }){
   return (
     <div className="container-image">
       {/* Phần hình ảnh */}

@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import api from "../../config/axios.js";
-import { Link } from 'react-router-dom';
 export default function AdvertisementTemplate() {
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -38,15 +37,15 @@ export default function AdvertisementTemplate() {
             ) : Array.isArray(articles) && articles.length > 0 ? (
                 articles.map(ad => (
                     <div key={ad._id} className="bg-white shadow-md p-4">
-                        <Link
-                            to={`/details/${ad._id}`}>
+                        <a
+                            href={`/details/${ad._id}`}>
                             <img
                                 src={ad.imageThumbnail}
                                 alt={ad.title}
                                 className="w-full max-h-64 object-cover mb-4 rounded"
                             />
                             <h2 className="text-xl font-semibold mb-2">{ad.title}</h2>
-                        </Link>
+                        </a>
                     </div>
                 ))
             ) : (

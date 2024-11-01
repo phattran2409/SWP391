@@ -8,6 +8,7 @@ import Footer from "../../components/footer/Footer";
 import { CartContext } from "../../components/context/Cart";
 import Cart from "../../components/Cart.jsx";
 import { Card } from "antd";
+import { yellow } from "@mui/material/colors";
 const ShowFish = () => {
   const [fishs, setFish] = useState([]);
   const [visibleCount, setVisibleCount] = useState(6);
@@ -48,6 +49,7 @@ const ShowFish = () => {
       Red: "#FF0000",
       White: "#FFFFFF",
       Green: "#008000",
+      Yellow: "#FFD700",
     };
     return colorMap[color] || "#000";
   };

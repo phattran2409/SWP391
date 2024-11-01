@@ -9,6 +9,7 @@ import Banner from '../../../assets/image/Banner1.jpg'
 import api from "../../../config/axios.js";
 import Navbar from "../../../components/navbar/Navbar";
 import Footer from '../../../components/footer/Footer.jsx';
+import "../../../components/update-profile/contentStyle.css"
 
 export default function DetailsPage() {
     const { id } = useParams();
@@ -36,7 +37,7 @@ export default function DetailsPage() {
             <Navbar />
             <div className="min-h-screen relative bg-gray-50">
                 <div className="relative">
-                    <img src={Banner} alt="Banner" className="w-full h-auto" />
+                    <img src={"https://res.cloudinary.com/ddqgjy50x/image/upload/v1729766014/z5963356300335_b2ad375e0e2e98fcd6fbf793ef122906-topaz-enhance_plpyuz.jpg"} alt="Banner" className="w-full h-auto" />
                 </div>
                 <div className='mt-8 font-semibold text-center text-6xl '>Article Details
                 </div>
@@ -52,7 +53,7 @@ export default function DetailsPage() {
                                 <span className="text-blue-500 text-lg font-semibold animate-pulse">Loading...</span>
                             </div>
                         ) : article ? (
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 preview-content">
                                 {/* Nội dung bài viết */}
                                 <div className="col-span-2 bg-white p-6 ">
                                     <h1 className="text-3xl md:text-4xl font-semibold mb-6 hover:text-red-500 transition-colors duration-300">{article.title}</h1>

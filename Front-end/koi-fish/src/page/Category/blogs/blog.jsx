@@ -80,7 +80,7 @@ export default function BlogPage() {
 
                                         .map((article, index) => (
                                             <div key={index} className="border-b-2 border-gray-300 p-4 bg-white mb-6">
-                                                <Link to={`/details/${article._id}`} className="text-4xl font-medium mt-4 hover:underline hover:text-red-600">{article.title}</Link>
+                                                <a href={`/details/${article._id}`} className="text-4xl font-medium mt-4 hover:underline hover:text-red-600">{article.title}</a>
                                                 <div className='flex justify-between'>
                                                     <p className="flex text-xl my-10">
                                                         <FaClock className="mr-2 text-red-500" />
