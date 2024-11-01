@@ -34,7 +34,9 @@ router.post("/paymentMomo", async (req, res) => {
 
   // var ipnUrl = "https://swp391-feng-shui.onrender.com/v1/pay/callback";
 
-  var ipnUrl ="https://1b01-2402-800-6318-724f-e4f6-ed32-632c-2714.ngrok-free.app/v1/pay/callback";
+  // var ipnUrl ="https://1b01-2402-800-6318-724f-e4f6-ed32-632c-2714.ngrok-free.app/v1/pay/callback";
+
+   var ipnUrl ="https://crisp-catfish-distinct.ngrok-free.app/v1/pay/callback";
 
   // var ipnUrl = redirectUrl = "https://webhook.site/454e7b77-f177-4ece-8236-ddf1c26ba7f8";
   var amount = amount_1;
@@ -207,9 +209,10 @@ router.post("/paymentZalo" , async (req ,res) => {
      amount: amount_1,
      description: `FengShuiKoi - Payment for the Member  #${transID}`,
      bank_code: "",
-     callback_url:"https://1c7c-171-240-246-45.ngrok-free.app/v1/pay/callbackZalo",
+     callback_url:"https://crisp-catfish-distinct.ngrok-free.app/v1/pay/callbackZalo",
    };
-
+   
+  //  callback_url:"https://1c7c-171-240-246-45.ngrok-free.app/v1/pay/callbackZalo",
    // appid|app_trans_id|appuser|amount|apptime|embeddata|item
    const data =
      config.app_id +

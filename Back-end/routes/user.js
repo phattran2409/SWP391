@@ -14,7 +14,7 @@ router.get(
 );
 //  GET BY ID
 // /v1/user/id=
-router.get("/id=:id", useController.getUserById);
+router.get("/id=:id", middlewareController.verifyTokenAdminAuth,  useController.getUserById);
 // DELETE by ID
 // /v1/user/id=
 router.delete(

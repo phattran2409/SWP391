@@ -5,6 +5,7 @@ const { UploadStream } = require("cloudinary");
 const { set } = require("mongoose");
 const fs = require("fs").promises; // Use promises for cleaner async code
 const users = require("../models/user");
+const { log } = require("console");
 
 const postController = {
   //Get all post and author
@@ -71,7 +72,7 @@ const postController = {
   getPostByAuthor: async (req, res) => {
     try {
       const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 2;
+      const limit = parseInt(req.query.limit) || 5;
 
       const skip = (page - 1) * limit;
 
@@ -79,12 +80,14 @@ const postController = {
         .find({ author: req.params.id })
         .populate("author")
         .skip(skip)
+        .sort({ updatedAt: -1 })
         .limit(limit);
-      const totalDocuments = await posts.countDocuments();
+      const totalDocuments = await posts.countDocuments({ author: req.params.id });
+      console.log("length"+postByUser.length);
       res.status(200).json({
         currentPage: page,
-        totalPages: Math.ceil(totalDocuments / limit),
-        totalDocuments: totalDocuments,
+        totalPages: Math.ceil(totalDocuments/ limit),
+        totalDocuments: totalDocuments, 
         data: postByUser,
       });
     } catch (error) {
@@ -145,6 +148,22 @@ const postController = {
     } catch (error) {
       return res.status(500).json(error);
     }
+  },
+
+  updatePostByMember: async (req, res) => {
+    try {
+      const updateData = { ...req.body, postStatus: false };
+
+      const updatePost = await posts.findByIdAndUpdate(
+          req.params.id,
+          { $set: updateData },
+          { new: true, runValidators: true }
+      );
+
+      return res.status(200).json(updatePost);
+  } catch (error) {
+      return res.status(500).json(error);
+  }
   },
 
   //setStatus
@@ -341,6 +360,7 @@ const postController = {
       elementID,
       categoryID,
       postStatus,
+      author,
       sortBy = "elementID", // Trường để sắp xếp chính
       sortOrder = "asc", // 'asc' hoặc 'desc'
     } = req.query;
@@ -357,6 +377,9 @@ const postController = {
 
       if (title) {
         filter.title = { $regex: title, $options: "i" };
+      }
+      if (author) {
+        filter.author = author;
       }
 
       if (elementID) {

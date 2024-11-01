@@ -18,7 +18,7 @@ router.get("/getPost/:id", postController.getApprovedPost);
 router.get("/getPostByElementID/:id", postController.getPostByElemet);
 
 //Delete Post
-router.delete("/deletePost/:id", middlewareController.verifyTokenAdminAuth, postController.deletePost);
+router.delete("/deletePost/:id", middlewareController.verifyTokenMember, postController.deletePost);
 
 //Create Post
 router.post( "/createPost",middlewareController.verifyTokenMember, postController.createPost);
@@ -34,6 +34,9 @@ router.get("/getPostById/:id", postController.getPostById);
 //Update post
 router.put("/updatePost/:id", middlewareController.verifyTokenAdminAuth, postController.updatePost);
 
+//Update Post By Member
+router.put("/updatePostByMember/:id", middlewareController.verifyTokenMember, postController.updatePostByMember);
+
 //Search post
 router.get("/searchPost", postController.searchPost);
 
@@ -45,5 +48,6 @@ router.get("/searchPage", postController.searchPostnotPagination);
 router.get("/searchPostnotPagination", postController.searchPostnotPagination);
 
 router.get("/getAllAd/:id", postController.getAllAd);
+
 
 module.exports = router;
