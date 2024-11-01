@@ -33,7 +33,7 @@ import BackgroundForCalculate from "../../assets/Image_Koi_Consulting.jpg"
 const { Item } = Form;
 import "./Calculator.css"
 import api from "../../config/axios";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 
 export default function Calculator({ setvalue  , setLoading }) {
 
@@ -45,6 +45,7 @@ export default function Calculator({ setvalue  , setLoading }) {
     const onFinish = async (values) => {
     // Calculate Feng Shui based on user input
     setLoading(true)
+     
     setLoading1(true);
     const { name, birthdate, gender } = values;
     
@@ -52,6 +53,15 @@ export default function Calculator({ setvalue  , setLoading }) {
     console.log(birthdate.$y);
     console.log(name);
     
+    // ---> check valid date
+    let date = new Date()
+    let currentYears = date.getFullYear();
+    if  (birthdate.$y > currentYears || birthdate.$y < 1920) {
+      setLoading(false);
+      setLoading1(false);
+      toast.error("invalid years");
+      return;
+    }
     try {
       const res = await api.get(
         `v1/user/calculateElement?gender=${gender}&y=${birthdate.$y}`
@@ -131,7 +141,14 @@ export default function Calculator({ setvalue  , setLoading }) {
                       },
                     ]}
                   >
-                    <DatePicker className="h-10" style={{ width: "100%" }} />
+                    <DatePicker
+                      className="h-10"
+                      style={{ width: "100%" }}
+                      format={{
+                        format: "DD-MM-YYYY",
+                        type: "mask",
+                      }}
+                    />
                   </Item>
                 </div>
 
@@ -153,7 +170,10 @@ export default function Calculator({ setvalue  , setLoading }) {
                     </Radio>
                     <Radio value="1" className="">
                       Female
-                      <iframe className="w-10 h-10 " src="https://lottie.host/embed/4e4ee552-8c88-4db8-be6b-5fb6f83e8fcd/wNg4po9wYR.json"></iframe>
+                      <iframe
+                        className="w-10 h-10 "
+                        src="https://lottie.host/embed/4e4ee552-8c88-4db8-be6b-5fb6f83e8fcd/wNg4po9wYR.json"
+                      ></iframe>
                     </Radio>
                   </Radio.Group>
                 </Item>

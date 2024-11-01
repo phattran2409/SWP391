@@ -16,7 +16,7 @@ import ManageAds from "./page/admin/manage-post/manage-ads/manageAds";
 
 
 import ContactUs from "./page/contactus/contactus";
-import ShowFish from "./page/showdetails/showfish";
+import ShowFish from "./page/showdetails/Showfish.jsx";
 import ShowPond from "./page/showdetails/ShowPond";
 
 import Home from "./page/Home/Home.jsx";
