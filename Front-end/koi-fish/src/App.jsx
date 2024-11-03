@@ -34,12 +34,13 @@ import ManageOrder from "./page/admin/manage-orders/manageOrders.jsx";
 import Consulting from "./page/consulting/consulting.jsx";
 import NotFoundPage from "./page/NotFound/404.jsx";
 
-import  {ChangeEmail } from "./components/update-profile/EditProfile/ChangeEmail.jsx"
+import { ChangeEmail } from "./components/update-profile/EditProfile/ChangeEmail.jsx"
 import ProfileUser from "./page/ProfileUser/ProfileUser.jsx";
 
 import NewsPage from "./page/Category/news/news.jsx";
 import BlogPage from "./page/Category/blogs/blog.jsx";
 import DetailsPage from "./page/Category/details/details.jsx";
+import ChatBot from "./components/bot-chat/botchat.jsx";
 
 
 
@@ -164,6 +165,10 @@ function App() {
     {
       path: "*",
       element: <NotFoundPage />,
+    },
+    {
+      path: "/botchat",
+      element: <ChatBot />,
     },
   ]);
 
