@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@ant-design/react-slick": "^1.1.2",
+    "@chatscope/chat-ui-kit-react": "^2.0.3",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@fullpage/react-fullpage": "^0.1.44",
