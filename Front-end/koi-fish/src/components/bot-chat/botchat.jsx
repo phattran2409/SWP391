@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { FaUser, FaRobot, FaPaperPlane } from "react-icons/fa";
+import { FaUser, FaRobot, FaPaperPlane} from "react-icons/fa";
 import { Link } from "react-router-dom";
+import SocialLinks from "../social-link/SocialLinks.jsx";
 
 const ChatBot = () => {
     const [messages, setMessages] = useState([
@@ -74,8 +75,8 @@ const ChatBot = () => {
             botResponseText = (
                 <>
                     You should choose the elements suitable with your elements and the elements of fish, such as water with wood, not fire with water.
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     If you don`t know your elements please <Link to="/consulting" className="text-red-900 underline">Click here</Link> to calculate your element.
                 </>
             );
@@ -92,8 +93,10 @@ const ChatBot = () => {
     };
     return (
         <div className="flex justify-center items-center min-h-screen bg-white">
-            <div className="w-full max-w-md bg-white rounded-lg shadow-lg overflow-hidden border border-black">
-                <div className="bg-black text-white p-4 flex items-center">
+            <SocialLinks />
+
+            <div className="w-full max-w-md bg-white rounded-lg shadow-lg overflow-hidden border border-gray-800">
+                <div className="bg-gray-800 text-white p-4 flex items-center">
                     <FaRobot className="text-2xl mr-2" />
                     <h2 className="text-xl font-semibold">Customer Care Bot</h2>
                 </div>

@@ -9,6 +9,7 @@ import api from "../../../config/axios.js";
 import Navbar from "../../../components/navbar/Navbar";
 import Footer from '../../../components/footer/Footer.jsx';
 import { Link } from 'react-router-dom';
+import SocialLinks from '../../../components/social-link/SocialLinks.jsx';
 export default function BlogPage() {
     const [blogsArticles, setBlogsArticles] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -54,8 +55,9 @@ export default function BlogPage() {
     return (
         <>
             <Navbar />
+
             <div className="min-h-screen relative">
-                <div className="relative">
+                <div className="relative z-40">
                     <img src={Banner} alt="Banner" className="w-full h-auto" />
                 </div>
 
@@ -67,6 +69,7 @@ export default function BlogPage() {
 
                 </div>
                 <div className="flex items-center justify-center min-h-screen">
+                    <SocialLinks />
                     <main className="container bg-white bg-opacity-90 mx-auto mt-16 px-4 md:px-8 py-10 rounded-[30px] z-10">
                         {loading ? (
                             <div className="flex justify-center items-center h-40">
