@@ -22,15 +22,32 @@ import { number } from "prop-types";
 import { useState } from "react";
 import api from "../../../config/axios";
 import { toast } from "react-toastify";
+import { render } from "react-dom";
 
 export default function TablePackage({ dataPackage ,onUpdate }) {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
 
+
+  // tao function check var co dau cham khi them hoac edit  cho amount
+  const isDot = (amount) => { 
+    const str = amount.toString();
+    const  matches = str.match(/\./);
+    if (matches) {
+      // xoa dau cham trong 1 string
+       const amount_replace = amount.replace(/\./, '');
+       return amount_replace;
+    }
+    return null;
+  }
+
   const handleSubmit = async (values) => {
-    console.log(values.amount.replace(/\./g, ""));
-    const amount_replace = values.amount.replace(/\./g, "");
+    // console.log(values.amount.replace(/\./g, ""));
+    // 2 truong hop xay ra khi edit  
+    // TH 1 : Khi admin  nhap vao co dau cham de phan biet hang don vi 
+    // TH 2 : admin Khong co dau cham de phan biet
+    const amount_replace = isDot(values.amount);
 
     const {
       id = values._id,
@@ -42,7 +59,7 @@ export default function TablePackage({ dataPackage ,onUpdate }) {
     const data = {
       id,
       packageType,
-      amount: amount_replace,
+      amount: amount_replace || amount,
       expiresDay,
     };
  
@@ -53,7 +70,7 @@ export default function TablePackage({ dataPackage ,onUpdate }) {
           onUpdate(); 
           setShowModal(false);
         } else {
-          if  (dataPackage.length >= 3 )  { return toast.error("cant add more package")} 
+          // if  (dataPackage.length >= 3 )  { return toast.error("cant add more package")} 
           const result = await api.post("/v1/package/create", {
             packageType: packageType,
             amount: data.amount,
@@ -100,11 +117,16 @@ export default function TablePackage({ dataPackage ,onUpdate }) {
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Amount",
+      title: "Amount VND",
       dataIndex: "amount",
       key: "amount ",
       sorter: (a, b) => a.amount - b.amount,
       sortDirections: ["descend", "ascend"],
+      render: (amount) => (
+        <>
+          <p>{amount.toLocaleString("de-DE")} </p>
+        </>
+      ),
     },
     {
       title: "Action",
@@ -145,7 +167,7 @@ export default function TablePackage({ dataPackage ,onUpdate }) {
         type="primary"
         variant="outlined"
         onClick={() => {
-          setShowModal(true); 
+          setShowModal(true);
           form.resetFields();
         }}
       >
@@ -188,15 +210,16 @@ export default function TablePackage({ dataPackage ,onUpdate }) {
             rules={[
               { required: true, message: "Please enter Amount Name" },
               {
-                pattern: /^(?:[1-9]\d*|0)(\.\d+)?$/,
-                message: "please enter  positive number",
+                pattern: /^(?:[1-9]\d{0,2})(?:\.\d{3})*(?:\.\d{3})?$/,
+                message:
+                  "Please enter a positive number, with a limit of one million.",
               },
             ]}
           >
             <Input placeholder="Enter member's full name" />
           </Form.Item>
           <Form.Item
-            name="expiresDays"
+            name="expiresDay"
             label="Expire Days"
             rules={[
               {
@@ -204,7 +227,7 @@ export default function TablePackage({ dataPackage ,onUpdate }) {
                 message: "please enter Days number",
               },
               {
-                pattern: /^[1-9]\d{1,3}$/,
+                pattern: /^[1-9]\d{0,2}$/,
                 message:
                   "Please enter a positive number that is a thousand or less. ",
               },

@@ -50,11 +50,11 @@ export default function ManageOrder() {
              `/v1/order?page=${page}&limit=${limit}`
            );
           console.log(response.data);
-          
+           
            setDatas(response.data.data);
            setPagination({
-             urrent: response.data.result.currentPage, // cập nhật trang hiện tại
-             total: response.data.result.totalDocuments, // tổng số cá
+             current: response.data.currentPage, // cập nhật trang hiện tại
+             total: response.data.totalDocuments, // tổng số cá
              pageSize: limit, // số cá trên mỗi trang
            });
          } catch (err) { console.log(err);
@@ -144,7 +144,7 @@ export default function ManageOrder() {
         render: (message) => {
           console.log(message);
 
-          return message === "Successful." ? (
+          return message.includes("Success") ? (
             <Tag color="green">{message}</Tag>
           ) : (
             <Tag color="red">{message}</Tag>

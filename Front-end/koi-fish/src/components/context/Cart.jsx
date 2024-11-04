@@ -27,11 +27,11 @@ export const CartProvider = ({ children }) => {
    
     if (cartItems.length <= 2) {
       if (isPond && pondInCart) {
-        toast.error("just add one pond");
+        toast.error("Allow adding one Pond for evaluation");
         return;
       }
       if (isKoi && koiInCart) {
-        toast.error("just add one koi ");
+        toast.error("Allow adding one Koi for evaluation ");
         return;
       }
        isKoi && toast.success("The Koi was added  Assess Suitability");
@@ -77,6 +77,10 @@ export const CartProvider = ({ children }) => {
 
   const handleMutual = async () => {
     try {
+      if (!value?.elementID) {
+        toast.error("You need consulting before you evaluate");
+        return;
+      } 
       const res = await axios.post("http://localhost:8081/v1/user/mutual", {
         elementID_koi: koi,
         elementID_pond: pond,

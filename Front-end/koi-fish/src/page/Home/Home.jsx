@@ -49,7 +49,8 @@ const Home = () => {
   //  thông báo đăng nhập thành công
   useEffect(() => {
     // Kiểm tra nếu có message trong state, hiển thị toast
-    console.log(location);
+    console.log(location); 
+   
     if(location.search == "?status=login_gg_success") {
       toast.success("Login successfull ");
     } 

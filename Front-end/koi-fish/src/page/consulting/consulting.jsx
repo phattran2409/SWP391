@@ -196,6 +196,8 @@ export default function Consulting() {
             </div>
 
             <div className="w-full h-full">
+               { value ?  (
+                <>
               {/* Koi Fish */}
               <div className="container mx-auto px-4">
                 {loadingCard ? (
@@ -517,7 +519,10 @@ export default function Consulting() {
                 <div className="mx-auto h-[100vh] md:w-[400px] lg:w-[600px] mb-4 ">
                   <SliderPopUp ADS={ads}></SliderPopUp>
                 </div>
-              </div>
+              </div> 
+                </>
+               ) : ( <div className="h-[50vh]"></div>)
+              }
               <Footer />
             </div>
          

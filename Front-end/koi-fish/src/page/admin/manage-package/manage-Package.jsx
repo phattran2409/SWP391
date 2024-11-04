@@ -44,7 +44,6 @@ export default function Package() {
     return (
         <>
           <TablePackage dataPackage={packageData} onUpdate={handleUpdate}/>
-
         </>
     );
      

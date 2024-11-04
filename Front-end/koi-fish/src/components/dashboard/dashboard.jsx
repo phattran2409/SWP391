@@ -18,7 +18,7 @@ const { Header, Content, Footer, Sider } = Layout;
 import { FaFileInvoiceDollar } from "react-icons/fa";
 import { GiCirclingFish } from "react-icons/gi";
 import { SiSpond } from "react-icons/si";
-
+import { BiSolidPackage } from "react-icons/bi";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -49,6 +49,7 @@ const items = [
   getItem("Manage Pond", "pond", <SiSpond />),
   getItem("Manage Koi", "koi", <GiCirclingFish />),
   getItem("Manage Orders", "order", <FaFileInvoiceDollar />),
+  getItem("Manage Package", "package", <BiSolidPackage/> ),
   getItem("Manage Post", null, <FileOutlined />, [
     getItem("Manage News", "post/news"),
     getItem("Manage Blog", "post/blog"),
