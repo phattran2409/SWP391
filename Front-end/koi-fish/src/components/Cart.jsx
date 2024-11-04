@@ -128,30 +128,58 @@ export default function Cart({ showModal, toggle }) {
      }}
      // This ensures the modal takes up full width on smaller screens
      className="max-w-2xl w-full "
-     footer={[
-       <Button danger size="middle" type="primary" onClick={clearCart}>
-         Clear
-       </Button>,
-       <Button
-         variant="filled"
-         size="middle"
-         color="default"
-         onClick={toggle}
-         className="outline"
-       >
-         {" "}
-         Cancle{" "}
-       </Button>,
-       ,
-       <Button
-         variant="outlined"
-         size="middle"
-         color="primary"
-         onClick={handleMutual}
-       >
-         Evaluate
-       </Button>,
-     ]} // Responsive width control for larger screens
+     footer={
+       (cartItems.length < 2 )
+         ? [
+             <Button danger size="middle" type="primary" onClick={clearCart}>
+               Clear
+             </Button>,
+             <Button
+               variant="filled"
+               size="middle"
+               color="default"
+               onClick={toggle}
+               className="outline"
+             >
+               {" "}
+               Cancle{" "}
+             </Button>,
+             ,
+             <Button
+               variant="outlined"
+               size="middle"
+               color="primary"
+               onClick={handleMutual}
+               disabled
+             >
+               Evaluate
+             </Button>,
+           ]
+         : [
+             <Button danger size="middle" type="primary" onClick={clearCart}>
+               Clear
+             </Button>,
+             <Button
+               variant="filled"
+               size="middle"
+               color="default"
+               onClick={toggle}
+               className="outline"
+             >
+               {" "}
+               Cancle{" "}
+             </Button>,
+             ,
+             <Button
+               variant="outlined"
+               size="middle"
+               color="primary"
+               onClick={handleMutual}
+             >
+               Evaluate
+             </Button>,
+           ]
+     } // Responsive width control for larger screens
    >
      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4">
        {cartItems.map((items) => (
@@ -259,14 +287,14 @@ export default function Cart({ showModal, toggle }) {
      {cartItems.length > 0 ? (
        <div className="flex w-full justify-center items-center text-2xl font-bold">
          {cartItems.length >= 2 &&
-           (result != null  &&
-           ((resultCode === 1)? (
-             <iframe src="https://lottie.host/embed/f0cf59e2-3927-4526-aaed-8d60dd79f1d8/p8QuDeZL3Z.json"></iframe>
+           result != null &&
+           (resultCode === 1 ? (
+             <>
+               <iframe src="https://lottie.host/embed/f0cf59e2-3927-4526-aaed-8d60dd79f1d8/p8QuDeZL3Z.json"></iframe>
+             </>
            ) : (
              <iframe src="https://lottie.host/embed/aac9744d-2c28-4445-a409-b04b92c6e69b/w7fWbIHaur.json"></iframe>
-           ))
-          )
-        }
+           ))}
        </div>
      ) : (
        <div className="flex  w-full h-full  justify-center">

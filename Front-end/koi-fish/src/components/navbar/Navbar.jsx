@@ -16,6 +16,7 @@ import {
 import SearchBar from "../searchbar/SearchBar";
 
 const Navbar = () => {
+  const navigate = useNavigate(); 
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [isModalLogOut, setIsModalLogOut] = useState(null);
@@ -75,7 +76,9 @@ const Navbar = () => {
     localStorage.removeItem("cartItems");
     localStorage.removeItem("elementUser");
     setUser(null);
-    toast.success("Logged out successfully");
+    navigate("/home?status=logout_success");
+     
+    // toast.success("Logged out successfully");
   };
   // khi an cancle
   const handleCancel = () => {
