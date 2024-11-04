@@ -10,6 +10,7 @@ import api from "../../../config/axios.js";
 import Navbar from "../../../components/navbar/Navbar";
 import Footer from '../../../components/footer/Footer.jsx';
 import "../../../components/update-profile/contentStyle.css"
+import SocialLinks from '../../../components/social-link/SocialLinks.jsx';
 
 export default function DetailsPage() {
     const { id } = useParams();
@@ -35,8 +36,9 @@ export default function DetailsPage() {
     return (
         <>
             <Navbar />
+            <SocialLinks></SocialLinks>
             <div className="min-h-screen relative bg-gray-50">
-                <div className="relative">
+                <div className="relative z-40">
                     <img src={"https://res.cloudinary.com/ddqgjy50x/image/upload/v1729766014/z5963356300335_b2ad375e0e2e98fcd6fbf793ef122906-topaz-enhance_plpyuz.jpg"} alt="Banner" className="w-full h-auto" />
                 </div>
                 <div className='mt-8 font-semibold text-center text-6xl '>Article Details

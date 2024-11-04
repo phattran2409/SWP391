@@ -36,12 +36,13 @@ import NotFoundPage from "./page/NotFound/404.jsx";
 
 import { ChangeEmail } from "./components/update-profile/EditProfile/ChangeEmail.jsx"
 import ProfileUser from "./page/ProfileUser/ProfileUser.jsx";
-
 import NewsPage from "./page/Category/news/news.jsx";
 import BlogPage from "./page/Category/blogs/blog.jsx";
 import DetailsPage from "./page/Category/details/details.jsx";
 import ChatBot from "./components/bot-chat/botchat.jsx";
 import Package from "./page/admin/manage-package/manage-Package.jsx";
+import ChatBotTemplate from "./components/bot-chat/botchat-template.jsx";
+
 
 
 
@@ -88,10 +89,10 @@ function App() {
         {
           path: "koi",
           element: <ManageKoiFish />,
-        }, 
+        },
         {
           path: "package",
-          element : <Package/>
+          element: <Package />
         },
         {
           path: "order",
@@ -140,7 +141,7 @@ function App() {
       path: "/details/:id",
       element: <DetailsPage />,
     },
-  
+
 
     {
       path: "/koidetail/:id",
@@ -174,6 +175,10 @@ function App() {
     {
       path: "/botchat",
       element: <ChatBot />,
+    },
+    {
+      path: "/botchattemplate",
+      element: <ChatBotTemplate />,
     },
   ]);
 
