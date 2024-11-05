@@ -26,5 +26,4 @@ const packageMemberSchema = new mongoose.Schema(
 
 
 
-
 module.exports = mongoose.model('packagemembers' , packageMemberSchema);
