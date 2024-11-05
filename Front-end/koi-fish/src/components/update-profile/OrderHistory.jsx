@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { IoMdClose } from "react-icons/io";
+
 import { toast } from "react-toastify";
 import api from "../../config/axios.js";
-import { FaUser, FaEye } from "react-icons/fa";
+import {  FaEye } from "react-icons/fa";
 import "../../page/testpage/consulting-detail/animate.css";
 
 export function OrderHistory() {
@@ -11,12 +11,6 @@ export function OrderHistory() {
   const [order, setOrder] = useState([]);
   const [orderDetails, setOrderDetails] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
-
-  const Package = [
-    { name: "Basic", price: "20.000 VND" },
-    { name: "Advance", price: "35.000 VND" },
-    { name: "Plus", price: "50.000 VND" },
-  ];
 
   useEffect(() => {
     setLoading(true);
@@ -65,10 +59,7 @@ export function OrderHistory() {
     setIsOpen(!isOpen);
   };
 
-  const getPriceByPackageType = (packageType) => {
-    const foundPackage = Package.find((pkg) => pkg.name === packageType);
-    return foundPackage ? foundPackage.price : "Undefined";
-  };
+ 
 
   if (loading) {
     return (
@@ -223,14 +214,14 @@ export function OrderHistory() {
                         {orderDetails.packageType}
                       </span>
                       <span>
-                        {getPriceByPackageType(orderDetails.packageType)}
+                        {orderDetails.amount.toLocaleString('vi-VN')} VND
                       </span>
                     </div>
 
                     <div className="border-t border-gray-200 flex justify-between py-1 font-semibold text-lg">
                       <span>Total</span>
                       <span className="text-red-600">
-                        {getPriceByPackageType(orderDetails.packageType)}
+                      {orderDetails.amount.toLocaleString('vi-VN')} VND
                       </span>
                     </div>
                   </div>
