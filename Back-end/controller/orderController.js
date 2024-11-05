@@ -12,7 +12,7 @@ const orderController = {
       const { page = 1, limit = 10 } = req.query;
 
       const skip = (page - 1) * limit;
-      const user = await Orders.find().skip(skip).limit(limit);
+      const user = await Orders.find().skip(skip).sort({createdAt : -1}).limit(limit);
 
       const totalDocuments = await Orders.countDocuments();
       const basic = await Orders.countDocuments({ packageType: "Basic" });
@@ -37,7 +37,7 @@ const orderController = {
       console.log(id);
 
       // const result = await Orders.findByIdAndDelete(id);
-      const result = await Orders.find({ _id: id });
+      const result = await Orders.findByIdAndDelete({ _id: id });
       if (result) {
         return res.status(200).json({ message: "delete order successfull" });
       }
@@ -100,7 +100,7 @@ const orderController = {
   getOrderByUser: async (req, res) => {
     try {
       const user = req.params.id;
-      const orders = await Orders.find({ accountID: user });
+      const orders = await Orders.find({ accountID: user }).sort({ createdAt: -1 });
       return res.status(200).json(orders);
     } catch (error) {
       return res.status(500).json(error);

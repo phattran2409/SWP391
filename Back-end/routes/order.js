@@ -10,7 +10,7 @@ router.get(
   orderController.getAllOrder
 );
 // v1/order/delete
-router.delete("/delete:id", orderController.deleteOrder);
+router.delete("/delete:id", middlewareController.verifyTokenAdminAuth,  orderController.deleteOrder);
 router.get("/getProfile", orderController.viewProfileUser);
 router.get("/orderCount", orderController.getMonthlyOrderCount);
 router.get("/getByUser/:id", orderController.getOrderByUser);
