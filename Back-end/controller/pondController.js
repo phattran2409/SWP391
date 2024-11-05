@@ -60,7 +60,12 @@ const pondController = {
       }
 
       const sortOrderValue = sortOrder === "asc" ? 1 : -1;
-      const pondList = await ponds.find(filter).skip(skip).limit(limit).sort({ [sortBy]: sortOrderValue }).exec();
+      const pondList = await ponds
+        .find(filter)
+        .skip(skip)
+        .limit(limit)
+        .sort({ [sortBy]: sortOrderValue })
+        .exec();
       const totalDocuments = await ponds.countDocuments(filter);
 
       return res.status(200).json({
@@ -69,8 +74,6 @@ const pondController = {
         totalDocuments: totalDocuments,
         data: pondList,
       });
-      
-    
     } catch (error) {
       return res.status(500).json(error);
     }
@@ -84,17 +87,19 @@ const pondController = {
 
       const skip = (page - 1) * limit;
       const pond = await ponds
-      .find({ elementID: req.params.id})
-    
-      .skip(skip)
-      .limit(limit);
-    const totalDocuments = await ponds.countDocuments({ elementID: req.params.id });
-    res.status(200).json({
-      currentPage: page,
-      totalPages: Math.ceil(totalDocuments / limit),
-      totalDocuments: totalDocuments,
-      data: pond,
-    });
+        .find({ elementID: req.params.id })
+
+        .skip(skip)
+        .limit(limit);
+      const totalDocuments = await ponds.countDocuments({
+        elementID: parseInt(req.params.id)
+      });
+      res.status(200).json({
+        currentPage: page,
+        totalPages: Math.ceil(totalDocuments / limit),
+        totalDocuments: totalDocuments,
+        data: pond,
+      });
     } catch (error) {
       return res.status(500).json(error);
     }
@@ -130,11 +135,12 @@ const pondController = {
       const updateData = req.body;
       const update = await ponds.findByIdAndUpdate(
         pondId,
-        {$set: updateData},
-        {new: true, runValidators: true}
+        { $set: updateData },
+        { new: true, runValidators: true }
       );
       if (!update) {
-        return res.status(404).json({ error: "Pond Not found" })};
+        return res.status(404).json({ error: "Pond Not found" });
+      }
       res.status(200).json(update);
     } catch (error) {
       return res.status(500).json(error);

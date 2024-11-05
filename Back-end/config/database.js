@@ -50,5 +50,7 @@ const connection = async () => {
   collections.forEach((collection) => console.log(` - ${collection.name}`));
 }
 
+
+
 module.exports = connection;
 
