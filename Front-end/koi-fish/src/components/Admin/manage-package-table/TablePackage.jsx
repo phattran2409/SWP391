@@ -24,20 +24,20 @@ import api from "../../../config/axios";
 import { toast } from "react-toastify";
 import { render } from "react-dom";
 
-export default function TablePackage({ dataPackage ,onUpdate }) {
+export default function TablePackage({ dataPackage, onUpdate }) {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
 
 
   // tao function check var co dau cham khi them hoac edit  cho amount
-  const isDot = (amount) => { 
+  const isDot = (amount) => {
     const str = amount.toString();
-    const  matches = str.match(/\./);
+    const matches = str.match(/\./);
     if (matches) {
       // xoa dau cham trong 1 string
-       const amount_replace = amount.replace(/\./, '');
-       return amount_replace;
+      const amount_replace = amount.replace(/\./, '');
+      return amount_replace;
     }
     return null;
   }
@@ -62,29 +62,29 @@ export default function TablePackage({ dataPackage ,onUpdate }) {
       amount: amount_replace || amount,
       expiresDay,
     };
- 
-      try {
-        if (values._id) {
-          const result = await api.post("/v1/package/update", data);
-          toast.success(result.data.message);
-          onUpdate(); 
-          setShowModal(false);
-        } else {
-          // if  (dataPackage.length >= 3 )  { return toast.error("cant add more package")} 
-          const result = await api.post("/v1/package/create", {
-            packageType: packageType,
-            amount: data.amount,
-            expiresDay: data.expiresDay,
-          });
-          toast.success(result.data.message);
-          onUpdate(); 
-          setShowModal(false);
-        }
-        form.resetFields();
-      } catch (err) {
-        console.log(err);
+
+    try {
+      if (values._id) {
+        const result = await api.post("/v1/package/update", data);
+        toast.success(result.data.message);
+        onUpdate();
+        setShowModal(false);
+      } else {
+        // if  (dataPackage.length >= 3 )  { return toast.error("cant add more package")} 
+        const result = await api.post("/v1/package/create", {
+          packageType: packageType,
+          amount: data.amount,
+          expiresDay: data.expiresDay,
+        });
+        toast.success(result.data.message);
+        onUpdate();
+        setShowModal(false);
       }
+      form.resetFields();
+    } catch (err) {
+      console.log(err);
     }
+  }
 
 
   const handleDelete = async (_id) => {
@@ -212,7 +212,10 @@ export default function TablePackage({ dataPackage ,onUpdate }) {
               {
                 pattern: /^(?:[1-9]\d{0,2})(?:\.\d{3})*(?:\.\d{3})?$/,
                 message:
-                  "Please enter a positive number, with a limit of one million.",
+                  <>
+                    Please enter a positive number, with a limit of one million. <br />
+                    Or must include a dot separating the hundreds and thousands.
+                  </>
               },
             ]}
           >

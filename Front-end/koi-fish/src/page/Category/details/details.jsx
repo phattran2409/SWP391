@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { FaClock, FaUser } from 'react-icons/fa';
-import axios from 'axios';
 import AdvertisementTemplate from '../../../components/news-template/AdvertiseTemplate';
 import NewsContent from "../../../components/news-template/NewsContent"
 import Search from '../search';
-import Banner from '../../../assets/image/Banner1.jpg'
 import api from "../../../config/axios.js";
 import Navbar from "../../../components/navbar/Navbar";
 import Footer from '../../../components/footer/Footer.jsx';

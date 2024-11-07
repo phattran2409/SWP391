@@ -169,7 +169,7 @@ function MemberPackage() {
                         {item.amount.toLocaleString("de-DE")} VND
                       </div>
                       <p className="text-gray-600 mb-6 text-center font-bold">
-                        1 user,{item.expiresDay} days
+                        1 user, {item.expiresDay} days
                       </p>
                       <div className="flex justify-center ">
                         <button
