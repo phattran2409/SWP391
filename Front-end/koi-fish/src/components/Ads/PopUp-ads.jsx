@@ -25,8 +25,8 @@ const AdPopUp = ({ ADS }) => {
   //    setADS(resAds.data.data);
 
   // }
-  function handleLinkToDetail() { 
-    <Link to={`/details/${randomAds._id}`}/>
+  function handleLinkToDetail() {
+    <Link to={`/details/${randomAds._id}`} />
   }
   useEffect(() => {
     if (ADS && ADS.length > 0) { // Kiểm tra nếu ADS có dữ liệu
@@ -44,14 +44,15 @@ const AdPopUp = ({ ADS }) => {
         title={randomAds?.title}
         visible={ModalVisible}
         onCancel={handleClose}
-        
+
         footer={[
-          <Button key="back" onClick={handleClose} danger>
+          <Button key="back" onClick={handleClose} default>
             Cancel
           </Button>,
-          <Link to={`/details/${randomAds?._id}`}>
-            <Button key="back">oke</Button>
-          </Link>,
+
+          <Link key="link" to={`/details/${randomAds?._id}`} className="ml-3">
+            <Button variant='solid' color='danger'>Visit</Button>
+          </Link>
         ]}
       >
         {loading ? (
@@ -59,8 +60,8 @@ const AdPopUp = ({ ADS }) => {
           <div className="spinner"></div>
         ) : (
           <Link to={`/details/${randomAds._id}`}>
-        <img src={randomAds?.imageThumbnail}></img>
-        </Link>
+            <img src={randomAds?.imageThumbnail}></img>
+          </Link>
         )}
       </Modal>
     </>

@@ -204,7 +204,7 @@ export default function Consulting() {
                   <ContentLoader
                     viewBox="0 0 1644 360"
                     height={360}
-                    width={1644}
+                    width="100%"
                   >
                     <rect
                       x="448"
@@ -258,7 +258,7 @@ export default function Consulting() {
                     <ContentLoader
                       viewBox="0 0 1644 360"
                       height={360}
-                      width={1644}
+                      width="100%"
                     >
                       <rect
                         x="448"
@@ -301,7 +301,7 @@ export default function Consulting() {
                         height="208"
                       />
                     </ContentLoader>
-                  ) : (
+                  ) : ( 
                     <Slider {...settings}>
                       {koi.map((kois) => (
                         <div key={kois.id} className="card">
@@ -334,7 +334,7 @@ export default function Consulting() {
                   <ContentLoader
                     viewBox="0 0 1644 360"
                     height={360}
-                    width={1644}
+                    width="100%"
                   >
                     <rect
                       x="448"
@@ -419,7 +419,7 @@ export default function Consulting() {
                   <ContentLoader
                     viewBox="0 0 1644 360"
                     height={360}
-                    width={1644}
+                    width="100%"
                   >
                     <rect
                       x="448"
