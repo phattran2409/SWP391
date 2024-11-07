@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { FaUser, FaRobot, FaPaperPlane} from "react-icons/fa";
 import { Link } from "react-router-dom";
 import SocialLinks from "../social-link/SocialLinks.jsx";
+import Navbar from "../navbar/Navbar.jsx";
 
 const ChatBot = () => {
     const [messages, setMessages] = useState([
@@ -92,9 +93,9 @@ const ChatBot = () => {
         setMessages((prevMessages) => [...prevMessages, userMessage, botResponse]);
     };
     return (
+        <>
+        <Navbar/>
         <div className="flex justify-center items-center min-h-screen bg-white">
-            <SocialLinks />
-
             <div className="w-full max-w-md bg-white rounded-lg shadow-lg overflow-hidden border border-gray-800">
                 <div className="bg-gray-800 text-white p-4 flex items-center">
                     <FaRobot className="text-2xl mr-2" />
@@ -168,6 +169,7 @@ const ChatBot = () => {
                 </div>
             </div>
         </div>
+        </>
     );
 };
 

@@ -44,9 +44,6 @@ import Package from "./page/admin/manage-package/manage-Package.jsx";
 import ChatBotTemplate from "./components/bot-chat/botchat-template.jsx";
 
 
-
-
-
 function App() {
   const router = createBrowserRouter([
     {
