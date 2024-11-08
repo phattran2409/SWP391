@@ -1,9 +1,11 @@
-/* Chia đôi chiều rộng của trang */
+/* Container for splitting page width */
 .container-image {
-  @apply flex min-h-full w-full
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
 }
 
-/* Phần chứa hình ảnh */
+/* Section for displaying an image */
 .image-section {
   width: 55%;
   display: flex;
@@ -11,10 +13,6 @@
   justify-content: center;
   position: relative;
   height: 100vh;
-
-  @media (max-width: 640px) {
-    display: none;
-  }
 }
 
 .image-section img {
@@ -23,7 +21,14 @@
   height: 100%;
 }
 
-/* Overlay text trên hình ảnh */
+/* Hide image section on small screens */
+@media (max-width: 640px) {
+  .image-section {
+    display: none;
+  }
+}
+
+/* Overlay text on top of the image */
 .overlay {
   position: absolute;
   inset: 0;
@@ -31,9 +36,7 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-end;
-  padding-bottom: 2rem;
-  padding-left: 2rem;
-  padding-right: 1rem;
+  padding: 0 1rem 2rem 2rem;
 }
 
 .overlay h1 {
@@ -52,15 +55,17 @@
   width: 85%;
 }
 
-/* Phần chứa form */
+/* Section for containing form */
 .form-section {
   width: 50%;
   padding: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
+}
 
-  @media (max-width: 768px) {
+@media (max-width: 768px) {
+  .form-section {
     width: 100%;
   }
 }
