@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "engines": {
+    "node": "18.x"
+  },
   "scripts": {
     "dev": "vite --host",
     "build": "vite build --base=./",
@@ -60,5 +63,8 @@
     "sass-embedded": "^1.79.3",
     "tailwindcss": "^3.4.13",
     "vite": "^5.4.1"
+  }, 
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "4.9.5"
   }
 }
