@@ -5,6 +5,7 @@ import { IoMdCloseCircleOutline } from "react-icons/io";
 import { Button, Modal , Card, Badge, Tag } from "antd";
 import { stubString } from "lodash";
 import styled from "styled-components";
+import { Navigate, useNavigate } from "react-router-dom";
 
 
 
@@ -13,7 +14,7 @@ export default function Cart({ showModal, toggle }) {
     useContext(CartContext);
     console.log("show modal at cart "+ showModal);
     console.log("result :  "+ result);
-    
+  const navigate = useNavigate();
      const colorToHex = (color) => {
        const colorMap = {
          Blue: "#0000FF",
@@ -129,7 +130,7 @@ export default function Cart({ showModal, toggle }) {
      // This ensures the modal takes up full width on smaller screens
      className="max-w-2xl w-full "
      footer={
-       (cartItems.length < 2 )
+       (cartItems.length  < 2 )
          ? [
              <Button danger size="middle" type="primary" onClick={clearCart}>
                Clear
@@ -149,7 +150,7 @@ export default function Cart({ showModal, toggle }) {
                variant="outlined"
                size="middle"
                color="primary"
-               onClick={handleMutual}
+               onClick={() =>handleMutual(navigate)}
                disabled
              >
                Evaluate

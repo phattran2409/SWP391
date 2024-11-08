@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Navigate, useNavigate } from "react-router-dom";
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
@@ -9,16 +10,19 @@ export const CartProvider = ({ children }) => {
       ? JSON.parse(localStorage.getItem("cartItems"))
       : []
   );
+
   const [koiInCart, setKoiInCart] = useState(false);
   const [koiInPond, setKoiInPond] = useState(false);
   const [koi, setKoi] = useState(0);
   const [pond, setPond] = useState(0);
   const [result, setResult] = useState(null);
-  const [value , setValue] = useState({});
+  const [value , setValue] = useState(localStorage.getItem("elmentUser") ? JSON.parse(localStorage.getItem("elementUser")) :  {});
+  const [item  , setItem]  =  useState(null);
   const addToCart = (item) => {
     const isItemInCart = cartItems.find(
       (cartItem) => cartItem._id === item._id
     );
+
     const isKoi = item.koiName;
     const isPond = item.shape;
    
@@ -27,11 +31,11 @@ export const CartProvider = ({ children }) => {
    
     if (cartItems.length <= 2) {
       if (isPond && pondInCart) {
-        toast.error("Allow adding one Pond for evaluation");
+        toast.info("Allow adding one Pond for evaluation");
         return;
       }
       if (isKoi && koiInCart) {
-        toast.error("Allow adding one Koi for evaluation ");
+        toast.info("Allow adding one Koi for evaluation ");
         return;
       }
        isKoi && toast.success("The Koi was added  Assess Suitability");
@@ -75,10 +79,14 @@ export const CartProvider = ({ children }) => {
     );
   };
 
-  const handleMutual = async () => {
+  const handleMutual = async (navigate) => {
     try {
       if (!value?.elementID) {
         toast.error("You need consulting before you evaluate");
+        setTimeout(() => {
+           navigate("/consulting");
+        }, 2000);
+       
         return;
       } 
       const res = await axios.post("http://localhost:8081/v1/user/mutual", {
@@ -93,7 +101,7 @@ export const CartProvider = ({ children }) => {
       console.log(result);
     } catch (err) {
       console.log("Error at Cart Context "+err);
-      toast.error(err.response.message)
+      toast.error(err)
       
       console.log(err);
       
@@ -118,6 +126,7 @@ export const CartProvider = ({ children }) => {
       items.koiName && setKoi(items.elementID);
       items.shape && setPond(items.elementID);
     });
+    // 
     setValue(JSON.parse(localStorage.getItem("elementUser")));
     console.log(koi, pond);
     // handleMutual(koi, pond);
