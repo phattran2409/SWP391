@@ -1,0 +1,21 @@
+
+import myImage from '../../../assets/image/bg-news.jpg';
+import Search from '../search';
+import NewsContent from '../../../components/news-template/NewsContent';
+
+export default function NewsPage() {
+
+    return (
+        <div
+            className="relative min-h-screen bg-cover bg-center bg-fixed"
+            style={{ backgroundImage: `url(${myImage})` }}
+        >
+            <div>navbar</div>
+
+            <div className='flex mt-4 lg:mt-16 px-4 lg:px-96 absolute top-0 left-0 right-0 z-20'>
+                <Search />
+            </div>
+            <NewsContent />
+        </div>
+    );
+}

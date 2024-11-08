@@ -1,0 +1,23 @@
+.calculator { 
+    background-image:  url("https://res.cloudinary.com/ddqgjy50x/image/upload/v1729399252/koi_wallpaper_by_sp4rr0w87_dfrvzgq-fullview-topaz-enhance_d3mtxl.jpg");
+    display:  flex;
+    justify-content: center;
+    height: fit-content;
+    border: 1px solid red;
+    
+}
+.cal-children { 
+    
+    width: 800px;   
+
+}
+
+.label-item {        
+
+}
+.ant-form-item-label {
+     
+}
+/* .css-dev-only-do-not-override-14qglws { 
+     font-size: 20px;
+} */

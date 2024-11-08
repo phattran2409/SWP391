@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Table,
   Button,
@@ -10,11 +10,17 @@ import {
   Upload,
   Image,
   Pagination,
+  DatePicker,
+  Badge,
+  Tag,
+  Avatar
 } from "antd";
 import { toast } from "react-toastify";
 import api from "../../../config/axios";
 import { PlusOutlined } from "@ant-design/icons";
 import uploadFile from "../../../utils/file";
+import { castArray, debounce } from "lodash";
+import moment from "moment";
 
 function ManageMembers() {
   const [datas, setDatas] = useState([]);
@@ -24,13 +30,13 @@ function ManageMembers() {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState([]);
-
+  const [searchValue, setSearchValue] = useState("");
   const [pagination, setPagination] = useState({
     current: 1, // Trang hiện tại
     pageSize: 10, //(limit mặc định)
     total: 0, // ban đầu là 0
   });
-
+  
   //get data
   const fetchData = async (
     page = pagination.current,
@@ -41,8 +47,10 @@ function ManageMembers() {
       // đổi gender từ 0, 1 thành "Nam", "Nữ"
       const modifiedData = response.data.data.map((member) => ({
         ...member,
-        gender: member.gender === 0 ? "Male" : "Female",
+        birthDate:  moment(member.birthDate)
       }));
+      console.log("fecth API ---> "+modifiedData);
+
       setDatas(modifiedData);
       setPagination({
         current: response.data.result.currentPage, // cập nhật trang hiện tại
@@ -50,22 +58,24 @@ function ManageMembers() {
         pageSize: limit, // số cá trên mỗi trang
       });
     } catch (err) {
-      toast.error(err.response.data.data);
+      toast.error(err);
     }
   };
 
   //submit form
   const handleSubmit = async (values) => {
-    console.log(values);
-
+    console.log("handle Submit : "+ values.phoneNumber);
+    const formatBirthDate = values.birthDate.format();
+    console.log(formatBirthDate);
+    
     if (fileList.length > 0) {
       const file = fileList[0];
       console.log(file);
-
       const url = await uploadFile(file.originFileObj);
       values.avatar = url;
     }
-
+    values.birthDate  = formatBirthDate;
+   
     try {
       setLoading(true);
 
@@ -80,7 +90,9 @@ function ManageMembers() {
       form.resetFields();
       setShowModal(false);
     } catch (err) {
-      toast.err(err.response.data.data);
+      if(err.status == 500) { 
+        toast.error("Error update User")
+      }
     } finally {
       setLoading(false);
     }
@@ -96,12 +108,15 @@ function ManageMembers() {
     });
 
   const handlePreview = async (file) => {
+    console.log("Preview file  "+file);
+    
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
     }
     setPreviewImage(file.url || file.preview);
     setPreviewOpen(true);
   };
+
   const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
   const uploadButton = (
     <button
@@ -136,6 +151,53 @@ function ManageMembers() {
     fetchData();
   }, []);
 
+  // ->>  handle search
+  const handleSearch = async (e) => {
+    try {
+      const { value } = e.target;
+      setSearchValue(e.target.value);
+      debouncedSearch(value);
+    } catch (err) {
+      toast.error(err);
+    }
+  };
+
+  // search với độ trễ tránh xử lý nhiều lần
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      console.log(value);
+      callApiSearch(value);
+    }, 500),
+    []
+  ); // 500ms delay
+
+  // call api cho viec search ca koi
+  const callApiSearch = async (value) => {
+    try {
+      // kiem tra xem value nhap vao co la empty
+      if (value === "") {
+        fetchData(pagination.current, pagination.pageSize);
+      }
+      const res = await api.get(
+        `v1/user/search?searchName=${value}&page=${pagination.current}&limit=${pagination.pageSize}`
+      );
+
+      console.log("api search" + res.data.data);
+      setDatas(res.data.data);
+      setPagination({
+        current: res.data.currentPage, // cập nhật trang hiện tại
+        total: res.data.totalDocuments, // tổng số cá
+        pageSize: 10,
+      });
+    } catch (err) {
+      console.log(err);
+      if (err.status === 404) {
+        toast.error("Error 404: Resource not found");
+      }
+      toast.error(err.res.data);
+    }
+  };
+
   const columns = [
     {
       title: "ID",
@@ -150,6 +212,8 @@ function ManageMembers() {
       title: "UserName",
       dataIndex: "userName",
       key: "userName",
+      sorter: (a, b) => a.userName.localeCompare(b.userName),
+      sortDirections: ["descend", "ascend"],
     },
     {
       title: "Password",
@@ -165,6 +229,13 @@ function ManageMembers() {
       title: "Full name",
       dataIndex: "name",
       key: "name",
+      sorter: (a, b) => {
+        if (a.name && b.name) {
+          return a.name.length - b.name.length;
+        }
+        return 0;
+      },
+      sortDirections: ["descend", "ascend"],
     },
     {
       title: "Email",
@@ -180,6 +251,11 @@ function ManageMembers() {
       title: "Gender",
       dataIndex: "gender",
       key: "gender",
+      sorter: (a, b) => a.gender - b.gender,
+      sortDirections: ["descend", "ascend"],
+      render: (number) => {
+        return <>{number == 0 ? <>Male</> : <>Female</>}</>;
+      },
     },
     {
       title: "Birth Date",
@@ -188,9 +264,11 @@ function ManageMembers() {
       render: (text) => {
         if (!text) return ""; // Nếu không có giá trị, trả về chuỗi rỗng
         const date = new Date(text); // Tạo đối tượng Date từ chuỗi ngày
+
         const day = String(date.getDate()).padStart(2, "0"); // Lấy ngày và đảm bảo có 2 chữ số
         const month = String(date.getMonth() + 1).padStart(2, "0"); // Lấy tháng và đảm bảo có 2 chữ số
         const year = date.getFullYear(); // Lấy năm
+
         return `${day}/${month}/${year}`; // Trả về định dạng dd/mm/yyyy
       },
     },
@@ -199,42 +277,88 @@ function ManageMembers() {
       dataIndex: "avatar",
       key: "avatar",
       render: (avatar) => (
-        <img src={avatar} alt="Avatar" style={{ width: 100 }} />
+        <>
+          {avatar ? (
+            <Image src={avatar} alt="Avatar" style={{ width: 100 }} />
+          ) : (
+            <Image src="https://placehold.co/100x100/png" />
+          )}
+        </>
       ),
     },
+    {
+      title: "status",
+      dataIndex: "memberStatus",
+      key: `memberStatus`,
+      render: (isMember ,record) => {
+        return (
+          <>
+          <div className="flex">
+            {isMember ? (
+              <Tag color="green" text="member">
+                Member
+              </Tag>
+            ) : (
+              <Tag color="cyan" text="user">
+                User
+              </Tag>
+            )}
+            { (record.admin) && ( 
+              <Tag color="red"> Admin</Tag>
+            )}
+          </div>
+          </>
+        );
+      },
+    },
+
     {
       title: "Action",
       dataIndex: "_id",
       key: "_id",
       render: (_id, member) => (
         <>
-          <Button
-            type="primary"
-            onClick={() => {
-              setShowModal(true);
-              form.setFieldsValue(member);
-            }}
-          >
-            Edit
-          </Button>
-          <Popconfirm
-            title="Delete"
-            description="Do you want to delete this category?"
-            onConfirm={() => handleDelete(_id)}
-          >
-            <Button type="primary" danger>
-              Delete
+          <div className="flex gap-1">
+            <Button
+              type="primary"
+              onClick={() => {
+                setShowModal(!showModal);
+                form.setFieldsValue({...member  , avatar : member.avatar});
+                
+              }}
+            >
+              Edit
             </Button>
-          </Popconfirm>
+            <Popconfirm
+              title="Delete"
+              description="Do you want to delete this category?"
+              onConfirm={() => handleDelete(_id)}
+            >
+              <Button type="primary" danger>
+                Delete
+              </Button>
+            </Popconfirm>
+          </div>
         </>
       ),
     },
   ];
 
-  const years = Array.from({ length: 125 }, (_, index) => 2024 - index);
-
   return (
     <div>
+      <div className="group-search flex">
+        {/* searh  Name*/}
+        <div className="search-name">
+          <label className="mr-4"> Search Name :</label>
+          <Input
+            value={searchValue}
+            placeholder="Search  by name"
+            style={{ width: 300, marginBottom: 20 }}
+            onChange={handleSearch}
+          />
+        </div>
+      </div>
+
       <Button
         onClick={() => {
           form.resetFields(); // Clear form fields when adding a new member
@@ -243,7 +367,15 @@ function ManageMembers() {
       >
         Add
       </Button>
-      <Table dataSource={datas} columns={columns} />
+
+      {/* Show Data Table */}
+      <Table
+        dataSource={datas}
+        columns={columns}
+        pagination={false}
+        className="w-full overflow-x-auto"
+      />
+
       <div className="flex justify-end mt-4">
         <Pagination
           current={pagination.current}
@@ -262,7 +394,7 @@ function ManageMembers() {
 
       <Modal
         open={showModal}
-        onCancel={() => setShowModal(false)}
+        onCancel={() => setShowModal()}
         title="Create Member"
         onOk={() => form.submit()}
         confirmLoading={loading}
@@ -378,14 +510,9 @@ function ManageMembers() {
               { required: true, message: "Please select your birth year!" },
             ]}
           >
-            <Select placeholder="Select member's birth year">
-              {years.map((year) => (
-                <Select.Option key={year} value={year}>
-                  {year}
-                </Select.Option>
-              ))}
-            </Select>
+            <DatePicker format={"DD/MM/YYYY"} />
           </Form.Item>
+
           <Form.Item>
             <Upload
               action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
@@ -397,8 +524,11 @@ function ManageMembers() {
               {fileList.length >= 8 ? null : uploadButton}
             </Upload>
           </Form.Item>
+
+        
         </Form>
       </Modal>
+
       {previewImage && (
         <Image
           wrapperStyle={{

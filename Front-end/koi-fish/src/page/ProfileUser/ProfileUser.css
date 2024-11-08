@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.profile-background {
+    background-image: url('https://res.cloudinary.com/ddqgjy50x/image/upload/v1729418087/koi_pond___ai_wallpaper_by_marwil_arts_dgfob7i-fullview-topaz-enhance_mcoolr.jpg');
+    background-size: cover;
+    background-position: center;
+  }
+
+  .tab-label {
+   
+    transition: color 0.3s, transform 0.3s;
+  }
+  
+  .tab-label:hover {
+    color: #000000; /* Change to your desired hover color */
+    transform: scale(1.05); /* Slightly enlarge the tab on hover */
+  }
+  
+  
+  
+  
