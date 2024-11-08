@@ -114,10 +114,10 @@ export default function Consulting() {
         `v1/pond/getByElement/${value.elementID || elementID}`
       );
       const resPost = await api.get(
-        `http://localhost:8081/v1/post/getPostByElementID/${value.elementID}?categoryID=${2}`
+        `/v1/post/getPostByElementID/${value.elementID}?categoryID=${2}`
       );
       const resAds = await api.get(
-        `http://localhost:8081/v1/post/getPostByElementID/${value.elementID}?categoryID=3`
+        `/v1/post/getPostByElementID/${value.elementID}?categoryID=3`
       );
       
       console.log("ADS object"+ typeof resAds.data);
