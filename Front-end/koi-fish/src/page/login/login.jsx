@@ -3,7 +3,7 @@ import React from "react";
 import AuthenTemplate from "../../components/authen-template/authenTemplate";
 import { Form, Input, Button, Divider, Typography } from "antd";
 
-import "./index.scss";
+import "./index.css";
 
 import { useNavigate } from "react-router-dom";
 import api from "../../config/axios";

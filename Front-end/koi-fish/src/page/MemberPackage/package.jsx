@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Navbar from "../../components/navbar/Navbar.jsx";
-import "./package.scss";
+import "./package.css";
 import { useInsertionEffect } from "react";
 import Footer from "../../components/footer/Footer";
 import api from "../../config/axios.js";
