@@ -27,7 +27,6 @@ export default function Test() {
 
     return (
         <div>
-            {/* Đặt SocialLinks ở đây để có thuộc tính fixed */}
             <div className='fixed z-50 bottom-5 right-5'>
                 <SocialLinks />
             </div>

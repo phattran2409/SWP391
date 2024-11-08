@@ -4,7 +4,9 @@ import Pagination from '../../../components/Paginition/Pagination';
 import AdvertisementTemplate from '../../../components/news-template/AdvertiseTemplate';
 import Search from '../search';
 import api from "../../../config/axios.js";
+import { useNavigate } from 'react-router-dom';
 export default function BlogPage() {
+    const navigate = useNavigate();
     const [blogsArticles, setBlogsArticles] = useState([]);
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
@@ -42,6 +44,10 @@ export default function BlogPage() {
         }
     };
 
+    const handleNavigate = (id) => {
+        navigate(`/details/${id}`);
+    };
+
     useEffect(() => {
         fetchBlogs();
     }, [currentPage]);
@@ -73,8 +79,14 @@ export default function BlogPage() {
 
                                         .map((article, index) => (
                                             <div key={index} className="border-b-2 border-gray-300 p-4 bg-white mb-6">
-                                                <a href={`/details/${article._id}`} className="text-4xl font-medium mt-4 hover:underline hover:text-red-600">{article.title}</a>
-                                                <div className='flex justify-between'>
+                                                <div>
+                                                    <button
+                                                        onClick={() => handleNavigate(article._id)}
+                                                        className="text-4xl font-medium mt-4 hover:underline hover:text-red-600"
+                                                    >
+                                                        {article.title}
+                                                    </button>
+                                                </div>                                                <div className='flex justify-between'>
                                                     <p className="flex text-xl my-10">
                                                         <FaClock className="mr-2 text-red-500" />
                                                         Updated: {new Date(article.updatedAt).toLocaleDateString()}
