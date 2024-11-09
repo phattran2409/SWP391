@@ -1,5 +1,5 @@
 import React from 'react';
-import './loading.css';
+import '../../components/loading/Loading.css';
 
 const Loading = () => {
   const loadingText = "Loading...";
