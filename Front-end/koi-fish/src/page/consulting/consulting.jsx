@@ -480,7 +480,7 @@ export default function Consulting() {
                         </div>
                         <div className="content text-[10px] px-0 sm:text-xs">
                           <span className="price">
-                            <a href={`/newsdetail/${newsItem._id}`}>
+                            <a href={`/details/${newsItem._id}`}>
                               Read more
                             </a>
                           </span>
