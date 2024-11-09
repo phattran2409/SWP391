@@ -40,8 +40,6 @@ router.put("/updatePostByMember/:id", middlewareController.verifyTokenMember, po
 //Search post
 router.get("/searchPost", postController.searchPost);
 
-<<<<<<< HEAD
-=======
 //Set status
 router.put("/setStatus/:id", middlewareController.verifyTokenAdminAuth, postController.setStatus);
 
@@ -52,5 +50,7 @@ router.get("/searchPostnotPagination", postController.searchPostnotPagination);
 router.get("/getAllAd/:id", postController.getAllAd);
 
 
->>>>>>> develop
+
+
+
 module.exports = router;

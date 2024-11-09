@@ -184,7 +184,7 @@ function App() {
       element: <ChatBotTemplate />,
     },
   ]);
-
+  
   return <RouterProvider router={router} />;
 }
 
