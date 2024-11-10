@@ -177,6 +177,7 @@ function App() {
       path: "/botchattemplate",
       element: <ChatBotTemplate />,
     },
+
   ]);
   
   return <RouterProvider router={router} />;
