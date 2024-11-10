@@ -32,7 +32,8 @@ const authController = {
     try {
       const salt = await bcrypt.genSalt(10);
       const hashed = await bcrypt.hash(req.body.password, salt);
-
+      console.log(req.body);
+      
       const gender = Number.parseInt(req.body.gender);
       // create  a new user
       const newUser = await new User({
@@ -42,15 +43,25 @@ const authController = {
         avatar: "",
         birthDate: req.body.birthDate,
         gender: gender,
-        phoneNumber: req.body.phoneNumber,
+        phoneNumber: req.body.phone,
         name: req.body.fullName,
       });
-
+      console.log(newUser);
+      
       // save to database
       const user = await newUser.save();
+      console.log(user);
+      
       res.status(200).json(user);
     } catch (error) {
-      res.status(500).json(error);
+      // if (error.message)
+      console.log( typeof error.message);
+      if (error.message.includes("E11000")) {
+       return res.status(500).json({message: "Email is exist or User Name exist !" , messageDetail: error.message} );
+      }
+        res.status(500).json({ message: error.message });
+      console.log(error.message);
+      
     }
   },
 
