@@ -53,8 +53,8 @@ function ManageMembers() {
 
       setDatas(modifiedData);
       setPagination({
-        current: response.data.result.currentPage, // cập nhật trang hiện tại
-        total: response.data.result.totalDocuments, // tổng số cá
+        current: response.data.currentPage, // cập nhật trang hiện tại
+        total: response.data.totalDocuments, // tổng số cá
         pageSize: limit, // số cá trên mỗi trang
       });
     } catch (err) {
@@ -147,10 +147,7 @@ function ManageMembers() {
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
+  
   // ->>  handle search
   const handleSearch = async (e) => {
     try {
@@ -197,6 +194,13 @@ function ManageMembers() {
       toast.error(err.res.data);
     }
   };
+
+  useEffect(() => {
+    fetchData(pagination.current, pagination.pageSize);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pagination.current, pagination.pageSize]);
+
+  
 
   const columns = [
     {

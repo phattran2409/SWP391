@@ -204,7 +204,7 @@ function ManageNews() {
       }
     }
   };
-
+  
   // Fetch data on component mount and when pagination changes
   useEffect(() => {
     fetchData(pagination.current, pagination.pageSize);
