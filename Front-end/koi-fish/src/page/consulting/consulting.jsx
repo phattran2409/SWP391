@@ -491,9 +491,9 @@ export default function Consulting() {
                               </h1>
                             </li>
                             <li className="text-[10px] sm:text-xs md:text-xs lg:text-xs text-gray-400">
-                              <div className="flex justify-between">
+                              <div className="flex justify-between text-white">
                                 {new Date(newsItem.createdAt).toDateString()}
-                                <span>Author : {newsItem.author.name}</span>
+                                <span >Author : {newsItem.author.name}</span>
                               </div>
                             </li>
                             <li className="w-full h-[50px] mt-3 overflow-hidden  ">

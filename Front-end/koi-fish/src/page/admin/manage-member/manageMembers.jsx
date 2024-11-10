@@ -352,7 +352,7 @@ function ManageMembers() {
           <label className="mr-4"> Search Name :</label>
           <Input
             value={searchValue}
-            placeholder="Search  by name"
+            placeholder="Search By Full Name"
             style={{ width: 300, marginBottom: 20 }}
             onChange={handleSearch}
           />

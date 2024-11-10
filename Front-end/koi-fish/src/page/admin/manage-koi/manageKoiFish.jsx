@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import api from "../../../config/axios";
 import {
   Button,
@@ -15,14 +15,13 @@ import {
 import { toast } from "react-toastify";
 import { PlusOutlined } from "@ant-design/icons";
 import uploadFile from "../../../utils/file";
-import { castArray, debounce } from "lodash";
-import moment from "moment";
+import {  debounce } from "lodash";
+
 
 function ManageKoiFish() {
   const [datas, setDatas] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [form] = Form.useForm();
-  const [formSearch ] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
@@ -35,7 +34,7 @@ function ManageKoiFish() {
   });
 
   const [selectedColor , setSelectColor]  = useState([]);
-  const [searchOption, setSearchOption] = useState("Shape");
+ 
 
 
   //Get
@@ -200,29 +199,38 @@ function ManageKoiFish() {
   };
   // call api search color
   const handleSearchColor = async (value) => {
-    console.log("func search color : " + typeof value);
+    console.log("func search color:", value);
     setSelectColor(value);
+  
+    // Use the updated `value` directly to create the query string
+    const queryString = value.join(",");
+  
     try {
-      const queryString = selectedColor.join(",");
-      if (selectedColor.length < 0) {
+      if (value.length === 0) {
+        // Fetch default data if no color is selected
         fetchData(pagination.current, pagination.pageSize);
+      } else {
+        // Call the API with the selected colors
+        const res = await api.get(
+          `v1/fish/search?searchColor=${queryString}&page=${pagination.current}&limit=${pagination.pageSize}`
+        );
+        console.log("API response:", res.data.data);
+  
+        // Update state with API response
+        setDatas(res.data.data);
+        setPagination({
+          current: res.data.currentPage, // update current page
+          total: res.data.totalDocuments, // total fish count
+          pageSize: 10,
+        });
       }
-      const res = await api.get(
-        `v1/fish/search?searchColor=${queryString}&page=${pagination.current}&limit=${pagination.pageSize}`
-      );
-      console.log("respone API " + res.data.data);
-
-      setDatas(res.data.data);
-      setPagination({
-        current: res.data.currentPage, // cập nhật trang hiện tại
-        total: res.data.totalDocuments, // tổng số cá
-        pageSize: 10,
-      });
     } catch (err) {
-      if (err.status === 404) {
+      console.error(err);
+      if (err.response?.status === 404) {
         toast.error("Error 404: Resource not found");
+      } else {
+        toast.error("An error occurred");
       }
-      toast.error(err.res);
     }
   };
 
@@ -358,10 +366,8 @@ function ManageKoiFish() {
                 <Select.Option value="Black">Black</Select.Option>
                 <Select.Option value="Yellow">Yellow</Select.Option>
                 <Select.Option value="Blue">Blue</Select.Option>
-                <Select.Option value="Orange">Orange</Select.Option>
                 <Select.Option value="Green">Green</Select.Option>
-                <Select.Option value="Silver">Silver</Select.Option>
-                <Select.Option value="Gold">Gold</Select.Option>
+             
               </Select>
             </Form.Item>
           </Form>
@@ -448,10 +454,7 @@ function ManageKoiFish() {
               <Select.Option value="Black">Black</Select.Option>
               <Select.Option value="Yellow">Yellow</Select.Option>
               <Select.Option value="Blue">Blue</Select.Option>
-              <Select.Option value="Orange">Orange</Select.Option>
               <Select.Option value="Green">Green</Select.Option>
-              <Select.Option value="Silver">Silver</Select.Option>
-              <Select.Option value="Gold">Gold</Select.Option>
             </Select>
           </Form.Item>
           <Form.Item

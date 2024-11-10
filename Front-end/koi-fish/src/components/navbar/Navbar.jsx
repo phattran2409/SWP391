@@ -226,7 +226,7 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <Menu>
+              <Menu className="rounded">
                 <Menu.SubMenu
                   title={
                     <>
@@ -408,7 +408,7 @@ const Navbar = () => {
             </div>
           ) : (
             <>
-              <div className="absolute bottom-0 w-40">
+              <div className="absolute rounded bottom-0 w-40">
                 <Menu>
                   <Menu.SubMenu
                     title={

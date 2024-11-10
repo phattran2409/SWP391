@@ -11,9 +11,10 @@ import {
   Pagination,
   Image,
   Upload,
+ 
 } from "antd";
 import { toast } from "react-toastify";
-import { castArray, debounce } from "lodash";
+import {  debounce } from "lodash";
 import { PlusOutlined } from "@ant-design/icons";
 import uploadFile from "../../../utils/file";
 
@@ -31,8 +32,7 @@ function ManagePonds() {
   const [previewImage, setPreviewImage] = useState("");
   const [fileList, setFileList] = useState([]);
   const [searchValue, setSearchValue] = useState("");
-  const [searchOption, setSearchOption] = useState("direction");
-  const [formSearch] = Form.useForm();
+  const [searchOption, setSearchOption] = useState("");
   //Get
   const fetchData = async (
     page = pagination.current,
@@ -119,9 +119,11 @@ function ManagePonds() {
   // Handle Search
   const handleSearch = async (e) => {
     try {
-      const { value } = e.target;
+   
+      console.log("search option "+ searchOption);
+      console.log("search Value" + e.target.value );
       setSearchValue(e.target.value);
-      debouncedSearch(value);
+      debouncedSearch(e.target.value , searchOption);
     } catch (err) {
       toast.error(err);
     }
@@ -131,27 +133,27 @@ function ManagePonds() {
   const debouncedSearch = useCallback(
     debounce((value) => {
       console.log(value);
-      callApiSearch(value);
+      callApiSearch(value );
     }, 500),
-    []
+    [searchOption]
   ); // 500ms delay
 
-  // call api cho viec search ca koi
-  const callApiSearch = async (value) => {
+  const callApiSearch = async (value ) => {
     try {
-      // kiem tra xem value nhap vao co la empty
+      
+      console.log("search option" + searchOption);
       if (value === "") {
         fetchData(pagination.current, pagination.pageSize);
       }
       const res = await api.get(
-        `v1/pond/searchPond?${searchOption}=${value}&page=${pagination.current}&limit=${pagination.pageSize}`
+        `v1/pond/searchPond?${searchOption ||  "shape"}=${value}&page=${pagination.current}&limit=${pagination.pageSize}`
       );
 
-      console.log("api search" + res.data.data);
+      console.log(res.data );
       setDatas(res.data.data);
       setPagination({
-        current: res.data.currentPage, // cập nhật trang hiện tại
-        total: res.data.totalDocuments, // tổng số cá
+        current: res.data.currentPage, 
+        total: res.data.totalDocuments, 
         pageSize: 10,
       });
     } catch (err) {
@@ -308,29 +310,25 @@ function ManagePonds() {
 
   return (
     <div>
-      <div className="group-search flex">
-        {/* Search Option  */}
-        <Form form={formSearch} layout="inline">
-          {/* Select Search Criteria */}
-          <Form.Item name="searchBy" initialValue="Direction">
-            <Select
-              style={{ width: 150 }}
-              onChange={(value) => setSearchOption(value)}
-            >
-              <Option value="direction">Direction</Option>
-              <Option value="shape">Shape</Option>
-            </Select>
-          </Form.Item>
-        </Form>
+      <div className="group-search flex ">
+     
+       <select  id="options"  onChange={(value) =>  {  console.log(value.target.value); setSearchOption(value.target.value) } } className="border border-gray-500 mb-4 mr-2 rounded-lg">
+        <option value="" disabled >
+        </option>
+        <option value="shape">Shape</option>
+        <option value="direction">Direction</option>
+      </select>
+          
+        
 
         {/* searh  Name*/}
         <div className="search-name">
-          <label className="mr-4"> Search Name :</label>
+          <label className="mr-4"> Search :</label>
           <Input
             value={searchValue}
-            placeholder="Search  by name"
+            placeholder="Search  by option"
             style={{ width: 300, marginBottom: 20 }}
-            onChange={handleSearch}
+            onChange={(value) => handleSearch(value)}
           />
         </div>
       </div>
