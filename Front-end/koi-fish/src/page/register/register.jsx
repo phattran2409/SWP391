@@ -2,14 +2,14 @@
 import React from "react";
 // import "./register.scss";
 import { useState } from "react";
-import { Button, Divider, Form, Input, Select } from "antd";
+import { Button, DatePicker, Divider, Form, Input, Select } from "antd";
 // import Link from "antd/es/typography/Link";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../config/axios";
-import { toast } from "react-toastify";
-
+import { ToastContainer, toast } from "react-toastify";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import "react-toastify/dist/ReactToastify.css";
 
 
 const { Option } = Select; // Thay đổi ở đây
@@ -27,13 +27,20 @@ function RegisterPage() {
   const handleRegister = async (values) => {
     //submit xuong backend
     try {
-      values.role = "CUSTOMER"; //cho nay dang de tam la customer de test
-      const response = await api.post("v1/auth/register", values);
+      // values.role = "CUSTOMER"; //cho nay dang de tam la customer de test
+      console.log(values);
+
+      const response = await api.post("v1/auth/register", 
+      values
+      );
       toast.success("Successfully register new account!");
-      navigate("/login");
+      console.log(response.data);
+       navigate("/login");
     } catch (err) {
       // console.log
-      toast.error(err.response.data);
+      console.log(err.response.data.message);
+      
+      toast.error(err.response.data.message);
     }
   };
 
@@ -66,21 +73,21 @@ function RegisterPage() {
           state: { message: JSON.stringify(response.data.message) },
         });
       }
-      
 
 
-         navigate("/?status=login_gg_success", {
-           state: { message: JSON.stringify(response.data.message) },
-         });
-            
-     } catch (err) {
-       toast.error(err.response.data);
-     }
-    };
-  
 
-   
-  
+      navigate("/?status=login_gg_success", {
+        state: { message: JSON.stringify(response.data.message) },
+      });
+
+    } catch (err) {
+      toast.error(err.response.data);
+    }
+  };
+
+
+
+
 
 
 
@@ -113,15 +120,29 @@ function RegisterPage() {
               label={<span className="text-[#716767] pb-0">Username</span>}
               rules={[
                 { required: true, message: "Please input your username!" },
+                {
+                  pattern: /^[a-zA-Z]+$/,
+                  message: "Username can only contain letters from a-z and A-Z without spaces or accents!",
+                },
+                {
+                  min: 2,
+                  max: 40,
+                  message: "Username must be at least 2, at most 40 characters!",
+                },
               ]}
             >
               <Input onChange={(e) => setName(e.target.value)} />
             </Form.Item>
+
             <Form.Item
               name="name"
               label={<span className="text-[#716767] pb-0">Full Name</span>}
               rules={[
                 { required: true, message: "Please input your full name!" },
+                {
+                  max: 40,
+                  message: "Name must be at most 40 characters!",
+                },
               ]}
             >
               <Input onChange={(e) => setName(e.target.value)} />
@@ -148,20 +169,23 @@ function RegisterPage() {
                 rules={[
                   {
                     required: true,
-                    message: "Please input your year of birth!",
                   },
                   {
                     validator: (_, value) => {
-                      if (value && isNaN(Number(value))) {
+                      if (!value) {
                         return Promise.reject(
-                          new Error("Year of birth must be a number!")
+                          new Error("Please select your year of birth!")
                         );
                       }
-                      const year = Number(value);
-                      if (year < 1900 || year > 2050) {
+
+                      // Get the year from the selected date
+                      const year = value;
+
+                      const currentYear = new Date();
+                      if (year < 1900 || year > currentYear) {
                         return Promise.reject(
                           new Error(
-                            "Year of birth must be between 1900 and 2050!"
+                            `Year of birth must be between 1900 and ${currentYear}!`
                           )
                         );
                       }
@@ -170,10 +194,7 @@ function RegisterPage() {
                   },
                 ]}
               >
-                <Input
-                  placeholder="YYYY"
-                  onChange={(e) => setYear(e.target.value)}
-                />
+                <DatePicker picker="year" format={"DD-MM-YYYY"} />
               </Form.Item>
             </div>
             <Form.Item
@@ -202,11 +223,11 @@ function RegisterPage() {
                 },
                 {
                   validator: (_, value) => {
-                    const phoneRegex = /^[0-9]{10}$/;
+                    const phoneRegex = /^0{1}[0-9]{9}$/;
                     if (!phoneRegex.test(value)) {
                       return Promise.reject(
                         new Error(
-                          "Please enter a valid phone number with 10 digits!"
+                          "Please enter a valid phone number with 10 digits starting with 0!"
                         )
                       );
                     }
@@ -231,8 +252,8 @@ function RegisterPage() {
 
                 {
                   min: 6,
-                  max: 20,
-                  message: "Password must be between 6 and 20 characters!",
+                  max: 40,
+                  message: "Password must be between 6 and 40 characters!",
                 },
               ]}
               hasFeedback
@@ -264,7 +285,7 @@ function RegisterPage() {
             </Form.Item>
 
 
-          
+
 
 
 
@@ -312,6 +333,7 @@ function RegisterPage() {
           </Form>
         </div>
       </div>
+      <ToastContainer/>
     </div>
   );
 }

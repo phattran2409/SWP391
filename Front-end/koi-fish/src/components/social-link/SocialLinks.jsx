@@ -60,13 +60,13 @@ const SocialLinks = () => {
                                 <img
                                     src="https://res.cloudinary.com/ddqgjy50x/image/upload/v1730632858/zalo-icon-circle-1_mzdgxm.png"
                                     alt="Zalo Logo"
-                                    className="w-6 h-6"
+                                    className="w-6 h-5"
                                 />
                             }
                         />
                     </Link>
                     <Link to="https://www.facebook.com/profile.php?id=61567880709547" target="_blank" rel="noopener noreferrer">
-                        <FloatButton icon={<FaFacebook size={24} />} />
+                        <FloatButton icon={<FaFacebook size={20} />} />
                     </Link>
                     <Link  to="/botchat">
                     <FloatButton icon={<CommentOutlined />} />

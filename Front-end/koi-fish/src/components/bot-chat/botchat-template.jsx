@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { FaUser, FaRobot, FaPaperPlane} from "react-icons/fa";
+import { FaUser, FaRobot, FaPaperPlane } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const ChatBotTemplate = ({ children }) => {
@@ -44,7 +44,25 @@ const ChatBotTemplate = ({ children }) => {
                 timestamp: new Date().toLocaleTimeString(),
             };
             setMessages((prevMessages) => [...prevMessages, botResponse]);
+            addOptionsMessage(); // Gọi hàm để hiển thị lại các tùy chọn
         }, 1000);
+    };
+
+    const addOptionsMessage = () => {
+        const optionsMessage = {
+            id: messages.length + 3,
+            type: "bot",
+            content: "buttons",
+            options: [
+                "Consult on feng shui for Koi fish",
+                "Guidance on Koi fish care",
+                "Pond design for Koi fish",
+                "Water quality for koi pond",
+                "Feeding schedule for koi fish"
+            ],
+            timestamp: new Date().toLocaleTimeString(),
+        };
+        setMessages((prevMessages) => [...prevMessages, optionsMessage]);
     };
 
     const handleKeyPress = (e) => {
@@ -60,42 +78,58 @@ const ChatBotTemplate = ({ children }) => {
             text: option,
             timestamp: new Date().toLocaleTimeString(),
         };
-
+    
         let botResponseText = "";
-        if (option === "Consult on feng shui for Koi fish") {
-            botResponseText = (
-                <>
-                    Please: <Link to="/consulting" className="text-red-900 underline">Click here</Link> to calculate your element.
-                </>
-            );
-        } else if (option === "Guidance on Koi fish care") {
-            botResponseText = "Koi fish thrive in clean water and need a balanced diet. Is there a specific care question you have in mind?";
-        } else if (option === "Pond design for Koi fish") {
-            botResponseText = (
-                <>
-                    You should choose the elements suitable with your elements and the elements of fish, such as water with wood, not fire with water.
-                    <br />
-                    <br />
-                    If you don`t know your elements please <Link to="/consulting" className="text-red-900 underline">Click here</Link> to calculate your element.
-                </>
-            );
+    
+        switch (option) {
+            case "Consult on feng shui for Koi fish":
+                botResponseText = (
+                    <>
+                        Please: <Link to="/consulting" className="text-red-900 underline">Click here</Link> to calculate your element.
+                    </>
+                );
+                break;
+            case "Guidance on Koi fish care":
+                botResponseText = "Koi fish thrive in clean water and need a balanced diet. Is there a specific care question you have in mind?";
+                break;
+            case "Pond design for Koi fish":
+                botResponseText = (
+                    <>
+                        You should choose the elements suitable with your elements and the elements of fish, such as water with wood, not fire with water.
+                        <br />
+                        <br />
+                        If you don’t know your elements please <Link to="/consulting" className="text-red-900 underline">Click here</Link> to calculate your element.
+                    </>
+                );
+                break;
+            case "Water quality for koi pond":
+                botResponseText = "Maintaining good water quality is essential for Koi health. Ensure proper filtration and regular water testing to keep parameters stable. Do you need specific guidelines?";
+                break;
+            case "Feeding schedule for koi fish":
+                botResponseText = "Koi should be fed 2–4 times daily during warm seasons, while feeding should decrease in colder months. Let me know if you want more details on diet!";
+                break;
+            default:
+                botResponseText = "I'm here to help with anything else you need!";
         }
-
+    
         const botResponse = {
             id: messages.length + 2,
             type: "bot",
             text: botResponseText,
             timestamp: new Date().toLocaleTimeString(),
         };
-
+    
         setMessages((prevMessages) => [...prevMessages, userMessage, botResponse]);
+        addOptionsMessage(); // Gọi hàm để hiển thị lại các tùy chọn sau phản hồi của bot
     };
+    
+
     return (
         <div className="w-full max-w-md bg-white rounded-lg shadow-lg overflow-hidden border border-gray-800">
             <div className="bg-gray-800 text-white pl-4 py-4 flex flex-rows items-center">
-                    <FaRobot className="text-2xl mr-2" />
-                    <h2 className="text-xl font-semibold end">Customer Care Bot</h2>
-                    <div >{children}</div>
+                <FaRobot className="text-2xl mr-2" />
+                <h2 className="text-xl font-semibold">Customer Care Bot</h2>
+                <div>{children}</div>
             </div>
             <div
                 ref={chatContainerRef}
@@ -111,7 +145,7 @@ const ChatBotTemplate = ({ children }) => {
                             className={`flex items-end space-x-2 ${message.type === "user" ? "flex-row-reverse" : ""}`}
                         >
                             <div
-                                className={`w-8 h-8 rounded-full flex items-center justify-center ${message.type === "user" ? "ml-2 bg-red-700 " : "bg-gray-300"}`}
+                                className={`w-8 h-8 rounded-full flex items-center justify-center ${message.type === "user" ? "ml-2 bg-red-700" : "bg-gray-300"}`}
                             >
                                 {message.type === "user" ? (
                                     <FaUser className="text-white" />
