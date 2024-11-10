@@ -164,7 +164,7 @@ function RegisterPage() {
               </Form.Item>
               <Form.Item
                 name="birthDate"
-                label={<span className="custom-label">Year of birth</span>}
+                label={<span className="custom-label">Date of birth</span>}
                 className="w-1/2"
                 rules={[
                   {
@@ -194,7 +194,7 @@ function RegisterPage() {
                   },
                 ]}
               >
-                <DatePicker picker="year" format={"DD-MM-YYYY"} />
+                <DatePicker format={"DD-MM-YYYY"} />
               </Form.Item>
             </div>
             <Form.Item
