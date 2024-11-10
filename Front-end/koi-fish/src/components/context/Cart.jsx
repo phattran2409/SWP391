@@ -2,6 +2,7 @@ import { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Navigate, useNavigate } from "react-router-dom";
+import  api from "../../config/axios"
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
@@ -89,7 +90,7 @@ export const CartProvider = ({ children }) => {
        
         return;
       } 
-      const res = await axios.post("http://localhost:8081/v1/user/mutual", {
+      const res = await api.post("/v1/user/mutual", {
         elementID_koi: koi,
         elementID_pond: pond,
         elementID_user: value.elementID,

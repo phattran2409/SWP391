@@ -52,9 +52,11 @@ function ManageMembers() {
       console.log("fecth API ---> "+modifiedData);
 
       setDatas(modifiedData);
+      console.log(response);
+      
       setPagination({
-        current: response.data.result.currentPage, // cập nhật trang hiện tại
-        total: response.data.result.totalDocuments, // tổng số cá
+        current: response.data.currentPage, // cập nhật trang hiện tại
+        total: response.data.totalDocuments, // tổng số cá
         pageSize: limit, // số cá trên mỗi trang
       });
     } catch (err) {
@@ -327,7 +329,7 @@ function ManageMembers() {
                 
               }}
             >
-              Edit
+              Edit 
             </Button>
             <Popconfirm
               title="Delete"

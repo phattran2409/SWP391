@@ -291,7 +291,9 @@ export default function Cart({ showModal, toggle }) {
            result != null &&
            (resultCode === 1 ? (
              <>
+            
                <iframe src="https://lottie.host/embed/f0cf59e2-3927-4526-aaed-8d60dd79f1d8/p8QuDeZL3Z.json"></iframe>
+           
              </>
            ) : (
              <iframe src="https://lottie.host/embed/aac9744d-2c28-4445-a409-b04b92c6e69b/w7fWbIHaur.json"></iframe>

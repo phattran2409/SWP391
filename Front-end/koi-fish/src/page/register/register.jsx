@@ -2,14 +2,16 @@
 import React from "react";
 // import "./register.scss";
 import { useState } from "react";
-import { Button, Divider, Form, Input, Select } from "antd";
+import { Button, DatePicker, Divider, Form, Input, Select } from "antd";
 // import Link from "antd/es/typography/Link";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../config/axios";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+
+import "react-toastify/dist/ReactToastify.css";
 
 const { Option } = Select; // Thay đổi ở đây
 
@@ -26,13 +28,20 @@ function RegisterPage() {
   const handleRegister = async (values) => {
     //submit xuong backend
     try {
-      values.role = "CUSTOMER"; //cho nay dang de tam la customer de test
-      const response = await api.post("v1/auth/register", values);
+      // values.role = "CUSTOMER"; //cho nay dang de tam la customer de test
+      console.log(values);
+
+      const response = await api.post("v1/auth/register", 
+      values
+      );
       toast.success("Successfully register new account!");
-      navigate("/login");
+      console.log(response.data);
+       navigate("/login");
     } catch (err) {
       // console.log
-      toast.error(err.response.data);
+      console.log(err.response.data.message);
+      
+      toast.error(err.response.data.message);
     }
   };
 
@@ -46,7 +55,10 @@ function RegisterPage() {
   const handleLoginError = () => {
     console.log("Login Failed");
   };
-
+  const handleSetYear = (date ,dateString) => { 
+    console.log(date);
+    setYear(dateString);
+  }
   const sendTokenToAPI = async (data) => {
     console.log(import.meta.env.API_SIGNIN);
 
@@ -141,16 +153,20 @@ function RegisterPage() {
                   },
                   {
                     validator: (_, value) => {
-                      if (value && isNaN(Number(value))) {
+                      if (!value) {
                         return Promise.reject(
-                          new Error("Year of birth must be a number!")
+                          new Error("Please select your year of birth!")
                         );
                       }
-                      const year = Number(value);
-                      if (year < 1900 || year > 2050) {
+
+                      // Get the year from the selected date
+                      const year = value;
+
+                      const currentYear = new Date();
+                      if (year < 1900 || year > currentYear) {
                         return Promise.reject(
                           new Error(
-                            "Year of birth must be between 1900 and 2050!"
+                            `Year of birth must be between 1900 and ${currentYear}!`
                           )
                         );
                       }
@@ -159,10 +175,11 @@ function RegisterPage() {
                   },
                 ]}
               >
-                <Input
+                {/* <Input
                   placeholder="YYYY"
                   onChange={(e) => setYear(e.target.value)}
-                />
+                /> */}
+                <DatePicker  format={"DD-MM-YYYY"} />
               </Form.Item>
             </div>
             <Form.Item
@@ -229,7 +246,7 @@ function RegisterPage() {
               <Input.Password onChange={(e) => setPassword(e.target.value)} />
             </Form.Item>
             <Form.Item
-              name="c_password"
+              name="password"
               label={<span className="custom-label ">Confirm password</span>}
               rules={[
                 {
@@ -296,6 +313,7 @@ function RegisterPage() {
           </Form>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }
