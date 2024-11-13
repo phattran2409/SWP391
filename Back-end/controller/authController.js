@@ -2,7 +2,6 @@ const { json } = require("express");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
 //npm install nodemailer
 const nodemailer = require("nodemailer");
 
@@ -44,13 +43,41 @@ const authController = {
         birthDate: req.body.birthDate,
         gender: gender,
         phoneNumber: req.body.phone,
-        name: req.body.fullName,
+        name: req.body.name,
+        elementID : req.body.elementID
       });
       console.log(newUser);
       
       // save to database
       const user = await newUser.save();
       console.log(user);
+
+      // Send Email
+        const transporter = nodemailer.createTransport({
+          service: "Gmail",
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+          },
+        });
+
+        // Gửi email xác nhận
+        const mailOptions = {
+          to: req.body.email,
+          subject: "Register Succesfully",
+          html: `
+      
+          <p>Thank You Visiting Feng Shui Koi Consultant</p>
+          <P>You Can visit Website Now <a href="fengshuikoi.online">Feng shui koi</a></p>
+        `,
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            return res.status(500).json(error);
+          }
+         return res.status(200).json("Resgister Successfully Email Sent." , user );
+        });
       
       res.status(200).json(user);
     } catch (error) {
