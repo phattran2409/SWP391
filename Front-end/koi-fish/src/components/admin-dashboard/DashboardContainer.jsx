@@ -86,13 +86,13 @@ const DashboardContainer = () => {
   };
 
   const demographicData = {
-    labels: ["News", "Blog", "Ads"],
+    labels: ["News Posted", "Blog Posted", "Advertising Posted"],
     datasets: [
       {
         data: [
-          Math.round(((posts.news / posts.totalDocuments) * 100).toFixed(1)),
-          Math.round(((posts.blog / posts.totalDocuments) * 100).toFixed(1)),
-          Math.round(((posts.ads / posts.totalDocuments) * 100).toFixed(1))
+          `${posts.news}`,
+          `${posts.blog}`,
+          `${posts.ads}`
         ],
         backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
       },
@@ -187,18 +187,7 @@ const DashboardContainer = () => {
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Post By Category</h2>
-          <li className="flex justify-between items-center py-2 border-b last:border-b-0">
-            <span>News</span>
-            <span className="font-semibold">{`${posts.news}`} posted</span>
-          </li>
-          <li className="flex justify-between items-center py-2 border-b last:border-b-0">
-            <span>Blog</span>
-            <span className="font-semibold">{`${posts.blog}`} posted</span>
-          </li>
-          <li className="flex justify-between items-center py-2 border-b last:border-b-0">
-            <span>Advertising</span>
-            <span className="font-semibold">{`${posts.ads}`} posted</span>
-          </li>
+      
           <Pie data={demographicData} options={{ responsive: true }} />
           
         </div>

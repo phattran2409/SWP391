@@ -8,6 +8,7 @@ import QuillEditor from "./QuillEditor"; // Ensure this is the correct path
 import parse from "html-react-parser";
 import "../../components/update-profile/contentStyle.css"
 
+
 const NewsModal = ({
   showModal,
   setShowModal,
@@ -27,11 +28,14 @@ const NewsModal = ({
   author,
   createdAt,
   updatedAt,
+  userRole,
 }) => {
  
  
 
   return (
+
+
     <Modal
       open={showModal}
       onCancel={() => {
@@ -39,10 +43,12 @@ const NewsModal = ({
         setThumbnailFile(null); // Reset thumbnail file when modal is closed
         setExistingThumbnail(""); // Reset existing thumbnail
       }}
-      title={form.getFieldValue("_id") ? "Update News" : "Create News"}
+      title={form.getFieldValue("_id") ? "Update Post" : "Create News"}
+     
       onOk={() => form.submit()}
       confirmLoading={loading}
       width={1300}
+      footer={!userRole ? undefined : null}
     >
       <Form form={form} labelCol={{ span: 24 }} onFinish={handleSubmit}>
         <Row gutter={16}>
@@ -186,7 +192,7 @@ const NewsModal = ({
                 <p>No thumbnail available</p>
               )}
               <br />
-              <h2><strong>Title:</strong> {title ? parse(title) : <p>Your Title</p>}</h2>
+              <h2 ><strong>Title:</strong> {title ? parse(title) : <p>Your Title</p>}</h2>
               <br />
               <h2><strong>Author:</strong> {author}</h2>
               <br />
