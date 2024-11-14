@@ -125,7 +125,7 @@ const authController = {
         //  ko show password cua user tuy da dc HASH r
         //  lay toan bo ngoai tru password
         const { password, ...others } = user._doc;
-        res.status(200).json({ ...others, accessToken });
+        res.status(200).json({ ...others, accessToken , refreshToken});
       }
     } catch (error) {
       res.status(500).json(error);
@@ -134,7 +134,11 @@ const authController = {
 
   reqRefreshToken: async (req, res) => {
     // lay cookies tu req
-    const refreshToken = req.cookies.refreshToken;
+    // console.log(req.cookies.refreshToken);
+    console.log("refresh token"+req.headers.authorization);
+    console.log("Cookies Token  from localhost : " + req.headers.refreshtoken);
+    const refreshToken = req.headers.refreshtoken;
+    // req.headers.token || req.headers.authorization;
 
     //
     if (!refreshToken) return res.status(404).json("you're not authenticated");
@@ -143,27 +147,28 @@ const authController = {
     //  verify refreshToken
     jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY, async (err, user) => {
       if (err) return res.status(403).json("Invalid refresh token");
+      console.log("create new token");
       const newAccessToken = authController.accessToken(user);
       const newRefreshToken = authController.refreshToken(user);
-
+      console.log("NEW ACCESS TOKEN : "+newAccessToken);
       if (err) {
-        console.log(err);
+        res.status(500).json(err.message)
       }
       // xoa di token cu va add newRefreshToken
       // refreshTokensArr = refreshTokensArr.filter((token) => refreshToken !== token )
 
-      const result = await refreshTokens.deleteOne({ token: refreshToken });
+      // const result = await refreshTokens.deleteOne({ token: refreshToken });
 
-      if (result.deletedCount === 1) {
-        console.log("Token deleted successfully");
-      } else {
-        console.log("Token not found or not deleted");
-      }
-      const newRefreshTokenDB = new refreshTokens({
-        token: newRefreshToken,
-      });
+      // if (result.deletedCount === 1) {
+      //   console.log("Token deleted successfully");
+      // } else {
+      //   console.log("Token not found or not deleted");
+      // }
+      // const newRefreshTokenDB = new refreshTokens({
+      //   token: newRefreshToken,
+      // });
 
-      newRefreshTokenDB.save();
+      // newRefreshTokenDB.save();
 
       // refreshTokensArr.push(newRefreshToken);
 

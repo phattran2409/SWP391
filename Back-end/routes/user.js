@@ -98,7 +98,7 @@ router.get("/getNotification" ,middlewareController.verifyToken, useController.g
 // Calculate Element 
 router.get("/calculateElement"  , useController.calculateElement);
 router.post("/mutual" ,useController.rateMutual );
-
+router.post("/suitableKoi" , useController.rateSuitableForKoi); 
 router.get("/userMonthCount" , useController.getMonthlyUserCount);
 
 module.exports = router;
