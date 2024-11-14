@@ -24,8 +24,6 @@ import Home from "./page/Home/Home.jsx";
 import RecoverPage from "./page/forget/forget";
 import ResetPasswordPage from "./page/forget/reset";
 
-
-
 import KoiDetails from "./page/testpage/consulting-detail/koidetail.jsx";
 import PondDetails from "./page/testpage/consulting-detail/ponddetail.jsx";
 import MemberPackage from "./page/MemberPackage/package.jsx";
@@ -33,13 +31,13 @@ import ThankYou from "./page/thankYou/thankYou.jsx";
 import ManageOrder from "./page/admin/manage-orders/manageOrders.jsx";
 import Consulting from "./page/consulting/consulting.jsx";
 import NotFoundPage from "./page/NotFound/404.jsx";
-
 import { ChangeEmail } from "./components/update-profile/EditProfile/ChangeEmail.jsx"
 import ProfileUser from "./page/ProfileUser/ProfileUser.jsx";
 import NewsPage from "./page/Category/news/news.jsx";
 import BlogPage from "./page/Category/blogs/blog.jsx";
 import DetailsPage from "./page/Category/details/details.jsx";
 import Package from "./page/admin/manage-package/manage-Package.jsx";
+import Comment from "./components/comment-template/comment.jsx";
 
 
 function App() {
@@ -166,6 +164,10 @@ function App() {
     {
       path: "*",
       element: <NotFoundPage />,
+    },
+    {
+      path: "/comment",
+      element: <Comment />,
     },
   ]);
   
