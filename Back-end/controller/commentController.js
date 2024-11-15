@@ -4,8 +4,25 @@ const commentController = {
   getCommentByPost: async (req, res) => {
     try {
       const postId = req.params.id;
-      const result = await comments.find({ post: postId });
-      return res.status(200).json(result);
+      const result = await comments.find({ post: postId })
+      .populate("author")
+      .populate({
+        path: "replies",
+        populate: {
+          path: "author", // Populate author của mỗi reply trong relies
+        },
+      }).sort({createdAt: -1})
+      ;
+      const countComment = await comments.countDocuments({ post: postId });
+      const modifiedResult = result.map(comment => ({
+        ...comment.toObject(), 
+        repliesCount: comment.replies ? comment.replies.length : 0, // Handle empty replies
+      }));
+      return res.status(200).json({
+        data: modifiedResult,
+        count: countComment,
+
+      });
     } catch (err) {
       return res.status(500).json(err);
     }
