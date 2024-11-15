@@ -6,14 +6,17 @@ import { Button, Modal , Card, Badge, Tag } from "antd";
 import { stubString } from "lodash";
 import styled from "styled-components";
 import { Navigate, useNavigate } from "react-router-dom";
-
+import api from "../config/axios";
+import { toast } from "react-toastify";
 
 
 export default function Cart({ showModal, toggle }) {
   const { cartItems, handleMutual, removeFromCart, clearCart, result} =
     useContext(CartContext);
+  const [user ,  setUser] = useState();
     console.log("show modal at cart "+ showModal);
     console.log("result :  "+ result);
+
   const navigate = useNavigate();
      const colorToHex = (color) => {
        const colorMap = {
@@ -44,9 +47,49 @@ export default function Cart({ showModal, toggle }) {
       };
       return elementColor[elementID] || "";
      }
-     
+     const handleSaveMutualSuitableAPI  = async () => {
+       try {
+         var fish;
+         var pond;
+         cartItems.map((item) => {
+           if (item.koiName) {
+             fish = item;
+           } else {
+             pond = item;
+           }
+         });
+         console.log("user ID : "+user._id);
+      const result = await api.post("/v1/user/compareHistory/add", {
+        accountID: user._id,
+        fishkoi : fish,
+        pond : pond,
+      });
+       console.log(result.data);
+         console.log(fish);
+         console.log(pond);
+        toast.success(result.data.message)
+       } catch (error) {
+         console.log(error.message);
+       }
+     };
+     //  KQ tra ve neu suitable
      const  resultCode = result;
-  
+    // tự động lưu những cá và hồ cặp phù hợp 
+
+     const handleSaveMutualSutiable  = () => {
+     if (cartItems.length === 2) {
+      console.log("Save Mututal Suitable");
+        if ( resultCode == 1 ) {
+          handleSaveMutualSuitableAPI();
+        }
+    } 
+    }
+    
+    useEffect(() => {
+      setUser(JSON.parse(localStorage.getItem("user")))
+    } , [])
+    
+
     console.log(resultCode);
     
       {/* <div className="absolute  w-full h-full flex  justify-center">
@@ -124,13 +167,13 @@ export default function Cart({ showModal, toggle }) {
      width="100%"
      styles={{
        height: "500px",
-       overflow: "scroll",
+       overflowY: "scroll",
        overflowX: "hidden",
      }}
      // This ensures the modal takes up full width on smaller screens
      className="max-w-2xl w-full "
      footer={
-       (cartItems.length  < 2 )
+       cartItems.length < 2
          ? [
              <Button danger size="middle" type="primary" onClick={clearCart}>
                Clear
@@ -150,7 +193,7 @@ export default function Cart({ showModal, toggle }) {
                variant="outlined"
                size="middle"
                color="primary"
-               onClick={() =>handleMutual(navigate)}
+               onClick={() => handleMutual(navigate)}
                disabled
              >
                Evaluate
@@ -291,16 +334,24 @@ export default function Cart({ showModal, toggle }) {
            result != null &&
            (resultCode === 1 ? (
              <>
-            
-               <iframe src="https://lottie.host/embed/f0cf59e2-3927-4526-aaed-8d60dd79f1d8/p8QuDeZL3Z.json"></iframe>
-           
+               <div>
+                 <iframe src="https://lottie.host/embed/f0cf59e2-3927-4526-aaed-8d60dd79f1d8/p8QuDeZL3Z.json"></iframe>
+                 <div className="w-full flex justify-center mt-4">
+                   <button
+                     onClick={handleSaveMutualSutiable}
+                     className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-600 transition-colors duration-200 shadow-md"
+                   >
+                     Save
+                   </button>
+                 </div>
+               </div>
              </>
            ) : (
              <iframe src="https://lottie.host/embed/aac9744d-2c28-4445-a409-b04b92c6e69b/w7fWbIHaur.json"></iframe>
            ))}
        </div>
      ) : (
-       <div className="flex  w-full h-full  justify-center">
+       <div cssName="flex  w-full h-full  justify-center">
          <iframe src="https://lottie.host/embed/a6dcf59e-821c-4fe6-afa7-3a1539fc5c56/Icxw1mdxS0.json"></iframe>
        </div>
      )}

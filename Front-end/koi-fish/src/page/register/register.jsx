@@ -151,6 +151,10 @@ function RegisterPage() {
                     required: true,
                     message: "Please input your year of birth!",
                   },
+                   {
+                     
+                   },
+                  
                   {
                     validator: (_, value) => {
                       if (!value) {
@@ -161,7 +165,7 @@ function RegisterPage() {
 
                       // Get the year from the selected date
                       const year = value;
-
+                      
                       const currentYear = new Date();
                       if (year < 1900 || year > currentYear) {
                         return Promise.reject(

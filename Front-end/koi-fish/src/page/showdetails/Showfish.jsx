@@ -11,13 +11,19 @@ import { Card } from "antd";
 import { yellow } from "@mui/material/colors";
 import { Link , redirect , useNavigate} from "react-router-dom";
 import { toast } from "react-toastify";
+import {  Tag } from "antd";
+import Item from "antd/es/list/Item.js";
 const ShowFish = () => {
   const [fishs, setFish] = useState([]);
   const [visibleCount, setVisibleCount] = useState(6);
   const { cartItems, addToCart } = useContext(CartContext);
   const [showModal, setshowModal] = useState(false);
   const [activeItemId , setActiveItemId] = useState(null);
-  const  navigate = new useNavigate();
+  const  navigate = new useNavigate();  
+  const [elementUser ,setElementUser] = useState();
+  const [selectedCard , setSelectedCard] = useState([]); 
+  const [selectNotSuitable , setSelectNotSuitable]  = useState([]);
+ // Tao ra temp 
   // Fetch Koi Fish from API
   const fetchKoiFish = async () => {
     try {
@@ -31,9 +37,28 @@ const ShowFish = () => {
       );
     }
   };
+  //  Call api toi de thuc hien coi co phu hop voi ban menh cuar minh hay ko 
+  const suitableKoi = async(item) => {  
+     const elementID_koi = item.elementID 
+    const elementID_user = elementUser.elementID
+
+    try {
+       const res = await api.post("v1/user/suitableKoi?object=1" , {elementID_koi , elementID_user});
+       console.log(res.data);
+      toast.success(res.data.message);
+    
+      setSelectedCard((prevSelected ) => prevSelected.includes(item._id) ? prevSelected.filter((cardID) => cardID !== item._id) : [...prevSelected  , item._id]);
+      
+    } catch (error) {
+      toast.info("Not Suitable")
+      console.log("message error : "+ error.message);
+      setSelectNotSuitable((prevSelected) =>  [...prevSelected , item._id]  )
+    }
+  }
 
   useEffect(() => {
     fetchKoiFish();
+    setElementUser(JSON.parse(localStorage.getItem("elementUser")));
   }, []);
 
   if (!fishs.length) {
@@ -129,8 +154,10 @@ const ShowFish = () => {
             {fishs.slice(0, visibleCount).map((item, index) => (
               <div
                 key={item._id || index}
-                className={`flex flex-col group relative shadow bg-white text-black rounded-xl overflow-hidden h-[600px] max-[1920px]:h-[500px] max-[768px]:h-[400px] w-full sm:w-[80%] mx-auto fade-in border-2 border-gray-600 ${
-                  activeItemId === item._id ? "active border-red-800 shadow-xl shadow-red-500" : ""
+                className={`flex flex-col group relative shadow bg-white text-black rounded-xl overflow-hidden h-[600px] max-[1920px]:h-[600px] max-[768px]:h-[400px] w-full sm:w-[80%] mx-auto fade-in border-2 border-gray-600 ${
+                  activeItemId === item._id
+                    ? "active border-red-800 shadow-xl shadow-red-500"
+                    : ""
                 }`}
               >
                 <div className="h-[50%] max-[500px]:h-[40%] max-[768px]:h-[45%]  w-full bg-white bg-center bg-no-repeat flex items-center justify-center">
@@ -141,11 +168,12 @@ const ShowFish = () => {
                       backgroundSize: "contain",
                       backgroundPosition: "center",
                       backgroundColor: "white",
-                      cursor : "pointer"
+                      cursor: "pointer",
                     }}
-                    onClick={() => {navigate(`/koidetail/${item._id}`)}}
+                    onClick={() => {
+                      navigate(`/koidetail/${item._id}`);
+                    }}
                   />
-                  
                 </div>
 
                 <div className=" h-[50%] max-[500px]:h-[60%] max-[768px]:h-[55%] bg-white p-4 flex flex-col justify-between overflow-y-auto">
@@ -168,11 +196,36 @@ const ShowFish = () => {
                     ))}
                   </div>
                   <button
-                    onClick={() => { addToCart(item); handleActiveItem(item._id) } }
+                    onClick={() => {
+                      suitableKoi(item);
+                      handleActiveItem(item._id);
+                    }}
+                    className="mt-4 px-4 py-2 max-[768px]:px-1 max-[768px]:py-1 text-black border-2 border-gray-300 rounded-lg bg-rounded-lg hover:bg-gray-200"
+                  >
+                    Calculate suitable
+                  </button>
+                  <button
+                    onClick={() => {
+                      addToCart(item);
+                      handleActiveItem(item._id);
+                    }}
                     className="mt-4 px-4 py-2 max-[768px]:px-1 max-[768px]:py-1 text-black border-2 border-gray-300 rounded-lg bg-rounded-lg hover:bg-gray-200"
                   >
                     assess
                   </button>
+
+                  <div className="show-suitable w-full  outline-1">
+                    {selectedCard.includes(item._id) && (
+                      <div className="flex flex-col mt-1 items-center content-center">
+                        <Tag color="#87d068">SUITABLE</Tag>
+                      </div>
+                    )}
+                    {selectNotSuitable.includes(item._id) && (
+                      <div className="flex flex-col mt-1 items-center content-center" >
+                        <Tag color="#f50">NOT SUITABLE</Tag>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}

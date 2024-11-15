@@ -2,13 +2,13 @@ import { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Navigate, useNavigate } from "react-router-dom";
-import  api from "../../config/axios"
-export const CartContext = createContext();
+import api from "../../config/axios";
+export const  ListSuitable= createContext();
 
-export const CartProvider = ({ children }) => {
+export const ListSuitableProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState(
-    localStorage.getItem("cartItems")
-      ? JSON.parse(localStorage.getItem("cartItems"))
+    localStorage.getItem("listSuitbale")
+      ? JSON.parse(localStorage.getItem("listSuitable"))
       : []
   );
 
@@ -17,40 +17,14 @@ export const CartProvider = ({ children }) => {
   const [koi, setKoi] = useState(0);
   const [pond, setPond] = useState(0);
   const [result, setResult] = useState(null);
-  const [value , setValue] = useState(localStorage.getItem("elmentUser") ? JSON.parse(localStorage.getItem("elementUser")) :  {});
-  const [item  , setItem]  =  useState(null);
+  const [value, setValue] = useState(
+    localStorage.getItem("elmentUser")
+      ? JSON.parse(localStorage.getItem("elementUser"))
+      : {}
+  );
+  const [item, setItem] = useState(null);
   const addToCart = (item) => {
-    const isItemInCart = cartItems.find(
-      (cartItem) => cartItem._id === item._id
-    );
-
-    const isKoi = item.koiName;
-    const isPond = item.shape;
-   
-    const koiInCart = cartItems.some((item) => item.koiName);
-    const pondInCart = cartItems.some((item) => item.shape);
-   
-    if (cartItems.length <= 2) {
-      if (isPond && pondInCart) {
-        toast.info("Allow adding one Pond for evaluation");
-        return;
-      }
-      if (isKoi && koiInCart) {
-        toast.info("Allow adding one Koi for evaluation ");
-        return;
-      }
-       isKoi && toast.success("The Koi was added  Assess Suitability");
-     
-        isPond && toast.success("The Pond was added Assess Suitability");
-     
-
-      if (isItemInCart) {
-    
-        console.log("product was selected");
-        return;
-      }
-      setCartItems([...cartItems, item]);
-    }
+        setCartItems([...cartItems , ...item])
   };
 
   const removeFromCart = (item) => {
@@ -68,9 +42,8 @@ export const CartProvider = ({ children }) => {
   const clearCart = () => {
     setCartItems([]);
     setResult(null);
-    setKoi(0); 
+    setKoi(0);
     setPond(0);
-    
   };
 
   const getCartTotal = () => {
@@ -85,32 +58,32 @@ export const CartProvider = ({ children }) => {
       if (!value?.elementID) {
         toast.error("You need consulting before you evaluate");
         setTimeout(() => {
-           navigate("/consulting");
+          navigate("/consulting");
         }, 2000);
-       
+
         return;
-      } 
+      }
       const res = await api.post("/v1/user/mutual", {
         elementID_koi: koi,
         elementID_pond: pond,
         elementID_user: value.elementID,
       });
       console.log(res.data);
-    ;
-      setResult(res.data.success)  
-      res.data.success === 1 ? toast.success(res.data.message) :  toast.error(res.data.message)
+      setResult(res.data.success);
+      res.data.success === 1
+        ? toast.success(res.data.message)
+        : toast.error(res.data.message);
       console.log(result);
     } catch (err) {
-      console.log("Error at Cart Context "+err);
-      toast.error(err)
-      
+      console.log("Error at Cart Context " + err);
+      toast.error(err);
+
       console.log(err);
-      
     }
   };
-  // lưu cart vô storage mỗi lần bị thay đổi 
+  // lưu cart vô storage mỗi lần bị thay đổi
   useEffect(() => {
-    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+    localStorage.setItem("listSuitable", JSON.stringify(cartItems));
   }, [cartItems]);
 
   useEffect(() => {
@@ -127,14 +100,14 @@ export const CartProvider = ({ children }) => {
       items.koiName && setKoi(items.elementID);
       items.shape && setPond(items.elementID);
     });
-    // 
+    //
     setValue(JSON.parse(localStorage.getItem("elementUser")));
     console.log(koi, pond);
     // handleMutual(koi, pond);
   }, [cartItems]);
-  
+
   return (
-    <CartContext.Provider
+    <ListSuitable.Provider
       value={{
         cartItems,
         addToCart,
@@ -146,6 +119,6 @@ export const CartProvider = ({ children }) => {
       }}
     >
       {children}
-    </CartContext.Provider>
+    </ListSuitable.Provider>
   );
 };
