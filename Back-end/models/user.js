@@ -41,19 +41,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
-<<<<<<< HEAD
-   
-    gender : {
-      type: Number,
-      enum: [0, 1,], // Ví dụ: 0 - Nam, 1 - Nữ, 
-    }
-    ,
-=======
     gender : {
       type: Number,
     // Ví dụ: 0 - Nam, 1 - Nữ
     },
->>>>>>> develop
 
     birthDate : {
       type : Date,
@@ -61,6 +52,9 @@ const userSchema = new mongoose.Schema(
 
     provider :  {
       type : String,
+    } ,
+    elementID : {
+      type : Number, 
     } ,
     notification : [
      {  

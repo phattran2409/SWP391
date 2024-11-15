@@ -1,16 +1,9 @@
 const { default: mongoose } = require("mongoose");
-<<<<<<< HEAD
-
-const  fishKoiSchema = mongoose.Schema( {
-    elementID : {
-        type : String
-=======
 // import mongoose from 'mongoose';
 
 const  fishKoiSchema = mongoose.Schema( {
     elementID : {
         type : Number
->>>>>>> develop
     },
     koiName : {
         type : String
@@ -26,10 +19,6 @@ const  fishKoiSchema = mongoose.Schema( {
     }
 })
 
-<<<<<<< HEAD
-module.exports = mongoose.model('fishkois' ,fishKoiSchema)
-=======
 
 
 module.exports = mongoose.model("fishkois", fishKoiSchema);
->>>>>>> develop

@@ -8,7 +8,7 @@ const authRouter = require("./routes/auth");
 const userRouter = require("./routes/user");
 const fishRouter = require("./routes/fish");
 const pondRouter = require("./routes/pond");
-
+const commentRouter = require("./routes/comment");
 const postRouter = require("./routes/post");
 const packageRouter  = require("./routes/package")
 const memberRouter =require("./routes/member");
@@ -22,6 +22,7 @@ const port = process.env.PORT || 8888;
 
 app.use(cors());
 app.use(cookieParser());
+
 
 app.use(express.json({ limit: '10mb' }));
 
@@ -45,7 +46,7 @@ app.use("/v1/pond" ,pondRouter );
 app.use("/v1/member", memberRouter);
 
 app.use("/v1/pay" , paymentRouter);
-
+app.use("/v1/comment" , commentRouter);
 
 app.use("/v1/pond" , pondRouter);
 

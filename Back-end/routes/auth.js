@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const authController = require("../controller/authController");
-const middlewareController = require("../controller/middlewareController");
+
 
 const jwt = require("jsonwebtoken");
 
@@ -8,6 +8,7 @@ router.post("/register", authController.registerUser);
 router.post("/login", authController.loginUser);
 router.post("/refresh", authController.reqRefreshToken);
 router.post("/logout", authController.logout);
+
 
 // Route gửi email reset password
 router.post("/reset-password", authController.sendResetPasswordEmail);

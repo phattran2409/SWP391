@@ -2,7 +2,6 @@ const { json } = require("express");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
 //npm install nodemailer
 const nodemailer = require("nodemailer");
 
@@ -32,7 +31,8 @@ const authController = {
     try {
       const salt = await bcrypt.genSalt(10);
       const hashed = await bcrypt.hash(req.body.password, salt);
-
+      console.log(req.body);
+      
       const gender = Number.parseInt(req.body.gender);
       // create  a new user
       const newUser = await new User({
@@ -42,15 +42,53 @@ const authController = {
         avatar: "",
         birthDate: req.body.birthDate,
         gender: gender,
-        phoneNumber: req.body.phoneNumber,
-        name: req.body.fullName,
+        phoneNumber: req.body.phone,
+        name: req.body.name,
+        elementID : req.body.elementID
       });
-
+      console.log(newUser);
+      
       // save to database
       const user = await newUser.save();
+      console.log(user);
+
+      // Send Email
+        const transporter = nodemailer.createTransport({
+          service: "Gmail",
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+          },
+        });
+
+        // Gửi email xác nhận
+        const mailOptions = {
+          to: req.body.email,
+          subject: "Register Succesfully",
+          html: `
+      
+          <p>Thank You Visiting Feng Shui Koi Consultant</p>
+          <P>You Can visit Website Now <a href="fengshuikoi.online">Feng shui koi</a></p>
+        `,
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            return res.status(500).json(error);
+          }
+         return res.status(200).json("Resgister Successfully Email Sent." , user );
+        });
+      
       res.status(200).json(user);
     } catch (error) {
-      res.status(500).json(error);
+      // if (error.message)
+      console.log( typeof error.message);
+      if (error.message.includes("E11000")) {
+       return res.status(500).json({message: "Email is exist or User Name exist !" , messageDetail: error.message} );
+      }
+        res.status(500).json({ message: error.message });
+      console.log(error.message);
+      
     }
   },
 
@@ -87,7 +125,7 @@ const authController = {
         //  ko show password cua user tuy da dc HASH r
         //  lay toan bo ngoai tru password
         const { password, ...others } = user._doc;
-        res.status(200).json({ ...others, accessToken });
+        res.status(200).json({ ...others, accessToken , refreshToken});
       }
     } catch (error) {
       res.status(500).json(error);
@@ -96,7 +134,11 @@ const authController = {
 
   reqRefreshToken: async (req, res) => {
     // lay cookies tu req
-    const refreshToken = req.cookies.refreshToken;
+    // console.log(req.cookies.refreshToken);
+    console.log("refresh token"+req.headers.authorization);
+    console.log("Cookies Token  from localhost : " + req.headers.refreshtoken);
+    const refreshToken = req.headers.refreshtoken;
+    // req.headers.token || req.headers.authorization;
 
     //
     if (!refreshToken) return res.status(404).json("you're not authenticated");
@@ -105,27 +147,28 @@ const authController = {
     //  verify refreshToken
     jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY, async (err, user) => {
       if (err) return res.status(403).json("Invalid refresh token");
+      console.log("create new token");
       const newAccessToken = authController.accessToken(user);
       const newRefreshToken = authController.refreshToken(user);
-
+      console.log("NEW ACCESS TOKEN : "+newAccessToken);
       if (err) {
-        console.log(err);
+        res.status(500).json(err.message)
       }
       // xoa di token cu va add newRefreshToken
       // refreshTokensArr = refreshTokensArr.filter((token) => refreshToken !== token )
 
-      const result = await refreshTokens.deleteOne({ token: refreshToken });
+      // const result = await refreshTokens.deleteOne({ token: refreshToken });
 
-      if (result.deletedCount === 1) {
-        console.log("Token deleted successfully");
-      } else {
-        console.log("Token not found or not deleted");
-      }
-      const newRefreshTokenDB = new refreshTokens({
-        token: newRefreshToken,
-      });
+      // if (result.deletedCount === 1) {
+      //   console.log("Token deleted successfully");
+      // } else {
+      //   console.log("Token not found or not deleted");
+      // }
+      // const newRefreshTokenDB = new refreshTokens({
+      //   token: newRefreshToken,
+      // });
 
-      newRefreshTokenDB.save();
+      // newRefreshTokenDB.save();
 
       // refreshTokensArr.push(newRefreshToken);
 
@@ -228,138 +271,6 @@ const authController = {
     }
   },
 
-
-
-
-  sendChangeEmail: async (req, res) => {
-    try {
-      const email = req.body.email;
-      const userId = req.user.id;
-
-      const user = await User.findById(userId);
-
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      if (user.email !== email) {
-        return res.status(400).json({ message: "Your email is incorrect" });
-      }
-
-      // Tạo JWT Token
-      const changeEmailToken = jwt.sign(
-        { id: userId },
-        process.env.JWT_CHANGE_EMAIL_KEY,
-        { expiresIn: "15m" }
-      );
-
-      // Cấu hình Nodemailer
-      const transporter = nodemailer.createTransport({
-        service: "Gmail",
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
-
-      // Gửi email xác nhận
-      const mailOptions = {
-        to: email,
-        subject: "Email Change Confirmation",
-        html: `
-          <p>You have requested to change your email address. Click the link below to confirm:</p>
-          <p><a href="http://localhost:${process.env.PORT}/v1/auth/send-change-email/${changeEmailToken}">Email Change Confirmation</a></p>
-          <p>This link will expire after 15 minutes. If you do not request a change, please ignore this email.</p>
-        `,
-      };
-
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          return res.status(500).json(error);
-        }
-        res.status(200).json("Email change confirmation sent");
-      });
-    } catch (error) {
-      return res.status(500).json(error);
-    }
-  },
-
-  confirmChangeEmail: async (req, res) => {
-    try {
-      const changeEmailToken = req.params.token || req.body.token;
-
-      if (!changeEmailToken) {
-        return res.status(400).json("Token not provided");
-      }
-
-      // Xác thực token
-      jwt.verify(
-        changeEmailToken,
-        process.env.JWT_CHANGE_EMAIL_KEY,
-        async (err, decoded) => {
-          if (err) {
-            console.error("Token verification error:", err);
-            return res.status(400).json("Invalid or expired token");
-          }
-
-          const  id  = decoded.id;
-          const  newEmail  = req.body.newEmail;
-
-          // Kiểm tra lại xem email mới có bị sử dụng chưa
-          const existingEmail = await User.findOne({ email: newEmail });
-          if (existingEmail) {
-            return res.status(400).json("This email has already been used");
-          }
-
-          // Tìm người dùng theo ID
-          const user = await User.findById(id);
-          if (!user) {
-            return res.status(404).json("User not found");
-          }
-
-          const oldEmail = user.email; // Lưu email cũ để thông báo sau
-
-          // Cập nhật email mới
-          user.email = newEmail;
-          await user.save();
-
-          // Cấu hình Nodemailer cho email thông báo đến email cũ
-          const transporter = nodemailer.createTransport({
-            service: "Gmail",
-            auth: {
-              user: process.env.EMAIL_USER,
-              pass: process.env.EMAIL_PASS,
-            },
-          });
-
-          // Tạo nội dung email thông báo
-          const mailOptionsOldEmail = {
-            to: oldEmail,
-            subject: "Email Change Notification",
-            html: `
-              <p>Your user email address have been changed from <strong>${oldEmail}</strong> to <strong>${newEmail}</strong>.</p>
-              <p>If you do not make this change, please contact support immediately.</p>
-            `,
-          };
-
-          // Gửi email thông báo đến email cũ
-          transporter.sendMail(mailOptionsOldEmail, (error, info) => {
-            if (error) {
-              console.error(
-                "Error sending notification email to old email:",
-                error
-              );
-              // Không trả lỗi cho người dùng vì thay đổi email đã thành công
-            }
-          });
-
-          res.status(200).json("Email has been changed successfully");
-        }
-      );
-    } catch (error) {
-      return res.status(500).json(error);
-    }
-  },
  
 
  
