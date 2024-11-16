@@ -17,7 +17,7 @@ const orderController = {
       const totalDocuments = await Orders.countDocuments();
       const basic = await Orders.countDocuments({ packageType: "Basic" });
       const plus = await Orders.countDocuments({ packageType: "Plus" });
-      const advanced = await Orders.countDocuments({ packageType: "Advance" });
+      const advanced = await Orders.countDocuments({ packageType: "Advanced" });
       return res.status(200).json({
         currentPage: page,
         totalPages: Math.ceil(totalDocuments / limit),

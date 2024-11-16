@@ -16,6 +16,7 @@ const element = require("../models/element");
 const mutal = require("../models/mutal");
 const { MongoClient } = require("mongodb");
 const pond = require("../models/pond");
+const { parse } = require("path");
 
 require("dotenv").config();
 
@@ -654,6 +655,42 @@ const useController = {
       console.error(error);
       return res.status(500).json("Error system");
     }
+  },
+  rateSuitableForKoi : async (req , res) => { 
+      try {
+      console.log(req.body.elementID_koi , req.body.elementID_user);
+      console.log(req.query.object);
+      
+         
+
+        if ((!req.body.elementID_koi  || !req.body.elementID_pond) && !req.body.elementID_user ) {
+          return res.status(400).json(message = "Missing require  element koi or element user");
+        }
+        if (req.query.object == 1) {
+          const result  = await mutal.find( { 
+            elementID_koi :  req.body.elementID_koi ,  
+            elementID_user : req.body.elementID_user,
+          
+          })
+          if (result.length  === 0) {
+            return res.status(404).json({succes : 0 , Message : "not suitable"});
+          }
+          return res.status(200).json({success : 1 , message : "suitable" , result });
+        }else {
+          
+          const result = await mutal.find({
+            elementID_pond: parseInt( req.body.elementID_pond),
+            elementID_user: req.body.elementID_user,
+          });
+          if (result.length === 0) {
+            return res.status(404).json({ succes: 0, Message: "not suitable" });
+          }
+          return res.status(200).json({success : 1 , message : "suitable" , result});
+        }
+        
+      } catch (err) {
+        return res.status(500).json(err);
+      }
   },
 
   getMonthlyUserCount: async (req, res) => {

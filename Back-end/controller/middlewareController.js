@@ -3,8 +3,6 @@ const multer = require("multer");
 const packageMember = require("../models/packageMember");
 const user = require("../models/user");
 
-
-
 const middlewareController = {
   verifyToken: (req, res, next) => {
     const token = req.headers.token || req.headers.authorization;

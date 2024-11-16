@@ -50,7 +50,4 @@ router.get("/searchPostnotPagination", postController.searchPostnotPagination);
 router.get("/getAllAd/:id", postController.getAllAd);
 
 
-
-
-
 module.exports = router;

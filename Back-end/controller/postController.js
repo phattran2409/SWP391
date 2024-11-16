@@ -24,6 +24,7 @@ const postController = {
         .find({
           elementID: parseInt(req.params.id),
           categoryID:  parseInt(req.query.categoryID),
+          postStatus: "true"
         })
         .populate("author");
 

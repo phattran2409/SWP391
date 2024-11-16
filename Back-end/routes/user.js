@@ -5,6 +5,7 @@ const upload = require("../middleware/multer");
 const uploads = require("../middleware/multerConfig");
 const jwt = require("jsonwebtoken");
 const user = require("../models/user");
+const CompareController  =require("../controller/CompareHistory");
 // GET all USER
 //  /v1/user/all
 router.get(
@@ -98,7 +99,12 @@ router.get("/getNotification" ,middlewareController.verifyToken, useController.g
 // Calculate Element 
 router.get("/calculateElement"  , useController.calculateElement);
 router.post("/mutual" ,useController.rateMutual );
-
+router.post("/suitableKoi" , useController.rateSuitableForKoi); 
 router.get("/userMonthCount" , useController.getMonthlyUserCount);
 
+// Get Compare History 
+router.post("/compareHistory/add", CompareController.add);
+router.post("/compareHistory/:id" , CompareController.findID);
+router.post("/compareHistory/del/:id" , CompareController.delete);
 module.exports = router;
+ 
