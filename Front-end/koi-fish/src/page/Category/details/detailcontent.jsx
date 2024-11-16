@@ -6,6 +6,7 @@ import NewsContent from "../../../components/news-template/NewsContent"
 import Search from '../search';
 import api from "../../../config/axios.js";
 import "../../../components/update-profile/contentStyle.css"
+import Comment from '../../../components/comment-template/Comment.jsx';
 
 export default function DetailContent() {
     const { id } = useParams();
@@ -86,13 +87,19 @@ export default function DetailContent() {
                         ) : (
                             <div className="text-center text-gray-500">No article details available!</div>
                         )}
-
                         <div className='mt-10 border-y-2 border-gray-300 py-4'>
+                        <Comment postId={id} />
+                        </div>
+                         
+                        <div className='mt-10  py-4'>
                             <div className="text-center text-2xl font-bold mt-8">Related News</div>
                             <NewsContent />
                         </div>
+                        
                     </div>
+                    
                 </div>
+              
             </div>
         </>
     );
