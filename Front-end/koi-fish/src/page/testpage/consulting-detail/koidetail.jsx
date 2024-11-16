@@ -16,6 +16,7 @@ import {
 import Navbar from "../../../components/navbar/Navbar";
 import "./animate.css";
 import { set } from "lodash";
+import Footer from "../../../components/footer/Footer";
 
 const koiDetails = () => {
   const colors = [
@@ -276,6 +277,7 @@ const koiDetails = () => {
           </div>
         )}
       </div>
+      <Footer/>
     </>
   );
 };

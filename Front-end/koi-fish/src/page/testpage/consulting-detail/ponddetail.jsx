@@ -16,6 +16,7 @@ import {
 } from "react-icons/md";
 import Navbar from "../../../components/navbar/Navbar";
 import "./animate.css";
+import Footer from "../../../components/footer/Footer";
 
 const pondDetails = () => {
   const fitWithElements = [
@@ -278,6 +279,7 @@ const pondDetails = () => {
           </div>
         )}
       </div>
+      <Footer/>
     </>
   );
 };
