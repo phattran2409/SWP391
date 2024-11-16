@@ -237,7 +237,7 @@ const koiDetails = () => {
                   <img
                     src={koi.image}
                     alt={`Image of ${koi.koiName}`}
-                    className="w-full h-50 object-cover rounded-lg mb-4"
+                    className="w-full h-[336px] object-contain rounded-lg mb-4"
                   />
                   <h3 className="text-xl font-semibold mb-2 text-gray-700">
                     {koi.koiName}
