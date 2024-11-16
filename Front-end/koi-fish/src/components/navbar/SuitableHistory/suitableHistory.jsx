@@ -9,10 +9,10 @@ export default function SuitableHistory( { user  ,showModal , setShowModal  }) {
     const [selectedHistory, setSelectedHistory] = useState([]);   
     const colorToHex = (color) => {
         const colorMap = {
-            Blue: '#0000FF',
-            Red: '#FF0000',
-            White: '#FFFFFF',
-            Green: '#008000',
+          Blue: "#0000FF",
+          Red: "#FF0000",
+          White: "#c7c1c1",
+          Green: "#008000",
         };
         return colorMap[color] || '#000';
     };

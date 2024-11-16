@@ -137,8 +137,16 @@ export default function Consulting() {
   };
   //  handleAPIKoi();
 
+  //  get element  user from local storage
+  useEffect(() => { 
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {  
+      setValueElement(user.elementID);
+    }
+  }, []);
+
   useEffect(() => {
-    // setValueElement(JSON.stringify(localStorage.getItem("elementUser")));
+    // setValueElement(JSON.stringify(localStorage.getItem("elementUser")));  
     setvalue(JSON.parse(localStorage.getItem("elementUser")));
     console.log("hooks " + value);
   }, []);

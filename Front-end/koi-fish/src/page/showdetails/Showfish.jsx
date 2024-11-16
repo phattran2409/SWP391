@@ -29,6 +29,7 @@ const ShowFish = () => {
     try {
       const response = await api.get("/v1/fish?page=1&limit=17");
       setFish(response.data.data);
+      console.log(response.data.data);
     } catch (error) {
       console.error(
         "Error fetching koi fish:",
@@ -39,9 +40,12 @@ const ShowFish = () => {
   };
   //  Call api toi de thuc hien coi co phu hop voi ban menh cuar minh hay ko 
   const suitableKoi = async(item) => {  
-     const elementID_koi = item.elementID 
-    const elementID_user = elementUser.elementID
-
+     const elementID_koi = item.elementID   
+    const elementID_user = elementUser
+    if(elementUser == null) { 
+      toast.info("Please  to Consulting page find your element");
+      return;
+    }  
     try {
        const res = await api.post("v1/user/suitableKoi?object=1" , {elementID_koi , elementID_user});
        console.log(res.data);
@@ -58,7 +62,12 @@ const ShowFish = () => {
 
   useEffect(() => {
     fetchKoiFish();
-    setElementUser(JSON.parse(localStorage.getItem("elementUser")));
+    if (JSON.parse(localStorage.getItem("user"))) { 
+       const user = JSON.parse(localStorage.getItem("user"));   
+      setElementUser(user?.elementID);
+    }
+    const elementUser = JSON.parse(localStorage.getItem("elementUser"));
+    setElementUser(elementUser?.elementID);
   }, []);
 
   if (!fishs.length) {

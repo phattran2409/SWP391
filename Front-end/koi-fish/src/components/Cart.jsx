@@ -69,7 +69,8 @@ export default function Cart({ showModal, toggle }) {
          console.log(pond);
         toast.success(result.data.message)
        } catch (error) {
-         console.log(error.message);
+         console.log(error.response.data);
+        toast.info(error.response.data);
        }
      };
      //  KQ tra ve neu suitable
@@ -80,6 +81,10 @@ export default function Cart({ showModal, toggle }) {
      if (cartItems.length === 2) {
       console.log("Save Mututal Suitable");
         if ( resultCode == 1 ) {
+          if (user ==null) {
+            toast.info("Please login to save suitable" , {position : "center"});
+            return;
+          }
           handleSaveMutualSuitableAPI();
         }
     } 
@@ -92,71 +97,8 @@ export default function Cart({ showModal, toggle }) {
 
     console.log(resultCode);
     
-      {/* <div className="absolute  w-full h-full flex  justify-center">
-        <div className="w-1/2 h-1/2 justify-center flex-col flex items-center fixed   bg-white dark:bg-black gap-8  p-10  text-black dark:text-white font-normal uppercase text-sm">
-          <h1 className="text-2xl font-bold">Cart</h1>
-          <div className="absolute right-16 top-10">
-            <button
-              className="px-4 py-2 bg-gray-800 text-white text-xs font-bold uppercase rounded hover:bg-gray-700 focus:outline-none focus:bg-gray-700"
-              onClick={toggle}
-            >
-              Close
-            </button>
-          </div>
-          <div className="flex h-full flex-row gap-4">
-            {cartItems.map((item) => (
-              <div
-                className="relative flex w-full  h- justify-between items-center"
-                key={item.id}
-              >
-                <div className="card h-2/4 items-center flex flex-col gap-4">
-                  <div className="image w-40 h-40">
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      className="w-full h-full object-fit rounded-md h-24"
-                    />
-                  </div>
-                  <div className="content w-[200px] h-[150px] flex flex-col px-2">
-                    <h1 className="text-lg font-bold ">
-                      {item.koiName || item.shape}
-                    </h1>
-                    <p className="text-gray-600 overflow-hidden w-full h-full mx-2">
-                      {item.description}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="absolute top-20 right-1 px-2">
-                  <button
-                    onClick={() => {
-                      removeFromCart(item);
-                    }}
-                    className="text-4xl"
-                  >
-                    <IoMdCloseCircleOutline />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-          {cartItems.length > 0 ? (
-            <div className="flex flex-col justify-between items-center">
-              <h1 className="text-lg font-bold">Total: ${getCartTotal()}</h1>
-              <button
-                className="px-4 py-2 bg-gray-800 text-white text-xs font-bold uppercase rounded hover:bg-gray-700 focus:outline-none focus:bg-gray-700"
-                onClick={() => {
-                  clearCart();
-                }}
-              >
-                Clear evaluate suitability.
-              </button>
-            </div>
-          ) : (
-            <h1 className="text-lg font-bold">Your cart is empty</h1>
-          )}
-        </div>
-      </div> */}
+    console.log(cartItems);
+  
      
  return (
    <Modal
@@ -253,7 +195,7 @@ export default function Cart({ showModal, toggle }) {
                <span className="ml-2 max-[768px]:text-base">
                  <Tag color={elementColor(items.elementID)}>
                    {" "}
-                   {elmentName(items.elementID)}{" "}
+                   {elmentName(items.elementID)}
                  </Tag>
                </span>
              </div>

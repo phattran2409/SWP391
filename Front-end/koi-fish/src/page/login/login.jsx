@@ -5,7 +5,7 @@ import { Form, Input, Button, Divider, Typography } from "antd";
 
 import "./index.css";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate , useLocation } from "react-router-dom";
 import api from "../../config/axios";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
@@ -14,7 +14,9 @@ import "react-toastify/dist/ReactToastify.css"; // Import CSS của Toastify
 
 function LoginPage() {
   const navigate = useNavigate();
-
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  
   const handleLinktoSignUp = () => {
     navigate("/register");
   };
@@ -58,6 +60,16 @@ function LoginPage() {
     toast.error("Login Failed");
   };
 
+  // show message login success
+
+  
+  const status = searchParams.get("status");
+  console.log(status); 
+  if (status === "register_success") {
+    toast.success("Register success");
+  } 
+ 
+  
   const sendTokenToAPI = async (data) => {
     console.log(import.meta.env.API_SIGNIN);
 
