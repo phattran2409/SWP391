@@ -37,8 +37,7 @@ import NewsPage from "./page/Category/news/news.jsx";
 import BlogPage from "./page/Category/blogs/blog.jsx";
 import DetailsPage from "./page/Category/details/details.jsx";
 import Package from "./page/admin/manage-package/manage-Package.jsx";
-import Comment from "./components/comment-template/comment.jsx";
-
+import ElementPage from "./page/element/element.jsx";
 
 function App() {
   const router = createBrowserRouter([
@@ -166,8 +165,8 @@ function App() {
       element: <NotFoundPage />,
     },
     {
-      path: "/comment",
-      element: <Comment />,
+      path: "/element",
+      element: <ElementPage />,
     },
   ]);
   

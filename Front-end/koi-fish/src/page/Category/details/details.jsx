@@ -68,12 +68,9 @@ export default function Test() {
                                             </AnimationReveal>
                                             <div className="h-10" />
                                         </div>
-
+                                        <Footer />
                                     </div>
-                                    <div className="section bg-black">
-                                        <Footer>
-                                        </Footer    >
-                                    </div>
+                                    
                                 </Fullpage.Wrapper>
                             </div>
                         );
