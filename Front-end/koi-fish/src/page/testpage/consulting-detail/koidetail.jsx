@@ -3,6 +3,7 @@ import api from "../../../config/axios";
 import { GiMetalBar } from "react-icons/gi";
 import { Link, useParams } from "react-router-dom";
 import { IoBookSharp } from "react-icons/io5";
+import CardDetail from "../../../components/card-detail/carddetails";
 
 import {
   MdArrowBack,
@@ -16,7 +17,6 @@ import {
 import Navbar from "../../../components/navbar/Navbar";
 import "./animate.css";
 import { set } from "lodash";
-import Footer from "../../../components/footer/Footer";
 
 const koiDetails = () => {
   const colors = [
@@ -134,13 +134,46 @@ const koiDetails = () => {
               <img
                 src={koiDetail.image}
                 alt="Koi fish"
-                style={{ width: "350px", height: "500px" }}
-                className=" object-cover rounded-lg shadow-lg"
+                style={{ width: "450px", height: "700px" }}
+                className=" object-cover rounded-lg "
               />
               <div>
+                <div className="flex">
                 <h1 className="text-4xl font-bold mb-6 text-gray-800">
                   {koiDetail.koiName} Koi
                 </h1>
+                {koiDetail.elementID && (
+                      <span className="ml-2 flex items-center">
+                        {fitWithElements[koiDetail.elementID - 1]?.icon && (
+                          <>
+                            {React.createElement(
+                              fitWithElements[koiDetail.elementID - 1].icon,
+                              {
+                                size: 40,
+                                style: {
+                                  color:
+                                    fitWithElements[koiDetail.elementID - 1]
+                                      .color,
+                                },
+                                className: "ml-5 mb-5",
+                              }
+                            )}
+                            <span className="mb-5"
+                              style={{
+                                color:
+                                  fitWithElements[koiDetail.elementID - 1]
+                                    .color,
+                                marginLeft: "8px",
+                                fontSize: "1.5rem",
+                              }}
+                            >
+                              {fitWithElements[koiDetail.elementID - 1].name}
+                            </span> 
+                          </>
+                        )}
+                      </span>
+                    )}
+                </div>
                 <div className="mb-6">
                   <div className="flex ">
                     <h3 className="text-2xl font-semibold text-gray-700">
@@ -176,42 +209,10 @@ const koiDetails = () => {
                           </div>
                         ))}
                   </div>
-                  <div className="flex ">
-                    <h3 className="text-2xl font-semibold text-gray-700">
-                      Fit With Element
-                    </h3>
-                    {koiDetail.elementID && (
-                      <span className="ml-2 flex items-center">
-                        {fitWithElements[koiDetail.elementID - 1]?.icon && (
-                          <>
-                            {React.createElement(
-                              fitWithElements[koiDetail.elementID - 1].icon,
-                              {
-                                size: 30,
-                                style: {
-                                  color:
-                                    fitWithElements[koiDetail.elementID - 1]
-                                      .color,
-                                },
-                                className: "ml-2",
-                              }
-                            )}
-                            <span
-                              style={{
-                                color:
-                                  fitWithElements[koiDetail.elementID - 1]
-                                    .color,
-                                marginLeft: "8px",
-                                fontSize: "1.2rem",
-                              }}
-                            >
-                              {fitWithElements[koiDetail.elementID - 1].name}
-                            </span>
-                          </>
-                        )}
-                      </span>
-                    )}
-                  </div>
+                 
+              
+                 
+                  <CardDetail elementID={koiDetail.elementID} />
                 </div>
               </div>
             </div>
@@ -228,7 +229,7 @@ const koiDetails = () => {
             <h2 className="text-3xl font-bold mb-6 text-gray-800">
               Related Kois
             </h2>
-            <div className="animate-fadeIn grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {datas.map((koi, index) => (
                 <Link
                   key={koi._id || index}
@@ -238,7 +239,7 @@ const koiDetails = () => {
                   <img
                     src={koi.image}
                     alt={`Image of ${koi.koiName}`}
-                    className="w-full h-[336px] object-contain rounded-lg mb-4"
+                    className="w-full h-64 object-contain rounded-lg mb-4"
                   />
                   <h3 className="text-xl font-semibold mb-2 text-gray-700">
                     {koi.koiName}
@@ -277,7 +278,6 @@ const koiDetails = () => {
           </div>
         )}
       </div>
-      <Footer/>
     </>
   );
 };
