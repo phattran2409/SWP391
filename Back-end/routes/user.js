@@ -106,5 +106,9 @@ router.get("/userMonthCount" , useController.getMonthlyUserCount);
 router.post("/compareHistory/add", CompareController.add);
 router.post("/compareHistory/:id" , CompareController.findID);
 router.post("/compareHistory/del/:id" , CompareController.delete);
+
+router.post("/addToWishList" , middlewareController.verifyToken, useController.addToWishlist);
+router.delete("/removeWishList" , middlewareController.verifyToken, useController.removeFromWishlist);
+router.get("/getWishList" , middlewareController.verifyToken, useController.getWishlist);
 module.exports = router;
  

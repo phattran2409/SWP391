@@ -50,6 +50,20 @@ const userSchema = new mongoose.Schema(
       type : Date,
     },
 
+    wishlist: [
+      {
+        item: {
+          type: mongoose.Schema.Types.ObjectId,
+          refPath: 'wishlistType',
+        },
+        wishlistType: {
+          type: String,
+          required: true,
+          enum: ['fishkois', 'ponds'], 
+        },
+      },
+    ],
+
     provider :  {
       type : String,
     } ,

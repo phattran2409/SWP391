@@ -17,6 +17,8 @@ const mutal = require("../models/mutal");
 const { MongoClient } = require("mongodb");
 const pond = require("../models/pond");
 const { parse } = require("path");
+const user = require("../models/user");
+const { get } = require("http");
 
 require("dotenv").config();
 
@@ -732,8 +734,84 @@ const useController = {
     } catch (err) {
       return res.status(500).json(err);
     }
+  },
+
+  addToWishlist: async (req, res) => {
+    try {
+      const itemId = req.query.itemId;
+      const wishlistType = req.query.wishlistType;
+      const userID = req.user.id;
+      const user = await User.findById(userID);
+      if (!user) {
+        console.log("User not found");
+        return;
+      }
+      const existingItem = user.wishlist.find(item => item.item.toString() === itemId && item.wishlistType === wishlistType);
+      if (existingItem) {
+        return res.status(400).json("Item already exists in wishlist");
+      }
+      user.wishlist.push({ item: itemId, wishlistType: wishlistType });
+      await user.save();
+      return res.status(200).json("Item added to wishlist successfully");
+  }catch(err) {
+    return res.status(500).json(err);
   }
+},
+  removeFromWishlist: async (req, res) => {
+    try {
+      const itemId = req.query.itemId;
+      const wishlistType = req.query.wishlistType;
+      const userID = req.user.id;
+      const user = await User.findById(userID);
+      if (!user) {
+        console.log("User not found");
+        return;
+      }
+   
+      user.wishlist = user.wishlist.filter(
+        item => !(item.item.toString() === itemId && item.wishlistType === wishlistType)
+      );
+      await user.save();
+      return res.status(200).json("Item removed from wishlist successfully");
+  }catch(err) {
+    return res.status(500).json(err);
+  }
+},
+ 
+getWishlist: async (req, res) => {
+  try {
+    const userID = req.user.id;
+    const wishlistType = req.query.wishlistType; 
 
-};
+    
+    if (!userID) {
+      return res.status(400).json({ message: "User ID is required." });
+    }
 
+    // Lấy user và populate dữ liệu `wishlist.item` dựa trên `refPath`
+    const user = await User.findById(userID).populate({
+      path: "wishlist.item",
+      model: wishlistType, 
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Nếu không có `wishlistType`, trả về toàn bộ wishlist
+    if (!wishlistType) {
+      return res.status(200).json(user.wishlist);
+    }
+
+    // Lọc wishlist theo `wishlistType`
+    const wishlist = user.wishlist.filter(item => item.wishlistType === wishlistType);
+
+    return res.status(200).json(wishlist);
+  } catch (err) {
+    // Xử lý lỗi
+    return res.status(500).json({ message: "Internal server error.", error: err.message });
+  }
+}
+
+}
 module.exports = useController;
