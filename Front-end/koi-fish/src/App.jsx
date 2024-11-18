@@ -38,7 +38,7 @@ import BlogPage from "./page/Category/blogs/blog.jsx";
 import DetailsPage from "./page/Category/details/details.jsx";
 import Package from "./page/admin/manage-package/manage-Package.jsx";
 import ElementPage from "./page/element/element.jsx";
-// import WishList from "./page/wishlist/wishlist.jsx";
+import WishList from "./page/wishlist/wishlist.jsx";
 
 function App() {
   const router = createBrowserRouter([
@@ -169,10 +169,10 @@ function App() {
       path: "/element",
       element: <ElementPage />,
     },
-    // {
-    //   path: "/wishlist",
-    //   element: <WishList />,
-    // },
+    {
+      path: "/wishList",
+      element: <WishList />,
+    },
   ]);
   
   return <RouterProvider router={router} />;

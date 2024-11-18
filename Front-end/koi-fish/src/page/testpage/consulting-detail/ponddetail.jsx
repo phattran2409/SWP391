@@ -3,6 +3,7 @@ import api from "../../../config/axios";
 import { GiMetalBar } from "react-icons/gi";
 import { useParams } from "react-router-dom";
 import { IoBookSharp } from "react-icons/io5";
+import { FaHeartCirclePlus } from "react-icons/fa6";
 import { IoBuild } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import {
@@ -16,7 +17,7 @@ import {
 } from "react-icons/md";
 import Navbar from "../../../components/navbar/Navbar";
 import "./animate.css";
-import Footer from "../../../components/footer/Footer";
+import { toast } from "react-toastify";
 
 const pondDetails = () => {
   const fitWithElements = [
@@ -47,6 +48,27 @@ const pondDetails = () => {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const addToWishlist = async () => {
+    try {
+      const response = await api.post(`v1/user/addToWishList?itemId=${id}&wishlistType=ponds`);
+  
+      if (response.status === 400) {
+        toast.info("Item already exists in your favorite list");
+      } else if (response.status === 200) {
+        toast.success("Item added to your favorite list successfully");
+      } else {
+        toast.warning("Unexpected response from server");
+      }
+    } catch (err) {
+      console.error(err);
+      if (err.response?.status === 400) {
+        toast.info("Item already exists in your favorite list");
+      } else {
+        toast.error("Failed to add item to your favorite list");
+      }
     }
   };
 
@@ -129,9 +151,45 @@ const pondDetails = () => {
                 className="w-full h-auto object-cover rounded-lg shadow-lg"
               />
               <div>
+                <div className="flex">
                 <h1 className="text-4xl font-bold mb-6 text-gray-800">
                   {pondetail.shape} Pond
                 </h1>
+                {pondetail.elementID && (
+                      <span className="ml-2 mr-5 flex items-center">
+                        {fitWithElements[pondetail.elementID - 1]?.icon && (
+                          <>
+                            {React.createElement(
+                              fitWithElements[pondetail.elementID - 1].icon,
+                              {
+                                size: 40,
+                                style: {
+                                  color:
+                                    fitWithElements[pondetail.elementID - 1]
+                                      .color,
+                                },
+                                className: "ml-5 mb-5",
+                              }
+                            )}
+                            <span className="mb-5"
+                              style={{
+                                color:
+                                  fitWithElements[pondetail.elementID - 1]
+                                    .color,
+                                marginLeft: "8px",
+                                fontSize: "1.5rem",
+                              }}
+                            >
+                              {fitWithElements[pondetail.elementID - 1].name}
+                            </span>
+                          </>
+                        )}
+                      </span>
+                    )}
+                     <button
+                      onClick={addToWishlist}
+                      className="ml-auto bg-red-600 text-white rounded-full p-2 hover:bg-red-500 transition-colors"><FaHeartCirclePlus size={30} /></button>
+                      </div>
                 <div className="mb-6">
                   <div className="flex ">
                     <h3 className="text-2xl font-semibold text-gray-700">
@@ -177,44 +235,7 @@ const pondDetails = () => {
                       <p className="text-gray-700">{pondetail.light}</p>
                     </div>
                   </div>
-                  <br />
-
-                  <div className="flex ">
-                    <h3 className="text-2xl font-semibold text-gray-700">
-                      Fit With Element
-                    </h3>
-                    {pondetail.elementID && (
-                      <span className="ml-2 flex items-center">
-                        {fitWithElements[pondetail.elementID - 1]?.icon && (
-                          <>
-                            {React.createElement(
-                              fitWithElements[pondetail.elementID - 1].icon,
-                              {
-                                size: 30,
-                                style: {
-                                  color:
-                                    fitWithElements[pondetail.elementID - 1]
-                                      .color,
-                                },
-                                className: "ml-2",
-                              }
-                            )}
-                            <span
-                              style={{
-                                color:
-                                  fitWithElements[pondetail.elementID - 1]
-                                    .color,
-                                marginLeft: "8px",
-                                fontSize: "1.2rem",
-                              }}
-                            >
-                              {fitWithElements[pondetail.elementID - 1].name}
-                            </span>
-                          </>
-                        )}
-                      </span>
-                    )}
-                  </div>
+                  <br />                                            
                 </div>
               </div>
             </div>
@@ -279,7 +300,6 @@ const pondDetails = () => {
           </div>
         )}
       </div>
-      <Footer/>
     </>
   );
 };

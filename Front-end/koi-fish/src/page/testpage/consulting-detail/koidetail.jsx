@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import api from "../../../config/axios";
 import { GiMetalBar } from "react-icons/gi";
 import { Link, useParams } from "react-router-dom";
+import { FaHeartCirclePlus } from "react-icons/fa6";
 import { IoBookSharp } from "react-icons/io5";
 import CardDetail from "../../../components/card-detail/carddetails";
 
@@ -17,6 +18,7 @@ import {
 import Navbar from "../../../components/navbar/Navbar";
 import "./animate.css";
 import { set } from "lodash";
+import { toast } from "react-toastify";
 
 const koiDetails = () => {
   const colors = [
@@ -57,6 +59,28 @@ const koiDetails = () => {
       setLoading(false);
     }
   };
+
+  const addToWishlist = async () => {
+    try {
+      const response = await api.post(`v1/user/addToWishList?itemId=${id}&wishlistType=fishkois`);
+  
+      if (response.status === 400) {
+        toast.info("Item already exists in your favorite list");
+      } else if (response.status === 200) {
+        toast.success("Item added to your favorite list successfully");
+      } else {
+        toast.warning("Unexpected response from server");
+      }
+    } catch (err) {
+      console.error(err);
+      if (err.response?.status === 400) {
+        toast.info("Item already exists in your favorite list");
+      } else {
+        toast.error("Failed to add item to your favorite list");
+      }
+    }
+  };
+  
 
   useEffect(() => {
     setLoading(true);
@@ -143,7 +167,7 @@ const koiDetails = () => {
                   {koiDetail.koiName} Koi
                 </h1>
                 {koiDetail.elementID && (
-                      <span className="ml-2 flex items-center">
+                      <span className="ml-2 mr-5 flex items-center">
                         {fitWithElements[koiDetail.elementID - 1]?.icon && (
                           <>
                             {React.createElement(
@@ -173,6 +197,9 @@ const koiDetails = () => {
                         )}
                       </span>
                     )}
+                    <button
+                      onClick={addToWishlist}
+                      className="ml-auto bg-red-600 text-white rounded-full p-2 hover:bg-red-500 transition-colors"><FaHeartCirclePlus size={30} /></button>
                 </div>
                 <div className="mb-6">
                   <div className="flex ">
@@ -239,7 +266,7 @@ const koiDetails = () => {
                   <img
                     src={koi.image}
                     alt={`Image of ${koi.koiName}`}
-                    className="w-full h-64 object-contain rounded-lg mb-4"
+                    className="w-full h-50 object-cover rounded-lg mb-4"
                   />
                   <h3 className="text-xl font-semibold mb-2 text-gray-700">
                     {koi.koiName}
