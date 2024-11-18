@@ -140,7 +140,7 @@ const koiDetails = () => {
         <div className="flex justify-between items-center mb-8">
           <Link
             to="/consulting"
-            className="text-red-600 flex items-center hover:text-red-500 transition-colors"
+            className="text-red-600 flex items-center hover:text-red-500 hover:underline transition-colors"
           >
             <MdArrowBack className="mr-2" />
             Back To Consulting
@@ -266,7 +266,7 @@ const koiDetails = () => {
                   <img
                     src={koi.image}
                     alt={`Image of ${koi.koiName}`}
-                    className="w-full h-50 object-cover rounded-lg mb-4"
+                    className="w-full h-64 object-contain rounded-lg mb-4"
                   />
                   <h3 className="text-xl font-semibold mb-2 text-gray-700">
                     {koi.koiName}

@@ -162,7 +162,7 @@ function WishList() {
                 <img
                   src={item.item.image}
                   alt={item.name}
-                  className="w-20 h-20 object-cover rounded-md"
+                  className="w-20 h-20 object-contain rounded-md"
                 />
                 <div className="ml-4 flex-1">
                   <h3 className="font-semibold">
