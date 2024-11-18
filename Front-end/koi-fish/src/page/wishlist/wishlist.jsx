@@ -18,7 +18,7 @@ import {
 import { GiMetalBar } from "react-icons/gi";
 import { toast } from "react-toastify";
 
-const user = JSON.parse(localStorage.getItem("user"));
+
 const userElement = JSON.parse(localStorage.getItem("elementUser"));
 
 const fitWithElements = [
@@ -34,6 +34,25 @@ function WishList() {
   const [wishlist, setWishlist] = useState([]);
   const [wishlistType, setWishlistType] = useState("fishkois"); // State for wishlist type
   const [showAll, setShowAll] = useState(false);
+  const [users, setUsers] = useState(null);
+
+  useEffect(() => {
+ 
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      getUser(user._id); 
+    }
+  }, []);
+
+  const getUser = async (id) => {
+    try {
+      const response = await api.get(`v1/user/id=${id}`);
+      setUsers(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.log("Failed to fetch user: ", error);
+    }
+  }
 
   const getWishlistItems = async () => {
     try {
@@ -70,14 +89,22 @@ function WishList() {
       <div className="flex min-h-screen bg-gray-100">
       <div className="hidden lg:block w-64 bg-white p-6 border-r">
           <div className="flex flex-col items-center mb-6">
+          {users?.avatar ? (
             <img
-              src={user.avatar}
+              src={users.avatar}
               className="w-20 h-20 rounded-full bg-gray-400 mb-2"
               alt="User Avatar"
             />
-            <h2 className="font-semibold">{user.name}</h2>
+          ) : (
+            <div className="w-20 h-20 rounded-full bg-gray-400 mb-2"></div>
+          )}
+          {users?.name ? (
+            <h2 className="font-semibold">{users.name}</h2>
+          ) : (
+            <h2 className="font-semibold">User</h2>
+          )}
             <p className="text-sm text-gray-600">
-              {new Date(user.birthDate).toLocaleDateString()}
+              {new Date(users?.birthDate).toLocaleDateString()}
             </p>
             <div className="bg-gray-50 text-black-700 px-3 py-1 rounded-full text-sm mt-2">
               { userElement?.elementID ? (
