@@ -110,5 +110,8 @@ router.post("/compareHistory/del/:id" , CompareController.delete);
 router.post("/addToWishList" , middlewareController.verifyToken, useController.addToWishlist);
 router.delete("/removeWishList" , middlewareController.verifyToken, useController.removeFromWishlist);
 router.get("/getWishList" , middlewareController.verifyToken, useController.getWishlist);
+
+// Get element 
+router.get("/getElement" ,useController.getElementUser);
+
 module.exports = router;
- 

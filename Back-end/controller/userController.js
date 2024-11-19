@@ -736,6 +736,7 @@ const useController = {
     }
   },
 
+
   addToWishlist: async (req, res) => {
     try {
       const itemId = req.query.itemId;
@@ -788,6 +789,9 @@ getWishlist: async (req, res) => {
       return res.status(400).json({ message: "User ID is required." });
     }
 
+  
+
+
     // Lấy user và populate dữ liệu `wishlist.item` dựa trên `refPath`
     const user = await User.findById(userID).populate({
       path: "wishlist.item",
@@ -811,7 +815,23 @@ getWishlist: async (req, res) => {
     // Xử lý lỗi
     return res.status(500).json({ message: "Internal server error.", error: err.message });
   }
+} , 
+// get element user
+  getElementUser : async (req , res ) => { 
+  try {
+     const result = await element.findOne({
+      elementID  : req.query.elementID
+     })
+     if (result != null){
+       return res.status(200).json(result)
+     }
+    return res.status(403).json("Not found");
+     
+  } catch (error) {
+    res.status(500).json(error.message)   
+  }
+  }
 }
 
-}
+
 module.exports = useController;

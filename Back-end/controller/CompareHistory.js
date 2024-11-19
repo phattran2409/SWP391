@@ -11,7 +11,15 @@ const { trace } = require("../routes/user");
             fishkoi ,
             pond
         } = req.body
-        console.log( fishkoi , pond);
+        const coupleSuitable = await CompareHistory.findOne({
+        "accountID"  : accountID ,
+          "item.fishkoi._id": fishkoi._id,  
+          "item.pond._id": pond._id,
+        }); 
+        console.log(coupleSuitable);
+        if (coupleSuitable != null) {
+            return res.status(403).json("Suitable koi fish and pond was Add in History");
+        }
         const newHistory = new CompareHistory({
             accountID : accountID, 
             item : {  fishkoi , pond}
