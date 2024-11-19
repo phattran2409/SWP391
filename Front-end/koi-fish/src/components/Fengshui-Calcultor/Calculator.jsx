@@ -35,7 +35,7 @@ import "./Calculator.css"
 import api from "../../config/axios";
 import { toast, ToastContainer } from "react-toastify";
 
-export default function Calculator({ setvalue  , setLoading }) {
+export default function Calculator({ setvalue  , setLoading ,setElementDetail }) {
 
 //   const [elementID, setElementID] = useState(null);
     // const [value , setValue1] = useState(null);
@@ -66,7 +66,7 @@ export default function Calculator({ setvalue  , setLoading }) {
       const res = await api.get(
         `v1/user/calculateElement?gender=${gender}&y=${birthdate.$y}`
       );
-
+      
      if (  localStorage.getItem("elementUser") ) {
       console.log(" Ton tai elementUser");
       localStorage.removeItem("elementUser");
@@ -76,6 +76,7 @@ export default function Calculator({ setvalue  , setLoading }) {
       localStorage.setItem("elementUser" , JSON.stringify(res.data));
         
        setvalue(JSON.stringify(res.data) , name)
+       setElementDetail(res.data)
       if (res.status == 200) {
         toast.success("Calcuate success your elements is " + res.data.element)
       }
