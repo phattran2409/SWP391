@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import React from "react";
+import React, { useEffect } from "react";
 // import "./register.scss";
 import { useState } from "react";
 import { Button, DatePicker, Divider, Form, Input, Select } from "antd";
@@ -7,11 +7,13 @@ import { Button, DatePicker, Divider, Form, Input, Select } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../../config/axios";
 import { ToastContainer, toast } from "react-toastify";
+
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import "react-toastify/dist/ReactToastify.css";
 
-
+import "react-toastify/dist/ReactToastify.css";
+import { Tag } from "antd";
 const { Option } = Select; // Thay đổi ở đây
 
 function RegisterPage() {
@@ -21,21 +23,27 @@ function RegisterPage() {
   const [email, setEmail] = useState();
   const [Phone, setPhone] = useState();
   const [password, setPassword] = useState();
-
+  const [_elementUser, _setElementUser] = useState();   
   const navigate = useNavigate();
-
+  const [isBlockBirthDate , setIsBlockBirthDate] = useState(false);
   const handleRegister = async (values) => {
     //submit xuong backend
     try {
       // values.role = "CUSTOMER"; //cho nay dang de tam la customer de test
       console.log(values);
 
+      console.log(_elementUser);
+      const elementID = _elementUser.elementID;  
+     
       const response = await api.post("v1/auth/register", 
-      values
+      {...values, elementID: elementID} 
+    
       );
+  
       toast.success("Successfully register new account!");
       console.log(response.data);
-       navigate("/login");
+       navigate("/login?status=register_success");
+
     } catch (err) {
       // console.log
       console.log(err.response.data.message);
@@ -54,7 +62,10 @@ function RegisterPage() {
   const handleLoginError = () => {
     console.log("Login Failed");
   };
-
+  const handleSetYear = (date ,dateString) => { 
+    console.log(date);
+    setYear(dateString);
+  }
   const sendTokenToAPI = async (data) => {
     console.log(import.meta.env.API_SIGNIN);
 
@@ -75,7 +86,6 @@ function RegisterPage() {
       }
 
 
-
       navigate("/?status=login_gg_success", {
         state: { message: JSON.stringify(response.data.message) },
       });
@@ -85,16 +95,70 @@ function RegisterPage() {
     }
   };
 
+  // call api calculate element 
+     const onFinish = async (value) => {
+       // Calculate Feng Shui based on user input
+      const birthdate = value;
+ 
+   
 
+      console.log(birthdate);
+      console.log(gender);
+       // ---> check valid date
+       let date = new Date();
+       let currentYears = date.getFullYear();
+       if (birthdate.$y > currentYears || birthdate.$y < 1920) {
+         toast.error("invalid years");
+         return;
+       }
+       try {
+         const res = await api.get(
+           `v1/user/calculateElement?gender=${gender}&y=${birthdate.$y}`
+         );
+         console.log(res.data);
+        
+         // set element user
+         _setElementUser(res.data);
+         if (res.data != null)  { 
+           setIsBlockBirthDate(true)
+         }
+         
+         if (res.status == 200) {
+           toast.success(
+             "Calcuate success your elements is " + res.data.element
+           );
+         }
+       } catch (err) {
+         toast.error(err.errorCode);
+       } 
+     };
+    
 
+     const  elementColor = (id) => {
+      const color = {
+        1: "Gray",
+        2: "Green",
+        3: "Blue",
+        4: "Red",
+        5: "#999405",
+      };
+       return color[id];  
+     }  
+    
+   
 
-
-
+  const handleGetElementUser = async () => {
+     try {
+      const response = await api.get("v1/element/user");
+      console.log(response.data);
+     } catch (err) {
+      console.log(err);
+     }  
+  }
 
   return (
     <div className="w-full h-full flex items-center min-h-screen bg-cover bg-center bg-no-repeat sm:bg-[url('https://res.cloudinary.com/ddqgjy50x/image/upload/v1726740184/live-koi-fish-mtvpcoc3yknxrj5g_fsuwik.jpg')]">
       <div className="w-full max-w-2xl lg:max-w-3xl bg-white mx-auto rounded-3xl my-14">
-
         <div className="px-20 ">
           <h1 className="text-3xl font-normal mb-4 text-center mt-7">
             Sign up
@@ -156,7 +220,7 @@ function RegisterPage() {
               >
                 <Select
                   placeholder="Select"
-                  onChange={(value) => setGender(value)}
+                  onChange={(value) => { setGender(value); setIsBlockBirthDate(false)}}
                 >
                   <Option value="0">Male</Option>
                   <Option value="1">Female</Option>
@@ -170,6 +234,7 @@ function RegisterPage() {
                   {
                     required: true,
                   },
+                
                   {
                     validator: (_, value) => {
                       if (!value) {
@@ -194,7 +259,27 @@ function RegisterPage() {
                   },
                 ]}
               >
-                <DatePicker format={"DD-MM-YYYY"} />
+
+                {/* <Input
+                  placeholder="YYYY"
+                  onChange={(e) => setYear(e.target.value)}
+                /> */}
+                <DatePicker
+                  onChange={(value) => {
+                    handleSetYear(value);
+                    onFinish(value);
+                  }}
+                  format={"DD-MM-YYYY"}
+                  disabled = {isBlockBirthDate}
+                />
+                {/* Show element */}
+              </Form.Item> 
+              <Form.Item name="elementID"
+                label={<span className="custom-label">Element</span>}
+                className={`w-1/2 ${_elementUser ? "block" : "hidden"}`}
+              > 
+                 <Tag color={elementColor(_elementUser?.elementID)}>{_elementUser?.element}</Tag>  
+
               </Form.Item>
             </div>
             <Form.Item
@@ -261,7 +346,7 @@ function RegisterPage() {
               <Input.Password onChange={(e) => setPassword(e.target.value)} />
             </Form.Item>
             <Form.Item
-              name="c_password"
+              name="password"
               label={<span className="custom-label ">Confirm password</span>}
               rules={[
                 {
@@ -283,10 +368,6 @@ function RegisterPage() {
             >
               <Input.Password onChange={(e) => setPassword(e.target.value)} />
             </Form.Item>
-
-
-
-
 
 
             {/* // <Form.Item style={{ marginTop: "28px" }}>
@@ -333,7 +414,7 @@ function RegisterPage() {
           </Form>
         </div>
       </div>
-      <ToastContainer/>
+      <ToastContainer />
     </div>
   );
 }

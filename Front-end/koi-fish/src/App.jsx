@@ -3,6 +3,12 @@ import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LoginPage from "./page/login/login";
 import RegisterPage from "./page/register/register";
+import PostingInterface from "./page/post/post";
+import UpdatePass from "./page/security/updatepass";
+import SendChangeEmail from "./page/security/sendemail";
+
+
+
 
 import Dashboard from "./components/dashboard/dashboard";
 import ManageKoiFish from "./page/admin/manage-koi/manageKoiFish";
@@ -178,4 +184,4 @@ function App() {
   return <RouterProvider router={router} />;
 }
 
-export default App;
+export default App

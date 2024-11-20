@@ -5,13 +5,14 @@ import "./index.css";
 
 import "react-toastify/dist/ReactToastify.css";
 import { CartProvider } from "./components/context/Cart.jsx";
+import { ListSuitableProvider } from "./components/context/ListSuitable.jsx";
 createRoot(document.getElementById("root")).render(
   <>
-
     <CartProvider>
-      <App />
+    
+        <App />
+   
     </CartProvider>
-  
-
   </>
 );
+

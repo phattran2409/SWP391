@@ -1,0 +1,28 @@
+.footer-links {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.footer-links .account-info {
+  display: flex;
+  align-items: center;
+}
+
+.footer-links .account-info label {
+  margin-right: 0.5rem;
+}
+
+.custom-button {
+  color: white;
+  border-radius: 9999px;
+  height: 14.5%;
+  width: 50%;
+  padding: 12px 0;
+  margin: 10px 0 20px 0;
+}
+
+.form-section-child h1 {
+  margin-bottom: 50px;
+}

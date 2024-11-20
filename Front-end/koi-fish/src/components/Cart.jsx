@@ -6,14 +6,17 @@ import { Button, Modal , Card, Badge, Tag } from "antd";
 import { stubString } from "lodash";
 import styled from "styled-components";
 import { Navigate, useNavigate } from "react-router-dom";
-
+import api from "../config/axios";
+import { toast } from "react-toastify";
 
 
 export default function Cart({ showModal, toggle }) {
   const { cartItems, handleMutual, removeFromCart, clearCart, result} =
     useContext(CartContext);
+  const [user ,  setUser] = useState();
     console.log("show modal at cart "+ showModal);
     console.log("result :  "+ result);
+
   const navigate = useNavigate();
      const colorToHex = (color) => {
        const colorMap = {
@@ -44,76 +47,58 @@ export default function Cart({ showModal, toggle }) {
       };
       return elementColor[elementID] || "";
      }
-     
+     const handleSaveMutualSuitableAPI  = async () => {
+       try {
+         var fish;
+         var pond;
+         cartItems.map((item) => {
+           if (item.koiName) {
+             fish = item;
+           } else {
+             pond = item;
+           }
+         });
+         console.log("user ID : "+user._id);
+      const result = await api.post("/v1/user/compareHistory/add", {
+        accountID: user._id,
+        fishkoi : fish,
+        pond : pond,
+      });
+       console.log(result.data);
+         console.log(fish);
+         console.log(pond);
+        toast.success(result.data.message)
+       } catch (error) {
+         console.log(error.response.data);
+        toast.info(error.response.data);
+       }
+     };
+     //  KQ tra ve neu suitable
      const  resultCode = result;
-  
+    // tự động lưu những cá và hồ cặp phù hợp 
+
+     const handleSaveMutualSutiable  = () => {
+     if (cartItems.length === 2) {
+      console.log("Save Mututal Suitable");
+        if ( resultCode == 1 ) {
+          if (user ==null) {
+            toast.info("Please login to save suitable" , {position : "center"});
+            return;
+          }
+          handleSaveMutualSuitableAPI();
+        }
+    } 
+    }
+    
+    useEffect(() => {
+      setUser(JSON.parse(localStorage.getItem("user")))
+    } , [])
+    
+
     console.log(resultCode);
     
-      {/* <div className="absolute  w-full h-full flex  justify-center">
-        <div className="w-1/2 h-1/2 justify-center flex-col flex items-center fixed   bg-white dark:bg-black gap-8  p-10  text-black dark:text-white font-normal uppercase text-sm">
-          <h1 className="text-2xl font-bold">Cart</h1>
-          <div className="absolute right-16 top-10">
-            <button
-              className="px-4 py-2 bg-gray-800 text-white text-xs font-bold uppercase rounded hover:bg-gray-700 focus:outline-none focus:bg-gray-700"
-              onClick={toggle}
-            >
-              Close
-            </button>
-          </div>
-          <div className="flex h-full flex-row gap-4">
-            {cartItems.map((item) => (
-              <div
-                className="relative flex w-full  h- justify-between items-center"
-                key={item.id}
-              >
-                <div className="card h-2/4 items-center flex flex-col gap-4">
-                  <div className="image w-40 h-40">
-                    <img
-                      src={item.image}
-                      alt={item.title}
-                      className="w-full h-full object-fit rounded-md h-24"
-                    />
-                  </div>
-                  <div className="content w-[200px] h-[150px] flex flex-col px-2">
-                    <h1 className="text-lg font-bold ">
-                      {item.koiName || item.shape}
-                    </h1>
-                    <p className="text-gray-600 overflow-hidden w-full h-full mx-2">
-                      {item.description}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="absolute top-20 right-1 px-2">
-                  <button
-                    onClick={() => {
-                      removeFromCart(item);
-                    }}
-                    className="text-4xl"
-                  >
-                    <IoMdCloseCircleOutline />
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-          {cartItems.length > 0 ? (
-            <div className="flex flex-col justify-between items-center">
-              <h1 className="text-lg font-bold">Total: ${getCartTotal()}</h1>
-              <button
-                className="px-4 py-2 bg-gray-800 text-white text-xs font-bold uppercase rounded hover:bg-gray-700 focus:outline-none focus:bg-gray-700"
-                onClick={() => {
-                  clearCart();
-                }}
-              >
-                Clear evaluate suitability.
-              </button>
-            </div>
-          ) : (
-            <h1 className="text-lg font-bold">Your cart is empty</h1>
-          )}
-        </div>
-      </div> */}
+    console.log(cartItems);
+  
      
  return (
    <Modal
@@ -124,13 +109,13 @@ export default function Cart({ showModal, toggle }) {
      width="100%"
      styles={{
        height: "500px",
-       overflow: "scroll",
+       overflowY: "scroll",
        overflowX: "hidden",
      }}
      // This ensures the modal takes up full width on smaller screens
      className="max-w-2xl w-full "
      footer={
-       (cartItems.length  < 2 )
+       cartItems.length < 2
          ? [
              <Button danger size="middle" type="primary" onClick={clearCart}>
                Clear
@@ -150,7 +135,7 @@ export default function Cart({ showModal, toggle }) {
                variant="outlined"
                size="middle"
                color="primary"
-               onClick={() =>handleMutual(navigate)}
+               onClick={() => handleMutual(navigate)}
                disabled
              >
                Evaluate
@@ -210,7 +195,7 @@ export default function Cart({ showModal, toggle }) {
                <span className="ml-2 max-[768px]:text-base">
                  <Tag color={elementColor(items.elementID)}>
                    {" "}
-                   {elmentName(items.elementID)}{" "}
+                   {elmentName(items.elementID)}
                  </Tag>
                </span>
              </div>
@@ -291,14 +276,24 @@ export default function Cart({ showModal, toggle }) {
            result != null &&
            (resultCode === 1 ? (
              <>
-               <iframe src="https://lottie.host/embed/f0cf59e2-3927-4526-aaed-8d60dd79f1d8/p8QuDeZL3Z.json"></iframe>
+               <div>
+                 <iframe src="https://lottie.host/embed/f0cf59e2-3927-4526-aaed-8d60dd79f1d8/p8QuDeZL3Z.json"></iframe>
+                 <div className="w-full flex justify-center mt-4">
+                   <button
+                     onClick={handleSaveMutualSutiable}
+                     className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-600 transition-colors duration-200 shadow-md"
+                   >
+                     Save
+                   </button>
+                 </div>
+               </div>
              </>
            ) : (
              <iframe src="https://lottie.host/embed/aac9744d-2c28-4445-a409-b04b92c6e69b/w7fWbIHaur.json"></iframe>
            ))}
        </div>
      ) : (
-       <div className="flex  w-full h-full  justify-center">
+       <div cssName="flex  w-full h-full  justify-center">
          <iframe src="https://lottie.host/embed/a6dcf59e-821c-4fe6-afa7-3a1539fc5c56/Icxw1mdxS0.json"></iframe>
        </div>
      )}

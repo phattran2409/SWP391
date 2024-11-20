@@ -52,6 +52,8 @@ function ManageMembers() {
       console.log("fecth API ---> "+modifiedData);
 
       setDatas(modifiedData);
+      console.log(response);
+      
       setPagination({
         current: response.data.currentPage, // cập nhật trang hiện tại
         total: response.data.totalDocuments, // tổng số cá
@@ -331,7 +333,7 @@ function ManageMembers() {
                 
               }}
             >
-              Edit
+              Edit 
             </Button>
             <Popconfirm
               title="Delete"

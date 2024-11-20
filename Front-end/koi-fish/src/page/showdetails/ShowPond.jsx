@@ -8,6 +8,8 @@ import Footer from '../../components/footer/Footer';
 import { CartContext } from '../../components/context/Cart'
 import Cart from '../../components/Cart'
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { Tag } from "antd";
 const ShowPond = () => {
     const [ponds, setPonds] = useState([]);
     const [visibleCount, setVisibleCount] = useState(6);
@@ -15,7 +17,11 @@ const ShowPond = () => {
     const [showModal, setshowModal] = useState(false);
     const [activeItemId, setActiveItemId] = useState(null);
     const ref = useRef();
-    const navigate = new useNavigate();
+    const navigate = new useNavigate();  
+    const [elementUser ,setElementUser] = useState();
+    const [selectedCard, setSelectedCard] = useState([]); 
+    const [selectNotSuitable, setSelectNotSuitable] = useState([]);
+
     // Fetch Koi Ponds from multiple API endpoints
     const fetchKoiPonds = async () => {
         try {
@@ -34,9 +40,34 @@ const ShowPond = () => {
             console.error("Error fetching koi ponds:", error.response?.status, error.response?.data || error.message);
         }
     };
+      const suitablePond = async (item) => {
+        console.log(item.elementID);
+        
+        const elementID_pond = item.elementID;
+        const elementID_user = elementUser.elementID;
 
+        try {
+          const res = await api.post("v1/user/suitableKoi?object=0", {
+            elementID_pond,
+            elementID_user,
+          });
+          console.log(res.data);
+          toast.success(res.data.message);
+
+          setSelectedCard((prevSelected) =>
+            prevSelected.includes(item._id)
+              ? prevSelected.filter((cardID) => cardID !== item._id)
+              : [...prevSelected, item._id]
+          );
+        } catch (error) {
+          toast.info("Not Suitable");
+          setSelectNotSuitable((prevSelected) => [...prevSelected, item._id]);
+          console.log("message error : " + error.message);
+        }
+      };
     useEffect(() => {
         fetchKoiPonds(); // Fetch data when the component mounts
+        setElementUser(JSON.parse(localStorage.getItem("elementUser")));
     }, []);
     // Loading 
     if (!ponds.length) {
@@ -137,7 +168,7 @@ const ShowPond = () => {
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                         backgroundColor: "white",
-                        cursor : "pointer"
+                        cursor: "pointer",
                       }}
                       onClick={() => navigate(`/ponddetail/${item._id}`)}
                     />
@@ -191,6 +222,15 @@ const ShowPond = () => {
                     </div>
                     <button
                       onClick={() => {
+                        suitablePond(item);
+                        handleActiveItem(item._id);
+                      }}
+                      className="mt-4 px-4 py-2 max-[768px]:px-1 max-[768px]:py-1 text-black border-2 border-gray-300 rounded-lg bg-rounded-lg hover:bg-gray-200"
+                    >
+                      Calculate suitable
+                    </button>
+                    <button
+                      onClick={() => {
                         addToCart(item);
                         handleActiveItem(item._id);
                       }}
@@ -199,6 +239,19 @@ const ShowPond = () => {
                       {" "}
                       Assess
                     </button>
+
+                    <div className="show-suitable w-full  outline-1">
+                      {selectedCard.includes(item._id) && (
+                        <div className="flex flex-col mt-1 items-center content-center">
+                          <Tag color="#87d068">SUITABLE</Tag>
+                        </div>
+                      )}
+                      {selectNotSuitable.includes(item._id) && (
+                        <div className="flex flex-col mt-1 items-center content-center">
+                          <Tag color="#f50">NOT SUITABLE </Tag>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}

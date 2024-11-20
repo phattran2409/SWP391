@@ -213,7 +213,7 @@ export default function TablePackage({ dataPackage, onUpdate }) {
                 pattern: /^(?:[1-9]\d{0,2})(?:\.\d{3})*(?:\.\d{3})?$/,
                 message:
                   <>
-                    Please enter a positive number, with a limit of one million. <br />
+                    Please enter a positive number, with a limit of Hundred million. <br />
                     Or must include a dot separating the hundreds and thousands.
                   </>
               },

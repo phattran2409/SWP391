@@ -10,16 +10,21 @@ import {
   LogoutOutlined,
   StockOutlined,
   ExclamationCircleOutlined,
-  HeartOutlined,
-} from "@ant-design/icons";
 
+  HeartOutlined,
+
+  HistoryOutlined,
+
+} from "@ant-design/icons";
+import SuitableHistory from "./SuitableHistory/suitableHistory";  
 import SearchBar from "../searchbar/SearchBar";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState(null);
-  const [isModalLogOut, setIsModalLogOut] = useState(null);
+  const [isModalLogOut, setIsModalLogOut] = useState(null); 
+  const [showHistory, setShowHistory] = useState(false);
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -43,8 +48,13 @@ const Navbar = () => {
   useEffect(() => {
     const storeUser = JSON.parse(localStorage.getItem("user"));
     if (storeUser) {
-      fetchUserData(storeUser._id);
-    } else {
+
+     fetchUserData(storeUser._id);
+    setUser(storeUser); 
+    
+    }
+    else {
+
       setUser(null);
     }
   }, []);
@@ -214,6 +224,7 @@ const Navbar = () => {
               </a>
             </>
           ) : (
+            // MENU USER 
             <>
               <Menu className="rounded">
                 <Menu.SubMenu
@@ -252,6 +263,13 @@ const Navbar = () => {
                   <Menu.Item key="log-out" onClick={showModal}>
                     <LogoutOutlined className="pr-2" /> Logout
                   </Menu.Item>
+
+                  <Menu.Item key="list-suitable">
+                    <HistoryOutlined className="pr-2" />
+                    <button onClick={() => setShowHistory(true)}>Suitable History</button>  
+                     <SuitableHistory user={user} showModal={showHistory} setShowModal={setShowHistory} />  
+                  </Menu.Item>
+               
                 </Menu.SubMenu>
               </Menu>
             </>

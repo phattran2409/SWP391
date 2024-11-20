@@ -1,37 +1,36 @@
 // eslint-disable-next-line no-unused-vars
 import React from "react";
 import AuthenTemplate from "../../components/authen-template/authenTemplate";
-import { Form, Input, Button, Divider, Typography, } from "antd";
+import { Form, Input, Button, Divider, Typography } from "antd";
 
-import "./index.scss";
+import "./index.css";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate , useLocation } from "react-router-dom";
 import api from "../../config/axios";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import CSS của Toastify
 
-
 function LoginPage() {
   const navigate = useNavigate();
-
-
-
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  
   const handleLinktoSignUp = () => {
     navigate("/register");
   };
-
 
   const handleLogin = async (values) => {
     try {
       const response = await api.post("v1/auth/login", values);
       console.log(values);
       console.log(response.data);
-      const { admin, accessToken } = response.data;
+      const { admin, accessToken, refreshToken } = response.data;
 
       localStorage.setItem("token", accessToken);
-      localStorage.setItem("user", JSON.stringify(response.data))
+      localStorage.setItem("user", JSON.stringify(response.data));
+      localStorage.setItem("refreshToken",refreshToken)
       if (admin) {
         navigate("/dashboard");
       } else {
@@ -41,7 +40,6 @@ function LoginPage() {
       console.log(err);
 
       toast.error("Login Failed. Please check your username or password");
-
     }
   };
 
@@ -49,8 +47,7 @@ function LoginPage() {
     navigate("/forget");
   };
 
-
-  // Login google 
+  // Login google
   const handleLoginSuccess = (response) => {
     const token = jwtDecode(response.credential);
     console.log(token);
@@ -61,9 +58,18 @@ function LoginPage() {
   const handleLoginError = () => {
     console.log("Login Failed");
     toast.error("Login Failed");
-
   };
 
+  // show message login success
+
+  
+  const status = searchParams.get("status");
+  console.log(status); 
+  if (status === "register_success") {
+    toast.success("Register success");
+  } 
+ 
+  
   const sendTokenToAPI = async (data) => {
     console.log(import.meta.env.API_SIGNIN);
 
@@ -75,19 +81,17 @@ function LoginPage() {
 
       console.log("API Response:", response.data);
       if (response.data) {
-        localStorage.setItem("token", accessToken)
-        localStorage.setItem("user", JSON.stringify(response.data))
-
-
-        navigate("/?status=login_gg_success", { state: { message: JSON.stringify(response.data.message) } })
+        localStorage.setItem("token", accessToken);
+        localStorage.setItem("user", JSON.stringify(response.data));
+        
+        navigate("/?status=login_gg_success", {
+          state: { message: JSON.stringify(response.data.message) },
+        });
       }
-
     } catch (error) {
       console.error("API Error:", error);
-
     }
   };
-
 
   return (
     <AuthenTemplate className="auth-template ">
@@ -143,12 +147,19 @@ function LoginPage() {
             <div className="account-info">
               <label>Do not have an account?</label>
 
-
-              <Typography.Link onClick={handleLinktoSignUp} style={{ color: 'black', textDecoration: 'underline' }}>
-                Sign up</Typography.Link>
+              <Typography.Link
+                onClick={handleLinktoSignUp}
+                style={{ color: "black", textDecoration: "underline" }}
+              >
+                Sign up
+              </Typography.Link>
             </div>
-            <Typography.Link onClick={handleLinktoForgetPass} style={{ color: 'black', textDecoration: 'underline' }}>Forgot Password?</Typography.Link>
-
+            <Typography.Link
+              onClick={handleLinktoForgetPass}
+              style={{ color: "black", textDecoration: "underline" }}
+            >
+              Forgot Password?
+            </Typography.Link>
           </div>
 
           <Button
@@ -156,7 +167,6 @@ function LoginPage() {
             htmlType="submit"
             color="danger"
             variant="solid"
-
           >
             Sign in
           </Button>
@@ -172,7 +182,6 @@ function LoginPage() {
         theme="light"
       />
     </AuthenTemplate>
-
   );
 }
 

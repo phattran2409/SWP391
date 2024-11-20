@@ -1,0 +1,71 @@
+/* Container for splitting page width */
+.container-image {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* Section for displaying an image */
+.image-section {
+  width: 55%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 100vh;
+}
+
+.image-section img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+/* Hide image section on small screens */
+@media (max-width: 640px) {
+  .image-section {
+    display: none;
+  }
+}
+
+/* Overlay text on top of the image */
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 0 1rem 2rem 2rem;
+}
+
+.overlay h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: white;
+  text-align: left;
+}
+
+.overlay p {
+  font-size: 1.25rem;
+  color: white;
+  text-align: left;
+  margin-bottom: 1rem;
+  width: 85%;
+}
+
+/* Section for containing form */
+.form-section {
+  width: 50%;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .form-section {
+    width: 100%;
+  }
+}

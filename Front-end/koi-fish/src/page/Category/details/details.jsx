@@ -11,7 +11,7 @@ import DetailBanner from './detailbanner.jsx';
 export default function Test() {
     const [isMobile, setIsMobile] = useState(false);
     // const navigate = useNavigate();
-
+   
     useEffect(() => {
         const handleResize = () => {
             setIsMobile(window.innerWidth <= 768);
@@ -86,5 +86,6 @@ export default function Test() {
                 }
             `}</style>
         </div>
-    );
+
+            );
 }
