@@ -59,7 +59,7 @@ export default function Test() {
                                         <DetailBanner />
                                     </div>
                                     <div className="section">
-                                        <div className="mx-auto text-center w-full max-w-[90%]">
+                                        <div className="mx-auto w-full max-w-[90%]">
                                             <div className="h-10" />
                                             <AnimationReveal>
                                                 <div className="h-10" />

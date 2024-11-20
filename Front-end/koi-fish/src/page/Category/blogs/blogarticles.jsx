@@ -82,7 +82,7 @@ export default function BlogPage() {
                                                 <div>
                                                     <button
                                                         onClick={() => handleNavigate(article._id)}
-                                                        className="text-4xl font-medium mt-4 hover:underline hover:text-red-600"
+                                                        className="text-4xl text-left font-medium mt-4 hover:underline hover:text-red-600"
                                                     >
                                                         {article.title}
                                                     </button>

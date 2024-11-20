@@ -10,7 +10,7 @@ const URL = {
   LOCALHOST: "http://localhost:8081/",
 };
 
-const BASE_URL = URL.LOCALHOST;
+const BASE_URL = URL.DEPLOY_URL;
 
 
 
