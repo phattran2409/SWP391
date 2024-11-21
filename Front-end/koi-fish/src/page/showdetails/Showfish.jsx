@@ -13,6 +13,7 @@ import { Link , redirect , useNavigate} from "react-router-dom";
 import { toast } from "react-toastify";
 import {  Tag } from "antd";
 import Item from "antd/es/list/Item.js";
+import { HardDrive } from "lucide-react";
 const ShowFish = () => {
   const [fishs, setFish] = useState([]);
   const [visibleCount, setVisibleCount] = useState(6);
@@ -23,6 +24,9 @@ const ShowFish = () => {
   const [elementUser ,setElementUser] = useState();
   const [selectedCard , setSelectedCard] = useState([]); 
   const [selectNotSuitable , setSelectNotSuitable]  = useState([]);
+  const [ selectedElement , setSelectedElement] = useState();  
+  const [ indexElement , setIndexElement] = useState(); 
+  const [indexCard , setIndexCard] = useState(); 
  // Tao ra temp 
   // Fetch Koi Fish from API
   const fetchKoiFish = async () => {
@@ -39,9 +43,18 @@ const ShowFish = () => {
     }
   };
   //  Call api toi de thuc hien coi co phu hop voi ban menh cuar minh hay ko 
+  console.log(selectedElement);
   const suitableKoi = async(item) => {  
-     const elementID_koi = item.elementID   
+    
+     const elementID_koi = selectedElement;
     const elementID_user = elementUser
+    console.log(elementID_koi);
+    console.log(elementID_user);
+    
+    if  (selectedElement == null) { 
+      toast.info("Please select element");
+      return;
+    }   
     if(elementUser == null) { 
       toast.info("Please  to Consulting page find your element");
       return;
@@ -54,20 +67,26 @@ const ShowFish = () => {
       setSelectedCard((prevSelected ) => prevSelected.includes(item._id) ? prevSelected.filter((cardID) => cardID !== item._id) : [...prevSelected  , item._id]);
       
     } catch (error) {
+      console.log(error);
       toast.info("Not Suitable")
       console.log("message error : "+ error.message);
       setSelectNotSuitable((prevSelected) =>  [...prevSelected , item._id]  )
+    }finally {
+      setSelectedElement(null);
+      setIndexElement(null);
+      setIndexCard(null);
     }
   }
 
   useEffect(() => {
     fetchKoiFish();
-    if (JSON.parse(localStorage.getItem("user"))) { 
-       const user = JSON.parse(localStorage.getItem("user"));   
-      setElementUser(user?.elementID);
-    }
-    const elementUser = JSON.parse(localStorage.getItem("elementUser"));
-    setElementUser(elementUser?.elementID);
+     const user = JSON.parse(localStorage.getItem("user"))
+     if (user != null) {
+       return  setElementUser(user?.elementID); 
+     }else {
+      const elementGuest = JSON.parse(localStorage.getItem("elementUser"));
+      setElementUser(elementGuest.elementID);
+     }
   }, []);
 
   if (!fishs.length) {
@@ -91,6 +110,26 @@ const ShowFish = () => {
     };
     return colorMap[color] || "#000";
   };
+  const  elementName = (id) =>  {
+    const name = {
+      "1" : "Metal",
+      "2" : "Wood",
+      "3" : "Water",
+      "4" : "Fire",
+      "5" : "Earth",
+    }
+    return name[id] || "";
+  }
+  const colorElement = (id) => {
+    const name = {
+      1: "Gray",
+      2: "Green",
+      3: "Blue",
+      4: "Red",
+      5: "#d1a906",
+    };
+    return name[id] || "";
+  }
 
   const handleShowMore = () => {
     setVisibleCount((prevCount) => prevCount + 6);
@@ -99,6 +138,22 @@ const ShowFish = () => {
     setActiveItemId(id)
   }
 
+  const handleAddToCart = (item , index) => { 
+    if (index != indexCard) {
+      toast.error("You selected not correct element of koi");
+      return;
+    }
+    
+    if (selectedElement==null) {
+      toast.error("You need select element tag before assess");
+      return;
+    }
+    
+    addToCart({...item , elementID : selectedElement });
+    setSelectedElement(null);
+    setIndexElement(null);
+    setIndexCard(null); 
+  }
   const toggle = () => {
     console.log(showModal);
 
@@ -204,6 +259,26 @@ const ShowFish = () => {
                       />
                     ))}
                   </div>
+                  <div className="flex flex-row  mt-2 gap-2">
+                    <p className="font-semibold max-[768px]:text-base">
+                      Element:
+                    </p>
+                    <div className="flex flex-row gap-2"  >
+                      {item.elementID.map((element, idx) => (
+                        <div
+                          key={idx}
+                          className={`items-center justify-center ${indexElement === idx && indexCard === index ? " flex w-full p-1 items-center justify-center  outline outline-2 outline-red-500 rounded-lg text-center" : ""}`}
+                        >
+                          <Tag className="cursor-pointer m-0" onClick={() => { setSelectedElement(element) ; setIndexElement(idx) , setIndexCard(index)}} color={colorElement(element)} >
+                            { 
+                              elementName(element)
+                            }
+
+                            </Tag>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                   <button
                     onClick={() => {
                       suitableKoi(item);
@@ -211,11 +286,12 @@ const ShowFish = () => {
                     }}
                     className="mt-4 px-4 py-2 max-[768px]:px-1 max-[768px]:py-1 text-black border-2 border-gray-300 rounded-lg bg-rounded-lg hover:bg-gray-200"
                   >
-                    Calculate suitable
+                    Calculate suitable  
                   </button>
                   <button
                     onClick={() => {
-                      addToCart(item);
+                  
+                      handleAddToCart(item ,index);
                       handleActiveItem(item._id);
                     }}
                     className="mt-4 px-4 py-2 max-[768px]:px-1 max-[768px]:py-1 text-black border-2 border-gray-300 rounded-lg bg-rounded-lg hover:bg-gray-200"
@@ -230,7 +306,7 @@ const ShowFish = () => {
                       </div>
                     )}
                     {selectNotSuitable.includes(item._id) && (
-                      <div className="flex flex-col mt-1 items-center content-center" >
+                      <div className="flex flex-col mt-1 items-center content-center">
                         <Tag color="#f50">NOT SUITABLE</Tag>
                       </div>
                     )}
@@ -250,6 +326,7 @@ const ShowFish = () => {
               Show More
             </button>
           )}
+          {/* Modal */}
         </div>
       </AnimationReveal>
       <Footer />

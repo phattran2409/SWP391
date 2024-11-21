@@ -34,7 +34,7 @@ const { Item } = Form;
 import "./Calculator.css"
 import api from "../../config/axios";
 import { toast, ToastContainer } from "react-toastify";
-
+                                                                                                                                                                                          
 export default function Calculator({ setvalue  , setLoading ,setElementDetail }) {
 
 //   const [elementID, setElementID] = useState(null);

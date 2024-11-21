@@ -36,11 +36,18 @@ export default function SuitableHistory( { user  ,showModal , setShowModal  }) {
     }
     return element[id]
    }
-
+   const fetchSuitabaleHistory = async () =>{
+    try {
+     const result = await  api.post(`/v1/user/compareHistory/${user?._id}`) 
+      setSuitableHistory(result.data);
+      console.log(result.data);
+    } catch (err) {
+      console.log(err);
+      
+    }
+   }
     useEffect(() => {
-        api.post(`/v1/user/compareHistory/${user?._id}`).then((res) => {
-          setSuitableHistory(res.data);
-        });
+      fetchSuitabaleHistory();
     }, [user]); 
 
     const handleSelectHistory = (id) => {
@@ -79,8 +86,9 @@ export default function SuitableHistory( { user  ,showModal , setShowModal  }) {
         }}
       >
         {suitableHistory.map((item) => (
+         
           <div key={item?._id} onClick={() => handleSelectHistory(item?._id)    } className={`grid grid-cols-2 gap-4 w-full ${selectedHistory.includes(item?._id) ? "relative border-2 border-green-500 shadow-lg rounded-md" : ""}`}>
-            
+             {console.log(item.item.fishkoi)}
 
              <div className="border rounded-lg p-4 shadow-md">
               <h3 className="text-lg font-semibold mb-2">Koi</h3>
@@ -89,7 +97,7 @@ export default function SuitableHistory( { user  ,showModal , setShowModal  }) {
                 <div className="flex flex-col items-center">
                 <div className="w-30 h-30 outline">
                   <img
-                    src={item.item.fishkoi.image}
+                    src={item.item.fishkoi.image }
                     style={{width:"100px",height:"100%"}}
                     alt="Koi"
                     className=" object-cover  rounded-md"

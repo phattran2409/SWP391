@@ -77,6 +77,8 @@ const Navbar = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("cartItems");
     localStorage.removeItem("elementUser");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("listSuitable");
     setUser(null);
     navigate("/home?status=logout_success");
      

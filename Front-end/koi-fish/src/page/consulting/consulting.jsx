@@ -145,17 +145,6 @@ export default function Consulting() {
   };
   //  handleAPIKoi();
 
-  // const handleAPIGetADS  = async () => { 
-  //   try  {
-  //    const resAds = await api.get(
-  //      `/v1/post/getPostByElementID/${value.elementID}?categoryID=3`
-  //    );
-  //    setAds(resAds.data.data || []);
-  //   }catch (err) { 
-  //     console.log(err.message);
-  //   }
-  // }
-
   //  get element  user from local storage
   const handleGetElement =  async (data) =>{
     console.log("handle get element ");

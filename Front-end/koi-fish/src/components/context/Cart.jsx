@@ -5,19 +5,19 @@ import { Navigate, useNavigate } from "react-router-dom";
 import  api from "../../config/axios"
 export const CartContext = createContext();
 
+
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState(
     localStorage.getItem("cartItems")
       ? JSON.parse(localStorage.getItem("cartItems"))
       : []
   );
-
   const [koiInCart, setKoiInCart] = useState(false);
   const [koiInPond, setKoiInPond] = useState(false);
   const [koi, setKoi] = useState(0);
   const [pond, setPond] = useState(0);
   const [result, setResult] = useState(null);
-  const [value , setValue] = useState(localStorage.getItem("elmentUser") ? JSON.parse(localStorage.getItem("elementUser")) :  {});
+  const [value , setValue] = useState();
   const [item  , setItem]  =  useState(null);
   const addToCart = (item) => {
     const isItemInCart = cartItems.find(
@@ -80,13 +80,12 @@ export const CartProvider = ({ children }) => {
     );
   };
 
-  const handleMutual = async (navigate) => {
+  const handleMutual = async () => {
     try {
+      console.log('object :>> ', value);
       if (!value?.elementID) {
         toast.error("You need consulting before you evaluate");
-        setTimeout(() => {
-           navigate("/consulting");
-        }, 2000);
+    
        
         return;
       } 
@@ -128,11 +127,22 @@ export const CartProvider = ({ children }) => {
       items.shape && setPond(items.elementID);
     });
     // 
-    setValue(JSON.parse(localStorage.getItem("elementUser")));
+   
     console.log(koi, pond);
     // handleMutual(koi, pond);
   }, [cartItems]);
   
+  useEffect (() => {
+      const user = JSON.parse(localStorage.getItem("user"));  
+      
+      if (user) {
+        setValue(user)
+        console.log('obbject value >>> ',value);
+      }else { 
+         const elementUser = JSON.parse(localStorage.getItem("elementUser"));
+        setValue(elementUser)
+      }
+  } ,[])
   return (
     <CartContext.Provider
       value={{

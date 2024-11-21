@@ -42,6 +42,7 @@ const ShowPond = () => {
     };
       const suitablePond = async (item) => {
         console.log(item.elementID);
+        console.log(elementUser);
         
         const elementID_pond = item.elementID;
         const elementID_user = elementUser.elementID;
@@ -67,7 +68,13 @@ const ShowPond = () => {
       };
     useEffect(() => {
         fetchKoiPonds(); // Fetch data when the component mounts
+       const user = JSON.parse(localStorage.getItem("user"));
+       console.log(user);
+       if (user != null) { 
+        setElementUser(user)
+       }else {
         setElementUser(JSON.parse(localStorage.getItem("elementUser")));
+       }
     }, []);
     // Loading 
     if (!ponds.length) {

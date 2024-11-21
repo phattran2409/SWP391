@@ -10,7 +10,6 @@ import { toast } from "react-toastify";
 export function EditProfile() {
   const [formData, setFormData] = useState({
     name: "",
-
     phoneNumber: "",
     birthDate: "",
     gender: "",
@@ -25,12 +24,13 @@ export function EditProfile() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState(null);
   const [userId, setUserId] = useState(null);
-
- 
+  const [user, setUser] = useState(null);
+  const [elementID , setElementID ] = useState(null);
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user) {
       setUserId(user._id);
+      setUser(user);  
       fetchUserData(user._id);
     }
   }, []);
@@ -47,6 +47,9 @@ export function EditProfile() {
         avatar: user.avatar || "",
       });
       setImagePreview(user.avatar || "");
+
+      localStorage.removeItem("user");
+      localStorage.setItem("user", JSON.stringify(user));
     } catch (error) {
       console.error("Error fetching user data:", error);
       toast.error("Failed to load user data.");
@@ -104,23 +107,61 @@ export function EditProfile() {
         updatedData[key] = formData[key];
       }
     });
+    console.log('object update data  :>> ', updatedData);
+ 
 
     try {
       const response = await api.put(
         `v1/user/updateProfile/id=${userId}`,
-        updatedData
+        {...updatedData, elementID}
       );
       console.log("Profile updated successfully:", response.data);
       toast.success("Profile updated successfully!");
+      // update new  localstorage
+      fetchUserData(userId);  
     } catch (error) {
       console.error("Error updating profile:", error);
       toast.error("Failed to update profile. Please try again.");
     }
   };
+  const handleAPICalElement = async (dateYear , gender) => {
+    try {
+      console.log('gender :>> ', gender);
+      var Rgender = "";
+      if (gender) {
+        Rgender = gender;
+      } 
+      console.log('Rgender :>> ', Rgender);
+       
+      const response = await api.get(
+        `v1/user/calculateElement?gender=${Rgender || user.gender}&y=${dateYear}`
+      );
+      console.log('response :>> ', response.data);
+      setElementID(response.data.elementID);  
+    } catch (error) {
+      console.error("Error calculating element:", error);
+      toast.error("Failed to calculate element. Please try again.");
+    }
+  }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
+  
+    const getYear = value.split('-')[0];
+    
+    // user use for get gender from local storage
+   
+    const gender = name === "gender" ? value : formData.gender; 
+     
+    // handle birthdate
+    if (name === "birthDate") {
+      if (getYear < 1900 || getYear > new Date().getFullYear()) {
+        toast.error("Invalid birthdate. Please enter a valid year.");
+        return;
+      }
+      handleAPICalElement(getYear , gender); 
+    }
+    
     if (name === "name") {
       const regex = /^[A-Za-zÀ-ỹ ]*$/;
       if (!regex.test(value)) {
