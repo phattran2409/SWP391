@@ -35,7 +35,7 @@ const fitWithElements = [
   },
   {
     name: "Water",
-    color: "#0000FF",
+    color: "#00A8E3",
     icon: MdWater,
     imageUrl: "https://res.cloudinary.com/ddqgjy50x/image/upload/v1732168785/water_kpml8h.png",
     description:
@@ -113,8 +113,8 @@ const ElementPage = () => {
   return (
     <div >
       <Navbar />
-      <div className="flex flex-col items-center  justify-center">
-        <div className="bg-gray-300 text-black-700 px-3 pt-1 pb-16 rounded-sm text-sm mt-1 ">
+      <div className="flex flex-col items-center justify-center">
+        <div className="w-full bg-white text-black-700 px-10 pt-1 pb-16 rounded-sm text-sm mt-1 ">
           {userElement?.elementID ? (
             <div>
               <div className="text-5xl font-bold flex items-center justify-center py-10">
@@ -145,15 +145,14 @@ const ElementPage = () => {
                   </div>
                 )}
               </div>
-              <div className="grid grid-cols-2 gap-10 w-full max-w-4xl">
-                <div className="text-5xl font-bold flex flex-col items-center border-4 border-white py-4 rounded-2xl">
-
+              <div className="w-full grid grid-cols-12 gap-10">
+                <div className="aspect-square bg-white py-4 rounded-2xl col-start-3">
                   {fitWithElements[userElement.elementID - 1] && (
-                    <div className="flex flex-col items-center mt-4">
+                    <div className="flex flex-col items-center mt-4 ">
                       <img
                         src={fitWithElements[userElement.elementID - 1].imageUrl}
                         alt={`${fitWithElements[userElement.elementID - 1].name} Element`}
-                        className="w-72 h-72 object-cover rounded-full mb-4"
+                        className="max-w-72 max-h-72 object-cover rounded-full mb-4"
                       />
                       <span
                         style={{
@@ -168,11 +167,25 @@ const ElementPage = () => {
                   )}
                 </div>
 
-                <div className="text-lg flex flex-col items-center bg-white px-4 pb-4 rounded-2xl">
+                <div
+                  className="text-lg flex flex-col items-center justify-center bg-white px-4 pb-4 rounded-2xl lg:col-start-7 lg:col-end-12 sm:col-start-6 sm:col-end-13"
+                  style={{
+                    backgroundColor: fitWithElements[userElement.elementID - 1]?.color,
+                    color: "white",
+                    border: "3px solid rgba(0, 0, 0, 0.1)",
+                  }}
+                >
                   {fitWithElements[userElement.elementID - 1] && (
                     <div className="flex flex-col items-center mt-4">
-                      <p className=" text-gray-600 max-w-md">
-                        {fitWithElements[userElement.elementID - 1].description}
+                      <p className="text-white">
+                        {fitWithElements[userElement.elementID - 1].description
+                          .split('.')
+                          .map((sentence, index) => (
+                            <React.Fragment key={index}>
+                              {sentence.trim() && <span>- {sentence.trim()}.</span>}
+                              <br />
+                            </React.Fragment>
+                          ))}
                       </p>
                     </div>
                   )}
@@ -185,7 +198,7 @@ const ElementPage = () => {
         </div>
       </div>
 
-      <div className="bg-gray-200 p-4 rounded-md mt-8 w-full">
+      <div className="bg-white p-4 rounded-md mt-8 w-full">
         <h2 className="text-3xl font-bold text-start mb-4 relative pl-10">
           <div className="absolute left-6 bottom-0 z-20 bg-white px-4" >Suitable Element</div>
           <span className="absolute left-0 bottom-4 z-10 w-full h-[2px] bg-gray-400"></span>
@@ -193,7 +206,7 @@ const ElementPage = () => {
       </div>
 
       {/* Đề mục tính toán số lượng cá Koi */}
-      <div className="bg-gray-200 p-4 rounded-md mt-8 w-full">
+      <div className="bg-white p-4 rounded-md mt-8 w-full">
         <h2 className="text-3xl font-bold text-start mb-4 relative pl-10">
           <div className="absolute left-6 bottom-0 z-20 bg-white px-4" >Koi Fish Quantity Calculation for Suitable Owner's Element</div>
           <span className="absolute left-0 bottom-4 z-10 w-full h-[2px] bg-gray-400"></span>
