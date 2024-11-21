@@ -108,7 +108,7 @@ function WishList() {
             </p>
             <div className="bg-gray-50 text-black-700 px-3 py-1 rounded-full text-sm mt-2">
               { userElement?.elementID ? (
-            <div className="text-sm flex items-center">
+              <div className="text-sm flex items-center">
                       <span>Element:</span>
                       {fitWithElements[userElement.elementID - 1]?.icon && (
                         <div className="flex items-center ml-2">
