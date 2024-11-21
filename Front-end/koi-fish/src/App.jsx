@@ -6,10 +6,6 @@ import RegisterPage from "./page/register/register";
 import PostingInterface from "./page/post/post";
 import UpdatePass from "./page/security/updatepass";
 import SendChangeEmail from "./page/security/sendemail";
-
-
-
-
 import Dashboard from "./components/dashboard/dashboard";
 import ManageKoiFish from "./page/admin/manage-koi/manageKoiFish";
 // import ManageService from "./page/admin/manage-service/manageService";
@@ -18,18 +14,12 @@ import ManagePonds from "./page/admin/manage-pond/managePonds";
 import ManageNews from "./page/admin/manage-post/manage-news/manageNews";
 import ManageBlogs from "./page/admin/manage-post/manage-blogs/manageBlogs";
 import ManageAds from "./page/admin/manage-post/manage-ads/manageAds";
-
-
-
 import ContactUs from "./page/contactus/contactus";
 import ShowFish from "./page/showdetails/Showfish.jsx";
 import ShowPond from "./page/showdetails/ShowPond";
-
 import Home from "./page/Home/Home.jsx";
-
 import RecoverPage from "./page/forget/forget";
 import ResetPasswordPage from "./page/forget/reset";
-
 import KoiDetails from "./page/testpage/consulting-detail/koidetail.jsx";
 import PondDetails from "./page/testpage/consulting-detail/ponddetail.jsx";
 import MemberPackage from "./page/MemberPackage/package.jsx";
@@ -45,6 +35,7 @@ import DetailsPage from "./page/Category/details/details.jsx";
 import Package from "./page/admin/manage-package/manage-Package.jsx";
 import ElementPage from "./page/element/element.jsx";
 import WishList from "./page/wishlist/wishlist.jsx";
+import FishPondAdvisor from "./components/fishpond-advisor/fishpondadvisor.jsx";
 
 function App() {
   const router = createBrowserRouter([

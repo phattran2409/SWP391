@@ -6,6 +6,8 @@ import { IoBookSharp } from "react-icons/io5";
 import { FaHeartCirclePlus } from "react-icons/fa6";
 import { IoBuild } from "react-icons/io5";
 import { Link } from "react-router-dom";
+import { FaStar } from "react-icons/fa";
+import FishpondAdvisor from "../../../components/fishpond-advisor/fishpondadvisor";
 import {
   MdArrowBack,
   MdKeyboardArrowLeft,
@@ -21,11 +23,11 @@ import { toast } from "react-toastify";
 
 const pondDetails = () => {
   const fitWithElements = [
-    { name: "Metal", color: "#696969", icon: GiMetalBar },
-    { name: "Wood", color: "#008000", icon: MdGrass },
-    { name: "Water", color: "#0000FF", icon: MdWater },
-    { name: "Fire", color: "#FF4500", icon: MdLocalFireDepartment },
-    { name: "Earth", color: "#8B4513", icon: MdLandscape },
+    { name: "Metal", color: "#696969", icon: GiMetalBar, description: "Metal elements benefit from raising fish, as they symbolize stability and prosperity. The numbers 4 and 9 represent completion, longevity, and success, aligning with Metal's focus on precision." },
+    { name: "Wood", color: "#008000", icon: MdGrass, description: "Fish for Wood enhance growth and harmony, supporting Wood's creative and nurturing qualities. The numbers 3 and 8 symbolize renewal, prosperity, and abundance, reflecting Wood’s expanding nature."  },
+    { name: "Water", color: "#0000FF", icon: MdWater, description: "Raising fish helps Water elements adapt and grow, promoting smooth journeys and personal development. The numbers 1 and 6 represent leadership, luck, and smooth progression, enhancing Water's fluid energy.Metal elements benefit from raising fish, as they symbolize stability and prosperity. The numbers 4 and 9 represent completion, longevity, and success, aligning with Metal's focus on precision."  },
+    { name: "Fire", color: "#FF4500", icon: MdLocalFireDepartment, description: "Fish for Fire bring balance and strength, supporting Fire's dynamic and energetic nature. The numbers 2 and 7 symbolize partnerships, personal strength, and determination, encouraging cooperation and growth."},
+    { name: "Earth", color: "#8B4513", icon: MdLandscape, description:"Earth thrives with fish that symbolize stability and nourishment, aligning with Earth’s grounded, nurturing qualities. The numbers 5 and 10 represent support, stability, and completeness, bringing balance to Earth’s energy."  },
   ];
 
   const [pondetail, setPondDetail] = useState([]);
@@ -53,8 +55,10 @@ const pondDetails = () => {
 
   const addToWishlist = async () => {
     try {
-      const response = await api.post(`v1/user/addToWishList?itemId=${id}&wishlistType=ponds`);
-  
+      const response = await api.post(
+        `v1/user/addToWishList?itemId=${id}&wishlistType=ponds`
+      );
+
       if (response.status === 400) {
         toast.info("Item already exists in your favorite list");
       } else if (response.status === 200) {
@@ -143,53 +147,61 @@ const pondDetails = () => {
             <div className="spinner"></div>
           </div>
         ) : (
+          
           <div className="animate-fadeIn bg-white p-8 rounded-lg shadow-lg">
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              
               <img
                 src={pondetail.image}
                 alt="Koi fish"
-                className="w-full h-auto object-cover rounded-lg shadow-lg"
+                className="w-full object-cover rounded-lg shadow-lg"
+                style={{ height: "515px" }}
               />
+
               <div>
                 <div className="flex">
-                <h1 className="text-4xl font-bold mb-6 text-gray-800">
-                  {pondetail.shape} Pond
-                </h1>
-                {pondetail.elementID && (
-                      <span className="ml-2 mr-5 flex items-center">
-                        {fitWithElements[pondetail.elementID - 1]?.icon && (
-                          <>
-                            {React.createElement(
-                              fitWithElements[pondetail.elementID - 1].icon,
-                              {
-                                size: 40,
-                                style: {
-                                  color:
-                                    fitWithElements[pondetail.elementID - 1]
-                                      .color,
-                                },
-                                className: "ml-5 mb-5",
-                              }
-                            )}
-                            <span className="mb-5"
-                              style={{
+                  <h1 className="text-4xl font-bold mb-6 text-gray-800">
+                    {pondetail.shape} Pond
+                  </h1>
+                  {pondetail.elementID && (
+                    <span className="ml-2 mr-5 flex items-center">
+                      {fitWithElements[pondetail.elementID - 1]?.icon && (
+                        <>
+                          {React.createElement(
+                            fitWithElements[pondetail.elementID - 1].icon,
+                            {
+                              size: 40,
+                              style: {
                                 color:
                                   fitWithElements[pondetail.elementID - 1]
                                     .color,
-                                marginLeft: "8px",
-                                fontSize: "1.5rem",
-                              }}
-                            >
-                              {fitWithElements[pondetail.elementID - 1].name}
-                            </span>
-                          </>
-                        )}
-                      </span>
-                    )}
-                     <button
-                      onClick={addToWishlist}
-                      className="ml-auto bg-red-600 text-white rounded-full p-2 hover:bg-red-500 transition-colors"><FaHeartCirclePlus size={30} /></button>
-                      </div>
+                              },
+                              className: "ml-5 mb-5",
+                            }
+                          )}
+                          <span
+                            className="mb-5"
+                            style={{
+                              color:
+                                fitWithElements[pondetail.elementID - 1].color,
+                              marginLeft: "8px",
+                              fontSize: "1.5rem",
+                            }}
+                          >
+                            {fitWithElements[pondetail.elementID - 1].name}
+                          </span>
+                        </>
+                      )}
+                    </span>
+                  )}
+                  <button
+                    onClick={addToWishlist}
+                    className="ml-auto bg-red-600 text-white rounded-full p-2 hover:bg-red-500 transition-colors"
+                  >
+                    <FaHeartCirclePlus size={30} />
+                  </button>
+                </div>
                 <div className="mb-6">
                   <div className="flex ">
                     <h3 className="text-2xl font-semibold text-gray-700">
@@ -235,10 +247,23 @@ const pondDetails = () => {
                       <p className="text-gray-700">{pondetail.light}</p>
                     </div>
                   </div>
-                  <br />                                            
+                  <br />
                 </div>
+
+                <FishpondAdvisor
+                  pondId={pondetail.elementID}
+                  elementName={fitWithElements[pondetail.elementID - 1].name}
+                />
+                
               </div>
+                
             </div>
+            <div className=" p-6 rounded-lg shadow-lg mt-8">
+      <h3 className="flex text-2xl font-semibold text-gray-700"><FaStar className="mr-2"  color="#F7E35F" />Did You Know?</h3>
+      <p className="text-gray-600 mt-4">
+        {fitWithElements[pondetail.elementID - 1].description}
+      </p>
+    </div>
           </div>
         )}
         {relatedPondLoading ? (
@@ -263,6 +288,7 @@ const pondDetails = () => {
                     alt={`Image of ${pond.shape}`}
                     className="w-full h-48 object-cover rounded-lg mb-4"
                   />
+
                   <h3 className="text-xl font-semibold mb-2 text-gray-700">
                     {pond.shape}
                   </h3>
