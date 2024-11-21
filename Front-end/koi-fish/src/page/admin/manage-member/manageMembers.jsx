@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
+import { FaCamera } from "react-icons/fa";
+import axios from "axios";
 import {
   Table,
   Button,
@@ -11,9 +13,7 @@ import {
   Image,
   Pagination,
   DatePicker,
-  Badge,
   Tag,
-  Avatar
 } from "antd";
 import { toast } from "react-toastify";
 import api from "../../../config/axios";
@@ -27,16 +27,15 @@ function ManageMembers() {
   const [showModal, setShowModal] = useState(false);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
-  const [fileList, setFileList] = useState([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [imagePreview, setImagePreview] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [pagination, setPagination] = useState({
     current: 1, // Trang hiện tại
     pageSize: 10, //(limit mặc định)
     total: 0, // ban đầu là 0
   });
-  
+
   //get data
   const fetchData = async (
     page = pagination.current,
@@ -47,13 +46,13 @@ function ManageMembers() {
       // đổi gender từ 0, 1 thành "Nam", "Nữ"
       const modifiedData = response.data.data.map((member) => ({
         ...member,
-        birthDate:  moment(member.birthDate)
+        birthDate: moment(member.birthDate),
       }));
-      console.log("fecth API ---> "+modifiedData);
+      console.log("fecth API ---> " + modifiedData);
 
       setDatas(modifiedData);
       console.log(response);
-      
+
       setPagination({
         current: response.data.currentPage, // cập nhật trang hiện tại
         total: response.data.totalDocuments, // tổng số cá
@@ -64,20 +63,41 @@ function ManageMembers() {
     }
   };
 
+  const uploadImage = async (file) => {
+    const url = `https://api.cloudinary.com/v1_1/ddqgjy50x/upload`;
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "profile");
+
+    try {
+      const response = await axios.post(url, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      // Update the form with the image URL
+      form.setFieldsValue({ avatar: response.data.secure_url });
+
+      // Show image preview
+      setImagePreview(response.data.secure_url);
+
+      toast.success("Image uploaded successfully");
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   //submit form
   const handleSubmit = async (values) => {
-    console.log("handle Submit : "+ values.phoneNumber);
+    console.log("handle Submit : " + values.phoneNumber);
     const formatBirthDate = values.birthDate.format();
     console.log(formatBirthDate);
-    
-    if (fileList.length > 0) {
-      const file = fileList[0];
-      console.log(file);
-      const url = await uploadFile(file.originFileObj);
-      values.avatar = url;
-    }
-    values.birthDate  = formatBirthDate;
-   
+
+    values.birthDate = formatBirthDate;
+
     try {
       setLoading(true);
 
@@ -92,34 +112,14 @@ function ManageMembers() {
       form.resetFields();
       setShowModal(false);
     } catch (err) {
-      if(err.status == 500) { 
-        toast.error("Error update User")
+      if (err.status == 500) {
+        toast.error("Error update User");
       }
     } finally {
       setLoading(false);
     }
   };
 
-  //chuyen doi file sang dang bases64
-  const getBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
-
-  const handlePreview = async (file) => {
-    console.log("Preview file  "+file);
-    
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-    setPreviewImage(file.url || file.preview);
-    setPreviewOpen(true);
-  };
-
-  const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
   const uploadButton = (
     <button
       style={{
@@ -149,7 +149,6 @@ function ManageMembers() {
     }
   };
 
-  
   // ->>  handle search
   const handleSearch = async (e) => {
     try {
@@ -201,8 +200,6 @@ function ManageMembers() {
     fetchData(pagination.current, pagination.pageSize);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pagination.current, pagination.pageSize]);
-
-  
 
   const columns = [
     {
@@ -296,23 +293,21 @@ function ManageMembers() {
       title: "status",
       dataIndex: "memberStatus",
       key: `memberStatus`,
-      render: (isMember ,record) => {
+      render: (isMember, record) => {
         return (
           <>
-          <div className="flex">
-            {isMember ? (
-              <Tag color="green" text="member">
-                Member
-              </Tag>
-            ) : (
-              <Tag color="cyan" text="user">
-                User
-              </Tag>
-            )}
-            { (record.admin) && ( 
-              <Tag color="red"> Admin</Tag>
-            )}
-          </div>
+            <div className="flex">
+              {isMember ? (
+                <Tag color="green" text="member">
+                  Member
+                </Tag>
+              ) : (
+                <Tag color="cyan" text="user">
+                  User
+                </Tag>
+              )}
+              {record.admin && <Tag color="red"> Admin</Tag>}
+            </div>
           </>
         );
       },
@@ -328,12 +323,12 @@ function ManageMembers() {
             <Button
               type="primary"
               onClick={() => {
+                setImagePreview(member.avatar);
                 setShowModal(!showModal);
-                form.setFieldsValue({...member  , avatar : member.avatar});
-                
+                form.setFieldsValue({ ...member, avatar: member.avatar });
               }}
             >
-              Edit 
+              Edit
             </Button>
             <Popconfirm
               title="Delete"
@@ -519,35 +514,39 @@ function ManageMembers() {
             <DatePicker format={"DD/MM/YYYY"} />
           </Form.Item>
 
-          <Form.Item>
+          <Form.Item
+            name="avatar"
+            label="Image"
+            rules={[{ required: true, message: "Please upload an image!" }]}
+          >
             <Upload
-              action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-              listType="picture-card"
-              fileList={fileList}
-              onPreview={handlePreview}
-              onChange={handleChange}
+              name="file"
+              showUploadList={false}
+              beforeUpload={(file) => {
+                setIsUploading(true); // show uploading state
+                uploadImage(file); // upload image to Cloudinary
+                return false; // prevent auto upload behavior
+              }}
             >
-              {fileList.length >= 8 ? null : uploadButton}
+              <Button icon={<FaCamera />}>Upload Image</Button>
             </Upload>
+            {/* Image Preview */}
+            {imagePreview && (
+              <div style={{ marginTop: "10px" }}>
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  style={{
+                    width: "100px",
+                    height: "100px",
+                    objectFit: "cover",
+                  }}
+                />
+              </div>
+            )}
           </Form.Item>
-
-        
         </Form>
       </Modal>
-
-      {previewImage && (
-        <Image
-          wrapperStyle={{
-            display: "none",
-          }}
-          preview={{
-            visible: previewOpen,
-            onVisibleChange: (visible) => setPreviewOpen(visible),
-            afterOpenChange: (visible) => !visible && setPreviewImage(""),
-          }}
-          src={previewImage}
-        />
-      )}
     </div>
   );
 }
