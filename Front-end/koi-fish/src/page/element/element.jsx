@@ -8,35 +8,15 @@ import {
   MdGrass,
   MdLocalFireDepartment,
 } from "react-icons/md";
-import { Modal, Button, Input, Space, Badge, Avatar } from "antd";
 import Footer from "../../components/footer/Footer";
-import { MinusOutlined, PlusOutlined, QuestionOutlined } from '@ant-design/icons';
 import SuitableElement from "./suitableelement";
 
-const ButtonGroup = Button.Group;
 
 const userElement = JSON.parse(localStorage.getItem("elementUser"));
 
 
 const ElementPage = () => {
   const [users, setUsers] = useState(null);
-  const [isModalVisible, setIsModalVisible] = useState(false); // Trạng thái hiển thị modal
-  const [count, setCount] = useState(5);
-
-  const increase = () => {
-    setCount(count + 1);
-  };
-  const decline = () => {
-    let newCount = count - 1;
-    if (newCount < 0) {
-      newCount = 0;
-    }
-    setCount(newCount);
-  };
-  const random = () => {
-    const newCount = Math.floor(Math.random() * 100);
-    setCount(newCount);
-  };
 
   useEffect(() => {
 
@@ -56,21 +36,7 @@ const ElementPage = () => {
     }
   }
 
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
 
-  // Hàm đóng modal
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
-
-
-  // Hàm tính toán số lượng cá koi (ví dụ: số lượng cá Koi = diện tích hồ / 2)
-  const calculateKoiAmount = () => {
-
-  };
 
   return (
     <div >
@@ -169,51 +135,7 @@ const ElementPage = () => {
 
 
       {/* Đề mục tính toán số lượng cá Koi */}
-      <div className="bg-white p-4 rounded-md mt-8 w-full">
-        <h2 className="text-3xl font-bold text-start mb-4 relative pl-10">
-          <div className="absolute left-6 bottom-0 z-20 bg-white px-4" >Koi Fish Quantity Calculation for Suitable Owner's Element</div>
-          <span className="absolute left-0 bottom-4 z-10 w-full h-[2px] bg-gray-400"></span>
-        </h2>
-        <div className="flex flex-col items-start px-6">
-          <Button
-            color="danger"
-            variant="solid"
-            onClick={showModal}
-            className="w-72"
-          >
-            Calculate
-          </Button>
 
-        </div>
-      </div>
-
-      <Modal
-        title="Koi Fish Quantity Calculation for Suitable Owner's Element"
-        visible={isModalVisible}
-        onCancel={handleCancel}
-        footer={[
-          <Button key="back" color="danger" variant="outlined" onClick={handleCancel}>
-            Close
-          </Button>,
-          <Button key="submit" color="danger" variant="solid" onClick={calculateKoiAmount}>
-            Calculate
-          </Button>,
-        ]}
-        width={800}
-      >
-        <Space direction="vertical">
-          <Space size="large">
-            <Badge count={count}>
-              <Avatar shape="square" size="large" />
-            </Badge>
-            <ButtonGroup>
-              <Button onClick={decline} icon={<MinusOutlined />} />
-              <Button onClick={increase} icon={<PlusOutlined />} />
-              <Button onClick={random} icon={<QuestionOutlined />} />
-            </ButtonGroup>
-          </Space>
-        </Space>
-      </Modal>
 
       <Footer />
     </div>
@@ -239,7 +161,7 @@ const fitWithElements = [
     imageUrl: "https://res.cloudinary.com/ddqgjy50x/image/upload/v1732169366/wood_oxj9kj.png",
     description:
       "People with the Wood Element should prioritize using colors like green, blue, natural wood items, and plants to enhance positive energy. Additionally, the East and Southeast directions are good positions to activate fortune. For a harmonious and luckier life, you can refer to Feng Shui items, lucky numbers, and ways to resolve misfortune. Note: Feng Shui is a profound science, and applying it to life requires thorough research. Combine Feng Shui knowledge with a healthy lifestyle to achieve the best results.",
-    compatible: ["Water", "Fire"],
+    compatible: ["Water", "Fire", "Wood"],
     conflicting: ["Metal", "Earth"],
   },
   {
@@ -249,7 +171,7 @@ const fitWithElements = [
     imageUrl: "https://res.cloudinary.com/ddqgjy50x/image/upload/v1732168785/water_kpml8h.png",
     description:
       "People with the Water Element should prioritize using colors like blue, black, glass items, aquariums, and materials that are soft to enhance positive energy. Additionally, the North and Northeast directions are good positions to activate fortune. For a harmonious and luckier life, you can refer to Feng Shui items such as ocean landscape paintings, koi fish statues, black quartz, as well as lucky numbers like 1, 6, and 7. Note: Feng Shui is a profound science, and applying it to life requires thorough research. Combine Feng Shui knowledge with a healthy lifestyle to achieve the best results.",
-    compatible: ["Fire", "Metal"],
+    compatible: ["Fire", "Metal", "Water"],
     conflicting: ["Wood", "Earth"],
   },
   {
@@ -259,7 +181,7 @@ const fitWithElements = [
     imageUrl: "https://res.cloudinary.com/ddqgjy50x/image/upload/v1732168782/flame_l1pmsj.png",
     description:
       "People with the Fire Element should prioritize using colors like red, orange, ceramic items, candles, and materials that are warm to enhance positive energy. Additionally, the South direction is a good position to activate fortune. For a harmonious and luckier life, you can refer to Feng Shui items such as sun landscape paintings, phoenix statues, red quartz, as well as lucky numbers like 3 and 9. Note: Feng Shui is a profound science, and applying it to life requires thorough research. Combine Feng Shui knowledge with a healthy lifestyle to achieve the best results.",
-    compatible: ["Wood", "Earth"],
+    compatible: ["Wood", "Earth", "Fire"],
     conflicting: ["Metal", "Water"],
   },
   {
@@ -269,7 +191,7 @@ const fitWithElements = [
     imageUrl: "https://res.cloudinary.com/ddqgjy50x/image/upload/v1732168799/ground_r1nbmp.jpg",
     description:
       "People with the Earth Element should prioritize using colors like light yellow, brown, ceramic items, natural stones, and materials that are stable to enhance positive energy. Additionally, the Southwest and Center directions are good positions to activate fortune. For a harmonious and luckier life, you can refer to Feng Shui items, lucky numbers, and ways to resolve misfortune. Note: Feng Shui is a profound science, and applying it to life requires thorough research. Combine Feng Shui knowledge with a healthy lifestyle to achieve the best results.",
-    compatible: ["Metal", "Fire"],
+    compatible: ["Metal", "Fire", "Earth"],
     conflicting: ["Wood", "Water"],
   },
 ];
