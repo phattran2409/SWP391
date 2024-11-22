@@ -11,6 +11,7 @@ import {
 import Footer from "../../components/footer/Footer";
 import SuitableElement from "./suitableelement";
 import SuitableQuantity from "./suitablequantity";
+import AdviseColor from "./advisecolor";
 
 const userElement = JSON.parse(localStorage.getItem("elementUser"));
 
@@ -126,12 +127,14 @@ const ElementPage = () => {
         </div>
       </div>
 
-        <SuitableElement
-          compatible={fitWithElements[userElement.elementID - 1]?.compatible}
-          conflicting={fitWithElements[userElement.elementID - 1]?.conflicting}
-        />
-      
+      <SuitableElement
+        compatible={fitWithElements[userElement.elementID - 1]?.compatible}
+        conflicting={fitWithElements[userElement.elementID - 1]?.conflicting}
+      />
+
       <SuitableQuantity element={fitWithElements[userElement.elementID - 1]} />
+
+      <AdviseColor element={fitWithElements[userElement.elementID - 1]} />
 
       <Footer />
     </div>
