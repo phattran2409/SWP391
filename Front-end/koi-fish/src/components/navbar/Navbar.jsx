@@ -14,6 +14,7 @@ import {
   HeartOutlined,
 
   HistoryOutlined,
+  BookOutlined,
 
 } from "@ant-design/icons";
 import SuitableHistory from "./SuitableHistory/suitableHistory";  
@@ -253,6 +254,11 @@ const Navbar = () => {
                   <Menu.Item key="project">
                     <HeartOutlined className="pr-2" />
                     <Link to={"/wishList"}>Favorites</Link>
+                  </Menu.Item>
+
+                  <Menu.Item key="project">
+                  <BookOutlined className="pr-2"/>
+                    <Link to={"/element"}>Element</Link>
                   </Menu.Item>
 
                   <Menu.Item key="project">
