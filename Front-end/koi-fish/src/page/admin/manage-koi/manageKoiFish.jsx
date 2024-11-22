@@ -293,11 +293,16 @@ function ManageKoiFish() {
       render: (image) => <Image src={image} alt="Koi" style={{ width: 100 }} />,
     },
 
+  
+
     {
       title: "Element",
       dataIndex: "elementID",
       key: "elementID",
-      render: (elementID) => elementMap[elementID] || "Unknown",
+      render: (elementIDs) =>
+        Array.isArray(elementIDs)
+          ? elementIDs.map((id) => elementMap[id] || "Unknown").join(", ")
+          : elementMap[elementIDs] || "Unknown",
       sorter: (a, b) => a.elementID - b.elementID,
       sortDirections: ["descend", "ascend"],
     },
@@ -469,7 +474,7 @@ function ManageKoiFish() {
             label="Element"
             rules={[{ required: true, message: "Please select an element!" }]}
           >
-            <Select placeholder="Select an element">
+            <Select placeholder="Select an element"  mode="multiple" allowClear>
               <Select.Option value="1">Metal</Select.Option>
               <Select.Option value="2">Wood</Select.Option>
               <Select.Option value="3">Water</Select.Option>
