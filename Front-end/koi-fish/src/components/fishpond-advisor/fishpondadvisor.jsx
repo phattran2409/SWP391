@@ -3,9 +3,12 @@ import { useEffect, useState } from "react";
 import { CheckCircleOutlined, WarningOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import api from "../../config/axios";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; 
+import { Regex } from "lucide-react";
 const { Option } = Select;
-
+// const  navigate = useNavigate();
 const FishpondAdvisor = ({pondId, elementName}) => {
+   const navigate = useNavigate();
   const [selectedFish, setSelectedFish] = useState(null);
   const [fishKoiType, setFishKoiType] = useState([]);
   const [fishQuantity, setFishQuantity] = useState(0);
@@ -32,21 +35,7 @@ const FishpondAdvisor = ({pondId, elementName}) => {
     koiData();
   }, []);
 
-  // Fake data for fish types
-  const fishTypes = [
-    {
-      id: 1,
-      name: "Koi",
-      avatar: "https://via.placeholder.com/50",
-      description: "Koi fish are ornamental fish, suitable for ponds.",
-    },
-    {
-      id: 2,
-      name: "Goldfish",
-      avatar: "https://via.placeholder.com/50",
-      description: "Goldfish are small, beautiful fish with golden scales.",
-    },
-  ];
+
 
   // Handle selection change
   const handleFishChange = (value) => {
@@ -57,6 +46,10 @@ const FishpondAdvisor = ({pondId, elementName}) => {
 
   // Handle quantity change
   const handleQuantityChange = (value) => {
+         const regex = /^([1-9][0-9]?|100)$/;
+      
+         const isValid = regex.test(value);
+     (!isValid) &&  message.error("Please enter a number between 1 and 100");
     setFishQuantity(value);
 
     // Kiểm tra tính phù hợp
@@ -76,6 +69,10 @@ const FishpondAdvisor = ({pondId, elementName}) => {
       message.error("The number of fish is not suitable for this koi pond.");
     }
   };
+
+  const handleFishClick = (fishId) => {
+    navigate(`/koidetail/${fishId}`);
+  }; 
 
   return (
     <div className="bg-gray-100 p-4 rounded-lg shadow-md">
@@ -107,17 +104,19 @@ const FishpondAdvisor = ({pondId, elementName}) => {
       {selectedFish && (
         <div className="mb-4">
        <Card style={{ display: "flex", alignItems: "center" }} bordered={true}>
-  <div style={{ display: "flex", alignItems: "flex-start", width: "100%" }}>
+  <div  style={{ display: "flex", alignItems: "flex-start", width: "100%" }}>
     {/* Image and Badge */}
-    <Badge count={fishQuantity} style={{ backgroundColor: "red" }}>
+    <Badge count={fishQuantity} style={{ backgroundColor: "red" , position: "absolute" , right: "20px" , top: "0" }}>
       <img
+        onClick={() => {handleFishClick(selectedFish)}}
         src={fishKoiType.find((fish) => fish._id === selectedFish)?.image}
         alt="Fish Koi"
         style={{
           width: "100px",
           height: "150px",
           objectFit: "cover",
-          marginRight: "16px", // Add spacing between the image and text
+          marginRight: "16px" , 
+          cursor: "pointer"// Add spacing between the image and text
         }}
       />
     </Badge>
@@ -142,11 +141,35 @@ const FishpondAdvisor = ({pondId, elementName}) => {
         <div className="mb-4">
           <label className="block text-gray-600 mb-2">Enter Quantity:</label>
           <InputNumber
-            min={0}
-            max={100}
+            // min={0}
+            // max={100}
             value={fishQuantity}
             onChange={handleQuantityChange}
             style={{ width: "100%" }}
+            render={
+            (node) => {
+              console.log(node.value);
+              const regex = /^([1-9][0-9]?|100)$/;
+              const value = node.value;
+              const isValid = regex.test(value);
+              
+              return (
+                <div style={{ position: 'relative' }}>
+                  {node.input}
+                  {!isValid && value && (
+                    <div style={{ 
+                      color: 'red',
+                      fontSize: '12px',
+                      position: 'absolute',
+                      top: '100%'
+                    }}>
+                      Please enter a number between 1 and 100
+                    </div>
+                  )}
+                </div>
+              );
+            }
+           }
           />
         </div>
       )}
