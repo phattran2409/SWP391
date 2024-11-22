@@ -10,7 +10,8 @@ import {
 } from "react-icons/md";
 import Footer from "../../components/footer/Footer";
 import SuitableElement from "./suitableelement";
-
+import SuitableQuantity from "./suitablequantity";
+import AdviseColor from "./advisecolor";
 
 const userElement = JSON.parse(localStorage.getItem("elementUser"));
 
@@ -47,15 +48,15 @@ const ElementPage = () => {
             <div>
               <div className="text-5xl font-bold flex items-center justify-center py-10">
                 <span>Your element is:</span>
-                {fitWithElements[userElement.elementID - 1]?.icon && (
+                {fitWithElements[userElement?.elementID - 1].icon && (
                   <div className="flex items-center ml-2">
                     {React.createElement(
-                      fitWithElements[userElement.elementID - 1].icon,
+                      fitWithElements[userElement?.elementID - 1].icon,
                       {
                         size: 50,
                         style: {
                           color:
-                            fitWithElements[userElement.elementID - 1]
+                            fitWithElements[userElement?.elementID - 1]
                               .color,
                         },
                       }
@@ -63,33 +64,33 @@ const ElementPage = () => {
                     <span
                       style={{
                         color:
-                          fitWithElements[userElement.elementID - 1].color,
+                          fitWithElements[userElement?.elementID - 1].color,
                         marginLeft: "8px",
                         fontSize: "3rem",
                       }}
                     >
-                      {fitWithElements[userElement.elementID - 1].name}
+                      {fitWithElements[userElement?.elementID - 1].name}
                     </span>
                   </div>
                 )}
               </div>
               <div className="w-full grid grid-cols-12 gap-10">
                 <div className="aspect-square bg-white py-4 rounded-2xl col-start-3">
-                  {fitWithElements[userElement.elementID - 1] && (
+                  {fitWithElements[userElement?.elementID - 1] && (
                     <div className="flex flex-col items-center mt-4 ">
                       <img
-                        src={fitWithElements[userElement.elementID - 1].imageUrl}
-                        alt={`${fitWithElements[userElement.elementID - 1].name} Element`}
+                        src={fitWithElements[userElement?.elementID - 1].imageUrl}
+                        alt={`${fitWithElements[userElement?.elementID - 1].name} Element`}
                         className="max-w-72 max-h-72 object-cover rounded-full mb-4"
                       />
                       <span
                         style={{
-                          color: fitWithElements[userElement.elementID - 1].color,
+                          color: fitWithElements[userElement?.elementID - 1].color,
                           fontSize: "3rem",
                         }}
                         className="font-semibold"
                       >
-                        {fitWithElements[userElement.elementID - 1].name}
+                        {fitWithElements[userElement?.elementID - 1].name}
                       </span>
                     </div>
                   )}
@@ -98,15 +99,15 @@ const ElementPage = () => {
                 <div
                   className="text-lg flex flex-col items-center justify-center bg-white px-4 pb-4 rounded-2xl lg:col-start-7 lg:col-end-12 sm:col-start-6 sm:col-end-13"
                   style={{
-                    backgroundColor: fitWithElements[userElement.elementID - 1]?.color,
+                    backgroundColor: fitWithElements[userElement?.elementID - 1]?.color,
                     color: "white",
                     border: "3px solid rgba(0, 0, 0, 0.1)",
                   }}
                 >
-                  {fitWithElements[userElement.elementID - 1] && (
+                  {fitWithElements[userElement?.elementID - 1] && (
                     <div className="flex flex-col items-center mt-4">
                       <p className="text-white">
-                        {fitWithElements[userElement.elementID - 1].description
+                        {fitWithElements[userElement?.elementID - 1].description
                           .split('.')
                           .map((sentence, index) => (
                             <React.Fragment key={index}>
@@ -126,16 +127,14 @@ const ElementPage = () => {
         </div>
       </div>
 
-      <div>
-        <SuitableElement
-          compatible={fitWithElements[userElement.elementID - 1]?.compatible}
-          conflicting={fitWithElements[userElement.elementID - 1]?.conflicting}
-        />
-      </div>
+      <SuitableElement
+        compatible={fitWithElements[userElement?.elementID - 1]?.compatible || []}
+        conflicting={fitWithElements[userElement?.elementID - 1]?.conflicting || []}
+      />
 
+      <SuitableQuantity element={fitWithElements[userElement?.elementID - 1]} />
 
-      {/* Đề mục tính toán số lượng cá Koi */}
-
+      <AdviseColor element={fitWithElements[userElement?.elementID - 1]} />
 
       <Footer />
     </div>

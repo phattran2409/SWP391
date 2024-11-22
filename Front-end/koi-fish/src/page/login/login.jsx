@@ -152,6 +152,7 @@ function LoginPage() {
                 style={{ color: "black", textDecoration: "underline" }}
               >
                 Sign up
+                
               </Typography.Link>
             </div>
             <Typography.Link

@@ -35,7 +35,6 @@ import DetailsPage from "./page/Category/details/details.jsx";
 import Package from "./page/admin/manage-package/manage-Package.jsx";
 import ElementPage from "./page/element/element.jsx";
 import WishList from "./page/wishlist/wishlist.jsx";
-import FishPondAdvisor from "./components/fishpond-advisor/fishpondadvisor.jsx";
 
 function App() {
   const router = createBrowserRouter([

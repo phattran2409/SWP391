@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 import { Modal, Button, Flex, Progress, notification } from "antd";
-import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 
 function SuitableElement({ compatible, conflicting }) {
   const [isInfoVisible, setIsInfoVisible] = useState(false); // Trạng thái hiển thị thông tin chi tiết
@@ -83,7 +82,7 @@ function SuitableElement({ compatible, conflicting }) {
             placement: 'topRight',
           });
         }
-      }, 0); // Đảm bảo việc thông báo chỉ diễn ra sau khi đã tính toán xong
+      }, 1000); // Đảm bảo việc thông báo chỉ diễn ra sau khi đã tính toán xong
     }
   };
 
@@ -150,7 +149,7 @@ function SuitableElement({ compatible, conflicting }) {
 
       <div className="bg-white p-4 rounded-md mt-8 w-full">
         <h2 className="text-3xl font-bold text-start mb-4 relative pl-10">
-          <div className="absolute left-6 bottom-0 z-20 bg-white px-4" >Koi Fish Quantity Calculation for Suitable Owner's Element</div>
+          <div className="absolute left-6 bottom-0 z-20 bg-white px-4" > Rate The Compatibility Between Koi fish And The Owner's Element</div>
           <span className="absolute left-0 bottom-4 z-10 w-full h-[2px] bg-gray-400"></span>
         </h2>
         <div className="flex flex-col items-start px-6">
