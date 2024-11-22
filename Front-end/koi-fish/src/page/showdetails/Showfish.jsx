@@ -85,7 +85,7 @@ const ShowFish = () => {
        return  setElementUser(user?.elementID); 
      }else {
       const elementGuest = JSON.parse(localStorage.getItem("elementUser"));
-      setElementUser(elementGuest.elementID);
+      setElementUser(elementGuest?.elementID);
      }
   }, []);
 
