@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";
-import { Modal, Button, Flex, Progress } from "antd";
+import { Modal, Button, Flex, Progress, notification } from "antd";
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 
 function SuitableElement({ compatible, conflicting }) {
@@ -8,6 +8,9 @@ function SuitableElement({ compatible, conflicting }) {
   const [isLoading, setIsLoading] = useState(false); // Trạng thái loading
   const [isModalVisible, setIsModalVisible] = useState(false); // Trạng thái hiển thị modal
   const [percent, setPercent] = useState(0);
+  const [count, setCount] = useState(0);
+  const [compatibleCount, setCompatibleCount] = useState(0); // Số lượng nguyên tố phù hợp
+
 
   const colorMapping = {
     Water: "text-blue-500 ",
@@ -55,9 +58,44 @@ function SuitableElement({ compatible, conflicting }) {
 
   // Hàm tính toán số lượng cá koi (ví dụ: số lượng cá Koi = diện tích hồ / 2)
   const calculateKoiAmount = () => {
-
+    if (count > 0) {
+      const calculatedPercent = (compatibleCount / count) * 100;
+      setPercent(calculatedPercent); // Tính toán tỷ lệ phần trăm
+  
+      // Chờ đến khi percent được cập nhật xong
+      setTimeout(() => {
+        if (calculatedPercent > 75) {
+          notification.success({
+            message: 'Suitable',
+            description: 'The owner feng shui and the number of fish are fitted.',
+            placement: 'topRight',
+          });
+        } else if (calculatedPercent >= 50 && calculatedPercent < 75) {
+          notification.warning({
+            message: 'Suitable',
+            description: 'Fair enough, but some changes are still needed.',
+            placement: 'topRight',
+          });
+        } else {
+          notification.error({
+            message: 'Conflict',
+            description: 'Owner need to add more suitable fish or reduce unsuitable',
+            placement: 'topRight',
+          });
+        }
+      }, 0); // Đảm bảo việc thông báo chỉ diễn ra sau khi đã tính toán xong
+    }
   };
 
+  const handleElementClick = (type) => {
+    if (type === "compatible") {
+      setCompatibleCount((prev) => prev + 1); // Tăng số lượng nguyên tố phù hợp
+      setCount((prev) => prev + 1); // Tăng tổng số lượng đã nhập
+    } else if (type === "conflicting") {
+      setCount((prev) => prev + 1); // Tăng tổng số lượng đã nhập
+    }
+
+  };
   return (
     <div className="my-4">
       <div className="bg-white px-4 rounded-md mt-12 w-full">
@@ -157,7 +195,7 @@ function SuitableElement({ compatible, conflicting }) {
                   <li key={index} className="mb-2 text-center">
                     <button
                       className={`px-4 py-2 mb-2 rounded shadow ${colorMapping1[item] || "bg-black text-white"}`}
-                      onClick={() => setPercent((prev) => Math.min(prev + 10, 100))} // Thay bằng logic xử lý của bạn
+                      onClick={() => handleElementClick("compatible")} // Thay bằng logic xử lý của bạn
                     >
                       {item}
                     </button>
@@ -172,7 +210,7 @@ function SuitableElement({ compatible, conflicting }) {
                   <li key={index} className="mb-2 text-center">
                     <button
                       className={`px-4 py-2 mb-2 rounded shadow ${colorMapping1[item] || "bg-black text-white"}`}
-                      onClick={() => setPercent((prev) => Math.max(prev - 10, 0))} // Thay bằng logic xử lý của bạn
+                      onClick={() => handleElementClick("conflicting")} // Thay bằng logic xử lý của bạn
                     >
                       {item}
                     </button>
@@ -182,9 +220,14 @@ function SuitableElement({ compatible, conflicting }) {
             </div>
 
           </div>
+          <div className="mt-6">
+            <h3 className="text-lg font-bold">Calculated Koi Fish Quantity:</h3>
+            <p className="text-lg">{count} Koi Fish</p>
+          </div>
 
           {/* Thanh tiến trình */}
-          <Progress percent={percent} type="line" className="mt-6" strokeColor={conicColors} />
+          <Progress percent={percent.toFixed(2)} type="line" className="mt-6" strokeColor={conicColors} />
+
         </Flex>
       </Modal>
     </div>
