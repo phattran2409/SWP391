@@ -48,7 +48,6 @@ function AdviseColor({ element }) {
         setAdvice(result); // Update the advice state with the result
         setColors(colorOptions); // Update the colors state with the options
 
-        message.info(result); // Display the advice in a message box
     };
 
     return (
