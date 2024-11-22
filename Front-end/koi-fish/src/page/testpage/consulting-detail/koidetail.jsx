@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import api from "../../../config/axios";
 import { GiMetalBar } from "react-icons/gi";
 import { Link, useParams } from "react-router-dom";
+import { FaHeartCirclePlus } from "react-icons/fa6";
 import { IoBookSharp } from "react-icons/io5";
+import CardDetail from "../../../components/card-detail/carddetails";
 
 import {
   MdArrowBack,
@@ -16,6 +18,7 @@ import {
 import Navbar from "../../../components/navbar/Navbar";
 import "./animate.css";
 import { set } from "lodash";
+import { toast } from "react-toastify";
 
 const koiDetails = () => {
   const colors = [
@@ -56,6 +59,28 @@ const koiDetails = () => {
       setLoading(false);
     }
   };
+
+  const addToWishlist = async () => {
+    try {
+      const response = await api.post(`v1/user/addToWishList?itemId=${id}&wishlistType=fishkois`);
+  
+      if (response.status === 400) {
+        toast.info("Item already exists in your favorite list");
+      } else if (response.status === 200) {
+        toast.success("Item added to your favorite list successfully");
+      } else {
+        toast.warning("Unexpected response from server");
+      }
+    } catch (err) {
+      console.error(err);
+      if (err.response?.status === 400) {
+        toast.info("Item already exists in your favorite list");
+      } else {
+        toast.error("Failed to add item to your favorite list");
+      }
+    }
+  };
+  
 
   useEffect(() => {
     setLoading(true);
@@ -115,7 +140,7 @@ const koiDetails = () => {
         <div className="flex justify-between items-center mb-8">
           <Link
             to="/consulting"
-            className="text-red-600 flex items-center hover:text-red-500 transition-colors"
+            className="text-red-600 flex items-center hover:text-red-500 hover:underline transition-colors"
           >
             <MdArrowBack className="mr-2" />
             Back To Consulting
@@ -133,13 +158,49 @@ const koiDetails = () => {
               <img
                 src={koiDetail.image}
                 alt="Koi fish"
-                style={{ width: "350px", height: "500px" }}
-                className=" object-cover rounded-lg shadow-lg"
+                style={{ width: "450px", height: "700px" }}
+                className=" object-cover rounded-lg "
               />
               <div>
+                <div className="flex">
                 <h1 className="text-4xl font-bold mb-6 text-gray-800">
                   {koiDetail.koiName} Koi
                 </h1>
+                {koiDetail.elementID && (
+                      <span className="ml-2 mr-5 flex items-center">
+                        {fitWithElements[koiDetail.elementID - 1]?.icon && (
+                          <>
+                            {React.createElement(
+                              fitWithElements[koiDetail.elementID - 1].icon,
+                              {
+                                size: 40,
+                                style: {
+                                  color:
+                                    fitWithElements[koiDetail.elementID - 1]
+                                      .color,
+                                },
+                                className: "ml-5 mb-5",
+                              }
+                            )}
+                            <span className="mb-5"
+                              style={{
+                                color:
+                                  fitWithElements[koiDetail.elementID - 1]
+                                    .color,
+                                marginLeft: "8px",
+                                fontSize: "1.5rem",
+                              }}
+                            >
+                              {fitWithElements[koiDetail.elementID - 1].name}
+                            </span> 
+                          </>
+                        )}
+                      </span>
+                    )}
+                    <button
+                      onClick={addToWishlist}
+                      className="ml-auto bg-red-600 text-white rounded-full p-2 hover:bg-red-500 transition-colors"><FaHeartCirclePlus size={30} /></button>
+                </div>
                 <div className="mb-6">
                   <div className="flex ">
                     <h3 className="text-2xl font-semibold text-gray-700">
@@ -175,42 +236,10 @@ const koiDetails = () => {
                           </div>
                         ))}
                   </div>
-                  <div className="flex ">
-                    <h3 className="text-2xl font-semibold text-gray-700">
-                      Fit With Element
-                    </h3>
-                    {koiDetail.elementID && (
-                      <span className="ml-2 flex items-center">
-                        {fitWithElements[koiDetail.elementID - 1]?.icon && (
-                          <>
-                            {React.createElement(
-                              fitWithElements[koiDetail.elementID - 1].icon,
-                              {
-                                size: 30,
-                                style: {
-                                  color:
-                                    fitWithElements[koiDetail.elementID - 1]
-                                      .color,
-                                },
-                                className: "ml-2",
-                              }
-                            )}
-                            <span
-                              style={{
-                                color:
-                                  fitWithElements[koiDetail.elementID - 1]
-                                    .color,
-                                marginLeft: "8px",
-                                fontSize: "1.2rem",
-                              }}
-                            >
-                              {fitWithElements[koiDetail.elementID - 1].name}
-                            </span>
-                          </>
-                        )}
-                      </span>
-                    )}
-                  </div>
+                 
+              
+                 
+                  <CardDetail elementID={koiDetail.elementID} />
                 </div>
               </div>
             </div>
@@ -227,7 +256,7 @@ const koiDetails = () => {
             <h2 className="text-3xl font-bold mb-6 text-gray-800">
               Related Kois
             </h2>
-            <div className="animate-fadeIn grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {datas.map((koi, index) => (
                 <Link
                   key={koi._id || index}
@@ -237,7 +266,7 @@ const koiDetails = () => {
                   <img
                     src={koi.image}
                     alt={`Image of ${koi.koiName}`}
-                    className="w-full h-50 object-cover rounded-lg mb-4"
+                    className="w-full h-64 object-contain rounded-lg mb-4"
                   />
                   <h3 className="text-xl font-semibold mb-2 text-gray-700">
                     {koi.koiName}

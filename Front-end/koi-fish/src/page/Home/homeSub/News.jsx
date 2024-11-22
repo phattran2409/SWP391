@@ -82,7 +82,9 @@ const NewsComponent = () => {
               <h3 className="text-3xl max-[1300px]:text-xl font-bold text-black">{posts[0].title}</h3>
               <p className="text-sm text-gray-600 mt-4 max-[1300px]:mt-1">Updated at: {new Date(posts[0].updatedAt).toLocaleString()}</p>
               <p className="text-sm text-gray-600 mt-4 max-[1300px]:mt-1">Author: {posts[0].author.userName}</p>
-              <p className="text-justify text-l max-[1300px]:text-base max-[1024px]:text-sm mr-4 text-black mt-4 max-[1300px]:mt-1">{posts[0].context.replace(/<[^>]+>/g, '')}</p>
+              <p className="text-justify text-l max-[1300px]:text-base max-[1024px]:text-sm mr-4 text-black mt-4 max-[1300px]:mt-1">
+              {truncateText(posts[0].context.replace(/<[^>]+>/g, ''), 480)}
+                </p>
             </a>
           </div>
         </div>
@@ -116,7 +118,7 @@ const NewsComponent = () => {
                 </div>
 
                 {/* Fix height for content */}
-                <p className="text-sm text-left text-justify text-black mt-2 h-24 overflow-hidden">
+                <p className="text-sm text-justify text-black mt-2 h-24 overflow-hidden">
                   {truncateText(post.context.replace(/<[^>]+>/g, ''), 200)}
                 </p>
               </a>

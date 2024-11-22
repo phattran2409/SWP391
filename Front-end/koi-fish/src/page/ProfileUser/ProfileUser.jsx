@@ -106,24 +106,35 @@ function ProfileUser() {
                     className="tab-label"
                     sx={{ color: "white", fontWeight: "bold" }}
                   />
+                    {user?.provider ?(
+                    <Tab label="Change Email" value="2" disabled />
+                  ) : (
                   <Tab
                     label="Change Email"
                     value="2"
                      className="tab-label"
                     sx={{ color: "white", fontWeight: "bold" }}
                   />
+                )}
+                    {user?.provider ?(
+                    <Tab label="Change Password" value="3" disabled />
+                  ) : ( 
                   <Tab
                     label="Change Password"
                     value="3"
                      className="tab-label"
                     sx={{ color: "white", fontWeight: "bold" }}
                   />
+                )}
+
+                
                   <Tab
                     label="Notification"
                     value="4"
                      className="tab-label"
                     sx={{ color: "white", fontWeight: "bold" }}
-                  />               
+                  />  
+                           
                     <Tab
                       label="Order History"
                       value="6"

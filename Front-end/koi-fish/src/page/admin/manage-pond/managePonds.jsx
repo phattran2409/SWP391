@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import api from "../../../config/axios";
+import axios from "axios";
+import { FaCamera } from "react-icons/fa";
 import {
   Button,
   Modal,
@@ -13,9 +15,9 @@ import {
   Upload,
 } from "antd";
 import { toast } from "react-toastify";
-import { castArray, debounce } from "lodash";
+import { debounce } from "lodash";
 import { PlusOutlined } from "@ant-design/icons";
-import uploadFile from "../../../utils/file";
+import { data } from "autoprefixer";
 
 function ManagePonds() {
   const [datas, setDatas] = useState([]);
@@ -27,12 +29,10 @@ function ManagePonds() {
     pageSize: 10, //(limit mặc định)
     total: 0, // ban đầu là 0
   });
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
-  const [fileList, setFileList] = useState([]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [imagePreview, setImagePreview] = useState("");
   const [searchValue, setSearchValue] = useState("");
-  const [searchOption, setSearchOption] = useState("direction");
-  const [formSearch] = Form.useForm();
+  const [searchOption, setSearchOption] = useState("");
   //Get
   const fetchData = async (
     page = pagination.current,
@@ -58,17 +58,35 @@ function ManagePonds() {
     }
   };
 
+  const uploadImage = async (file) => {
+    const url = `https://api.cloudinary.com/v1_1/ddqgjy50x/upload`;
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "uploadpond");
+
+    try {
+      const response = await axios.post(url, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      // Update the form with the image URL
+      form.setFieldsValue({ image: response.data.secure_url });
+
+      // Show image preview
+      setImagePreview(response.data.secure_url);
+
+      toast.success("Image uploaded successfully");
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const handleSubmit = async (values) => {
     console.log(values);
-
-
-     if (fileList.length > 0) {
-       const file = fileList[0];
-       console.log(file);
-
-       const url = await uploadFile(file.originFileObj);
-       values.image = url;
-     }
 
     try {
       setLoading(true);
@@ -105,6 +123,7 @@ function ManagePonds() {
     }
   };
 
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -119,9 +138,10 @@ function ManagePonds() {
   // Handle Search
   const handleSearch = async (e) => {
     try {
-      const { value } = e.target;
+      console.log("search option " + searchOption);
+      console.log("search Value" + e.target.value);
       setSearchValue(e.target.value);
-      debouncedSearch(value);
+      debouncedSearch(e.target.value, searchOption);
     } catch (err) {
       toast.error(err);
     }
@@ -133,25 +153,26 @@ function ManagePonds() {
       console.log(value);
       callApiSearch(value);
     }, 500),
-    []
+    [searchOption]
   ); // 500ms delay
 
-  // call api cho viec search ca koi
   const callApiSearch = async (value) => {
     try {
-      // kiem tra xem value nhap vao co la empty
+      console.log("search option" + searchOption);
       if (value === "") {
         fetchData(pagination.current, pagination.pageSize);
       }
       const res = await api.get(
-        `v1/pond/searchPond?${searchOption}=${value}&page=${pagination.current}&limit=${pagination.pageSize}`
+        `v1/pond/searchPond?${searchOption || "shape"}=${value}&page=${
+          pagination.current
+        }&limit=${pagination.pageSize}`
       );
 
-      console.log("api search" + res.data.data);
+      console.log(res.data);
       setDatas(res.data.data);
       setPagination({
-        current: res.data.currentPage, // cập nhật trang hiện tại
-        total: res.data.totalDocuments, // tổng số cá
+        current: res.data.currentPage,
+        total: res.data.totalDocuments,
         pageSize: 10,
       });
     } catch (err) {
@@ -162,45 +183,6 @@ function ManagePonds() {
       toast.error(err.res.data);
     }
   };
-
-  // upLoad Image
-  const getBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
-
-  const handlePreview = async (file) => {
-    console.log("Preview file  " + file);
-
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-    setPreviewImage(file.url || file.preview);
-    setPreviewOpen(true);
-  };
-
-  const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
-  const uploadButton = (
-    <button
-      style={{
-        border: 0,
-        background: "none",
-      }}
-      type="button"
-    >
-      <PlusOutlined />
-      <div
-        style={{
-          marginTop: 8,
-        }}
-      >
-        Upload
-      </div>
-    </button>
-  );
 
   const columns = [
     {
@@ -253,6 +235,7 @@ function ManagePonds() {
         <>
           {image ? (
             <Image src={image} alt="pond" style={{ width: 100 }} />
+          
           ) : (
             <img
               src="https://placehold.co/100x100/png"
@@ -282,6 +265,7 @@ function ManagePonds() {
               <Button
                 type="primary"
                 onClick={() => {
+                  setImagePreview(pond.image);
                   setShowModal(true);
                   form.setFieldsValue(pond);
                 }}
@@ -308,29 +292,28 @@ function ManagePonds() {
 
   return (
     <div>
-      <div className="group-search flex">
-        {/* Search Option  */}
-        <Form form={formSearch} layout="inline">
-          {/* Select Search Criteria */}
-          <Form.Item name="searchBy" initialValue="Direction">
-            <Select
-              style={{ width: 150 }}
-              onChange={(value) => setSearchOption(value)}
-            >
-              <Option value="direction">Direction</Option>
-              <Option value="shape">Shape</Option>
-            </Select>
-          </Form.Item>
-        </Form>
+      <div className="group-search flex ">
+        <select
+          id="options"
+          onChange={(value) => {
+            console.log(value.target.value);
+            setSearchOption(value.target.value);
+          }}
+          className="border border-gray-500 mb-4 mr-2 rounded-lg"
+        >
+          <option value="" disabled></option>
+          <option value="shape">Shape</option>
+          <option value="direction">Direction</option>
+        </select>
 
         {/* searh  Name*/}
         <div className="search-name">
-          <label className="mr-4"> Search Name :</label>
+          <label className="mr-4"> Search :</label>
           <Input
             value={searchValue}
-            placeholder="Search  by name"
+            placeholder="Search  by option"
             style={{ width: 300, marginBottom: 20 }}
-            onChange={handleSearch}
+            onChange={(value) => handleSearch(value)}
           />
         </div>
       </div>
@@ -398,15 +381,17 @@ function ManagePonds() {
             <Input placeholder="Enter the shape of the pond" />
           </Form.Item>
 
-          <Form.Item 
-            
+          <Form.Item
             name="description"
             label="Description"
             rules={[
               { required: true, message: "Please enter the description!" },
             ]}
           >
-            <Input.TextArea placeholder="Enter a description of the Koi pond" style={{height:"100px"}} />
+            <Input.TextArea
+              placeholder="Enter a description of the Koi pond"
+              style={{ height: "100px" }}
+            />
           </Form.Item>
 
           <Form.Item
@@ -454,42 +439,40 @@ function ManagePonds() {
           >
             <Input placeholder="Enter the direction of the Koi pond" />
           </Form.Item>
-
-          {/* <Form.Item
+          <Form.Item
             name="image"
             label="Image"
-            rules={[{ required: true, message: "Please enter the image!" }]}
+            rules={[{ required: true, message: "Please upload an image!" }]}
           >
-            <Input placeholder="Enter the path or URL of the image" />
-          </Form.Item> */}
-
-          <Form.Item>
             <Upload
-              action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-              listType="picture-card"
-              fileList={fileList}
-              onPreview={handlePreview}
-              onChange={handleChange}
+              name="file"
+              showUploadList={false}
+              beforeUpload={(file) => {
+                setIsUploading(true); // show uploading state
+                uploadImage(file); // upload image to Cloudinary
+                return false; // prevent auto upload behavior
+              }}
             >
-              {fileList.length >= 8 ? null : uploadButton}
+              <Button icon={<FaCamera />}>Upload Image</Button>
             </Upload>
+
+            {/* Image Preview */}
+            {imagePreview && (
+              <div style={{ marginTop: "10px" }}>
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  style={{
+                    width: "100px",
+                    height: "100px",
+                    objectFit: "cover",
+                  }}
+                />
+              </div>
+            )}
           </Form.Item>
         </Form>
       </Modal>
-
-      {previewImage && (
-        <Image
-          wrapperStyle={{
-            display: "none",
-          }}
-          preview={{
-            visible: previewOpen,
-            onVisibleChange: (visible) => setPreviewOpen(visible),
-            afterOpenChange: (visible) => !visible && setPreviewImage(""),
-          }}
-          src={previewImage}
-        />
-      )}
     </div>
   );
 }

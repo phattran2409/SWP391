@@ -60,7 +60,7 @@ export default function Test() {
                                         <BlogBanner />
                                     </div>
                                     <div className="section">
-                                        <div className="mx-auto text-center w-full max-w-[90%]">
+                                        <div className="mx-auto text-left w-full max-w-[90%]">
                                             <div className="h-10" />
                                             <AnimationReveal>
                                                 <div className="h-10" />
@@ -69,12 +69,12 @@ export default function Test() {
                                             </AnimationReveal>
                                             <div className="h-10" />
                                         </div>
+                                        <Footer />
                                         
                                     </div>
-                                    <div className="section bg-black">
-                                    <Footer>
-                                    </Footer    >
-                                    </div>
+                                    
+                                    
+                                    
                                 </Fullpage.Wrapper>
                             </div>
                         );

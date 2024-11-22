@@ -85,7 +85,7 @@ const NewsTableColumns = ({ elementMap }) => {
       dataIndex: "postStatus",
       key: "postStatus",
       render: (status) =>
-        status ? <Tag color="green">Approved</Tag> : <Tag color="red">Rejected</Tag>,
+        status ? <Tag color="green">Approved</Tag> : <Tag color="yellow">Pending</Tag>,
       sorter: (a, b) => b.postStatus - a.postStatus, // Sort by status
     },
    

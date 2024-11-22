@@ -86,18 +86,16 @@ export function Notifications() {
           notifications.map((notification) => (
             <div
               key={notification._id}
-              className=" p-4 rounded-lg shadow-md flex items-center bg-white"
+              className=" p-4 rounded-lg  outline shadow-md flex items-center bg-white"
             >
-              <div className="flex-shrink-0">
-                <span className="w-2 h-2 rounded-full bg-current mr-2"></span>
-              </div>
-              <div className="flex">
-                <span className="mt-2 mr-4"><AiOutlineNotification color="black" size={30} /></span>
-                <p >{highlightContent(notification.content)}</p>
+             
+              <div className=" flex">
+                <span className="mt-2 mr-4 "><AiOutlineNotification color="black"  size={30} /></span>
+                <p className=" w-[300px]" >{highlightContent(notification.content)}</p>
               </div>
               <button
                 onClick={() => handleNotificationClick(notification._id)}
-                className="p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="p-2 flex-shrink-3  rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 <IoMdClose color="red" className="w-6 h-6" />
               </button>

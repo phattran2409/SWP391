@@ -34,44 +34,14 @@ function ManageNews() {
   const userData = localStorage.getItem("user");
   const parsedUser = JSON.parse(userData);
   const userId = parsedUser._id;
+  const userRole = parsedUser.admin;
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [createdAt, setCreatedAt] = useState("");
   const [updatedAt, setUpdatedAt] = useState("");
 
-  // const reactQuillRef = useRef(null);
-  useEffect(() => {
-    form.setFieldsValue({ context: content }); // Cập nhật giá trị vào form
-  }, [content, form]);
-  // Upload function
-  const uploadToCloudinary = async (file) => {
-    const cloudName = "ddqgjy50x";
-    const uploadPreset = "postAdmin";
-
-    if (!cloudName || !uploadPreset) {
-      throw new Error("Cloudinary configuration is missing.");
-    }
-
-    const url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", uploadPreset);
-
-    const response = await fetch(url, {
-      method: "POST",
-      body: formData,
-    });
-
-    const data = await response.json();
-    if (data.secure_url) {
-      return data.secure_url;
-    } else {
-      throw new Error(
-        data.error?.message || "Failed to upload image to Cloudinary"
-      );
-    }
-  };
+ 
 
   const fetchData = async (
     page = pagination.current,
@@ -97,57 +67,8 @@ function ManageNews() {
     }
   };
 
-  // Handle form submission
-  const handleSubmit = async (values) => {
-    try {
-      setLoading(true);
-
-      if (thumbnailFile) {
-        values.imageThumbnail = await uploadToCloudinary(thumbnailFile);
-      } else {
-        // If editing and no new thumbnail is uploaded, retain the existing URL
-        if (values._id) {
-          const existingPost = datas.find((post) => post._id === values._id);
-          if (existingPost) {
-            values.imageThumbnail = existingPost.imageThumbnail;
-          }
-        }
-      }
-
-      if (values._id) {
-        // Update existing post
-        await api.put(`v1/post/updatePost/${values._id}`, values);
-        toast.success("News updated successfully!");
-      } else {
-        // Create new post
-        await api.post("v1/post/createPost", values);
-        toast.success("News created successfully!");
-      }
-
-      fetchData();
-      form.resetFields();
-      setThumbnailFile(null); // Reset the file input
-      setExistingThumbnail(""); // Reset existing thumbnail
-      setShowModal(false);
-    } catch (err) {
-      toast.error(
-        err.response?.data?.data || err.message || "An error occurred"
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Handle delete action
-  const handleDelete = async (_id) => {
-    try {
-      await api.delete(`v1/post/deletePost/${_id}`);
-      toast.success("Deleted successfully!");
-      fetchData();
-    } catch (err) {
-      toast.error(err.response?.data?.data || "An error occurred");
-    }
-  };
+ 
+ 
 
   const handleStatus = async (_id, statusData) => {
     try {
@@ -248,19 +169,9 @@ function ManageNews() {
           }}
           style={{ marginRight: 8, background: "#42b6f5" }}
         >
-          Edit
+          Review
         </Button>
-        <Popconfirm
-          title="Delete"
-          description="Do you want to delete this news?"
-          onConfirm={() => handleDelete(_id)}
-          okText="Yes"
-          cancelText="No"
-        >
-          <Button type="primary" danger>
-            Delete
-          </Button>
-        </Popconfirm>
+      
         <Popconfirm
           title="Update Status"
           description="Do you want to approve or reject this news?"
@@ -282,11 +193,11 @@ function ManageNews() {
           <Button
             type="primary"
             style={{
-              background: "#FFD700",
+              background: "green",
               marginLeft: 8,
             }}
           >
-            Censorship
+            Publish Post
           </Button>
         </Popconfirm>
       </>
@@ -307,7 +218,7 @@ function ManageNews() {
       <div className="group-search flex">
         {/* Search News by Title */}
         <div className="search-name">
-          <label className="mr-4"> Search blog :</label>
+          <label className="mr-4"> Search Blog :</label>
           <Input
             value={searchValue}
             placeholder="Search blog by title"
@@ -317,23 +228,7 @@ function ManageNews() {
         </div>
       </div>
 
-      <Button
-        type="primary"
-        onClick={() => {
-          form.resetFields(); // Clear form fields when adding a new post
-          setThumbnailFile(null); // Reset thumbnail file
-          setExistingThumbnail(""); // Reset existing thumbnail
-          setShowModal(true);
-          setTitle(""); // Set title for preview
-          setContent("");
-          setAuthor("admin");
-          setCreatedAt(""); // Set createdAt for preview
-          setUpdatedAt(""); // Set updatedAt for preview
-        }}
-        style={{ marginBottom: 16 }}
-      >
-        Create New Post
-      </Button>
+ 
 
       <Table
         dataSource={datas}
@@ -355,10 +250,10 @@ function ManageNews() {
       <NewsModal
         showModal={showModal}
         setShowModal={setShowModal}
-        form={form}
-        handleSubmit={handleSubmit}
+        form={form}      
         loading={loading}
         userId={userId}
+        userRole={userRole}
         thumbnailFile={thumbnailFile}
         setThumbnailFile={setThumbnailFile}
         existingThumbnail={existingThumbnail}
@@ -367,7 +262,6 @@ function ManageNews() {
         setTitle={setTitle}
         content={content}
         setContent={setContent}
-        uploadToCloudinary={uploadToCloudinary}
         author={author}
         createdAt={createdAt}
         updatedAt={updatedAt}

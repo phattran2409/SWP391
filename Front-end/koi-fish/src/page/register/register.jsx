@@ -10,6 +10,7 @@ import { ToastContainer, toast } from "react-toastify";
 
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
+import "react-toastify/dist/ReactToastify.css";
 
 import "react-toastify/dist/ReactToastify.css";
 import { Tag } from "antd";
@@ -30,6 +31,7 @@ function RegisterPage() {
     try {
       // values.role = "CUSTOMER"; //cho nay dang de tam la customer de test
       console.log(values);
+
       console.log(_elementUser);
       const elementID = _elementUser.elementID;  
      
@@ -41,6 +43,7 @@ function RegisterPage() {
       toast.success("Successfully register new account!");
       console.log(response.data);
        navigate("/login?status=register_success");
+
     } catch (err) {
       // console.log
       console.log(err.response.data.message);
@@ -82,13 +85,16 @@ function RegisterPage() {
         });
       }
 
+
       navigate("/?status=login_gg_success", {
         state: { message: JSON.stringify(response.data.message) },
       });
+
     } catch (err) {
       toast.error(err.response.data);
     }
   };
+
   // call api calculate element 
      const onFinish = async (value) => {
        // Calculate Feng Shui based on user input
@@ -127,8 +133,6 @@ function RegisterPage() {
        } 
      };
     
-
-
 
      const  elementColor = (id) => {
       const color = {
@@ -180,15 +184,29 @@ function RegisterPage() {
               label={<span className="text-[#716767] pb-0">Username</span>}
               rules={[
                 { required: true, message: "Please input your username!" },
+                {
+                  pattern: /^[a-zA-Z]+$/,
+                  message: "Username can only contain letters from a-z and A-Z without spaces or accents!",
+                },
+                {
+                  min: 2,
+                  max: 40,
+                  message: "Username must be at least 2, at most 40 characters!",
+                },
               ]}
             >
               <Input onChange={(e) => setName(e.target.value)} />
             </Form.Item>
+
             <Form.Item
               name="name"
               label={<span className="text-[#716767] pb-0">Full Name</span>}
               rules={[
                 { required: true, message: "Please input your full name!" },
+                {
+                  max: 40,
+                  message: "Name must be at most 40 characters!",
+                },
               ]}
             >
               <Input onChange={(e) => setName(e.target.value)} />
@@ -210,12 +228,11 @@ function RegisterPage() {
               </Form.Item>
               <Form.Item
                 name="birthDate"
-                label={<span className="custom-label">Year of birth</span>}
+                label={<span className="custom-label">Date of birth</span>}
                 className="w-1/2"
                 rules={[
                   {
                     required: true,
-                    message: "Please input your year of birth!",
                   },
                 
                   {
@@ -242,6 +259,7 @@ function RegisterPage() {
                   },
                 ]}
               >
+
                 {/* <Input
                   placeholder="YYYY"
                   onChange={(e) => setYear(e.target.value)}
@@ -261,6 +279,7 @@ function RegisterPage() {
                 className={`w-1/2 ${_elementUser ? "block" : "hidden"}`}
               > 
                  <Tag color={elementColor(_elementUser?.elementID)}>{_elementUser?.element}</Tag>  
+
               </Form.Item>
             </div>
             <Form.Item
@@ -289,11 +308,11 @@ function RegisterPage() {
                 },
                 {
                   validator: (_, value) => {
-                    const phoneRegex = /^[0-9]{10}$/;
+                    const phoneRegex = /^0{1}[0-9]{9}$/;
                     if (!phoneRegex.test(value)) {
                       return Promise.reject(
                         new Error(
-                          "Please enter a valid phone number with 10 digits!"
+                          "Please enter a valid phone number with 10 digits starting with 0!"
                         )
                       );
                     }
@@ -318,8 +337,8 @@ function RegisterPage() {
 
                 {
                   min: 6,
-                  max: 20,
-                  message: "Password must be between 6 and 20 characters!",
+                  max: 40,
+                  message: "Password must be between 6 and 40 characters!",
                 },
               ]}
               hasFeedback
@@ -349,6 +368,7 @@ function RegisterPage() {
             >
               <Input.Password onChange={(e) => setPassword(e.target.value)} />
             </Form.Item>
+
 
             {/* // <Form.Item style={{ marginTop: "28px" }}>
             //   <Button

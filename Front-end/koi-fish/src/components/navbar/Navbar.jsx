@@ -1,23 +1,26 @@
 import { useState, useEffect } from "react";
-import { Search, Menu as Menu1, X, User } from "lucide-react";
-import { json, Link, useNavigate } from "react-router-dom";
-import { Menu, Avatar, Button, Modal, Image } from "antd";
+import { Menu as Menu1, X } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Menu, Avatar, Modal } from "antd";
 import api from "../../config/axios.js";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import CSS của Toastify
 import {
   UserOutlined,
-  CodeOutlined,
   LogoutOutlined,
   StockOutlined,
   ExclamationCircleOutlined,
+
+  HeartOutlined,
+
   HistoryOutlined,
+
 } from "@ant-design/icons";
 import SuitableHistory from "./SuitableHistory/suitableHistory";  
 import SearchBar from "../searchbar/SearchBar";
 
 const Navbar = () => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [isModalLogOut, setIsModalLogOut] = useState(null); 
@@ -45,14 +48,16 @@ const Navbar = () => {
   useEffect(() => {
     const storeUser = JSON.parse(localStorage.getItem("user"));
     if (storeUser) {
+
      fetchUserData(storeUser._id);
     setUser(storeUser); 
     
     }
     else {
+
       setUser(null);
-     }
-  }, []); 
+    }
+  }, []);
 
   const fetchUserData = async (id) => {
     try {
@@ -61,10 +66,8 @@ const Navbar = () => {
       setUser(user);
     } catch (error) {
       console.error("Error fetching user data:", error);
-    
     }
-  }
-
+  };
 
   // show modal
   const showModal = () => {
@@ -81,7 +84,7 @@ const Navbar = () => {
     localStorage.removeItem("listSuitable");
     setUser(null);
     navigate("/home?status=logout_success");
-     
+
     // toast.success("Logged out successfully");
   };
   // khi an cancle
@@ -168,8 +171,6 @@ const Navbar = () => {
                     </p>
                   </Link>
                 </li>
-              
-              
               </ul>
             </li>
 
@@ -178,7 +179,6 @@ const Navbar = () => {
                 Evaluate
               </p>
               <ul className="absolute left-0 hidden group-hover:block bg-black ">
-               
                 <li>
                   <Link to="/showfish">
                     <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
@@ -196,7 +196,6 @@ const Navbar = () => {
               </ul>
             </li>
 
-
             <li>
               <Link to={"/contactus"}>
                 <p className="text-white hover:text-neutral-500 transition duration-300 cursor-pointer">
@@ -204,13 +203,11 @@ const Navbar = () => {
                 </p>
               </Link>
             </li>
-
           </ul>
 
           <div className="h-6 border-l border-neutral-500 mx-4"></div>
 
           <div className="hidden lg:flex items-center space-x-6">
-
             <SearchBar />
           </div>
           {!user ? (
@@ -231,7 +228,7 @@ const Navbar = () => {
           ) : (
             // MENU USER 
             <>
-              <Menu>
+              <Menu className="rounded">
                 <Menu.SubMenu
                   title={
                     <>
@@ -254,6 +251,11 @@ const Navbar = () => {
                       <Link to={"/dashboard"}>Dashboard</Link>
                     </Menu.Item>
                   )}
+
+                  <Menu.Item key="project">
+                    <HeartOutlined className="pr-2" />
+                    <Link to={"/wishList"}>Favorites</Link>
+                  </Menu.Item>
 
                   <Menu.Item key="project">
                     <UserOutlined className="pr-2" />
@@ -294,8 +296,9 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       <div
-        className={` lg:hidden fixed top-0 right-0 w-64 h-full bg-black z-50 p-6 transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "translate-x-full"
-          }`}
+        className={` lg:hidden fixed top-0 right-0 w-64 h-full bg-black z-50 p-6 transform transition-transform duration-300 ${
+          isOpen ? "translate-x-0" : "translate-x-full"
+        }`}
       >
         <div className="relative w-full h-full">
           <button
@@ -346,22 +349,18 @@ const Navbar = () => {
               <ul className=" left-0 hidden group-hover:flex bg-black ">
                 <li>
                   <Link to="/news">
-
                     <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
                       News
                     </p>
                   </Link>
                 </li>
                 <li>
-
                   <Link to="/blog">
-
                     <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
                       Blog
                     </p>
                   </Link>
                 </li>
-
               </ul>
             </li>
 
@@ -370,12 +369,10 @@ const Navbar = () => {
                 Evaluate
               </p>
               <ul className=" left-0 hidden group-hover:flex bg-black ">
-              
-               
                 <li>
                   <Link to="/showfish">
                     <p className="py-2 px-5 text-white hover:bg-neutral-800 hover:text-neutral-300 transition duration-300 cursor-pointer hover:border-white hover:border-2">
-                      Koi 
+                      Koi
                     </p>
                   </Link>
                 </li>
@@ -386,7 +383,6 @@ const Navbar = () => {
                     </p>
                   </Link>
                 </li>
-
               </ul>
             </li>
 
@@ -399,7 +395,6 @@ const Navbar = () => {
                 Contact Us
               </a>
             </li>
-
           </ul>
 
           {/* Login and Signup in Mobile Menu */}
@@ -420,7 +415,7 @@ const Navbar = () => {
             </div>
           ) : (
             <>
-              <div className="absolute bottom-0 w-40">
+              <div className="absolute rounded bottom-0 w-40">
                 <Menu>
                   <Menu.SubMenu
                     title={
@@ -446,6 +441,10 @@ const Navbar = () => {
                         <Link to={"/dashboard"}>Dashboard</Link>
                       </Menu.Item>
                     )}
+                    <Menu.Item key="project">
+                    <HeartOutlined className="pr-2" />
+                    <Link to={"/wishList"}>Favorites</Link>
+                  </Menu.Item>
                     <Menu.Item key="about-us">
                       <a href="/profile">
                         <UserOutlined className="pr-2" /> Profile

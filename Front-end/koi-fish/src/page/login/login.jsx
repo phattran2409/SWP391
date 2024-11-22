@@ -114,7 +114,7 @@ function LoginPage() {
           <Form.Item
             label={
               <label className="text-gray-500 mb-1 block">
-                User name or email address
+                Username
               </label>
             }
             name="userName" // cho nay dang de phone de test xong se doi lai member

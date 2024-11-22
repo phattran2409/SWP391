@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import api from "../../../config/axios";
+import { FaCamera } from "react-icons/fa";
 import {
   Button,
   Modal,
@@ -14,18 +15,18 @@ import {
 } from "antd";
 import { toast } from "react-toastify";
 import { PlusOutlined } from "@ant-design/icons";
-import uploadFile from "../../../utils/file";
-import { castArray, debounce } from "lodash";
-import moment from "moment";
+import {  debounce } from "lodash";
+import axios from "axios";
+
 
 function ManageKoiFish() {
   const [datas, setDatas] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [form] = Form.useForm();
-  const [formSearch ] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
+
+  const [imagePreview, setImagePreview] = useState("");
   const [fileList, setFileList] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [pagination, setPagination] = useState({
@@ -35,8 +36,35 @@ function ManageKoiFish() {
   });
 
   const [selectedColor , setSelectColor]  = useState([]);
-  const [searchOption, setSearchOption] = useState("Shape");
+ 
 
+  const uploadImage = async (file) => {
+    const url = `https://api.cloudinary.com/v1_1/ddqgjy50x/upload`;
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "uploadkoi");
+
+    try {
+      const response = await axios.post(url, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      // Update the form with the image URL
+      form.setFieldsValue({ image: response.data.secure_url });
+
+      // Show image preview
+      setImagePreview(response.data.secure_url);
+
+      toast.success("Image uploaded successfully");
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   //Get
   const fetchData = async (
@@ -68,16 +96,7 @@ function ManageKoiFish() {
   const handleSubmit = async (values) => {
     console.log(values);
 
-    //truoc khi xu li them
-    //upload anh len truoc
-    if (fileList.length > 0) {
-      const file = fileList[0];
-      console.log(file);
-
-      const url = await uploadFile(file.originFileObj);
-      values.image = url;
-    }
-    //day data xuong
+   
     try {
       setLoading(true);
 
@@ -103,21 +122,7 @@ function ManageKoiFish() {
     }
   };
 
-  const getBase64 = (file) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
-
-  const handlePreview = async (file) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-    setPreviewImage(file.url || file.preview);
-    setPreviewOpen(true);
-  };
+  
 
   const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
   const uploadButton = (
@@ -200,29 +205,38 @@ function ManageKoiFish() {
   };
   // call api search color
   const handleSearchColor = async (value) => {
-    console.log("func search color : " + typeof value);
+    console.log("func search color:", value);
     setSelectColor(value);
+  
+    // Use the updated `value` directly to create the query string
+    const queryString = value.join(",");
+  
     try {
-      const queryString = selectedColor.join(",");
-      if (selectedColor.length < 0) {
+      if (value.length === 0) {
+        // Fetch default data if no color is selected
         fetchData(pagination.current, pagination.pageSize);
+      } else {
+        // Call the API with the selected colors
+        const res = await api.get(
+          `v1/fish/search?searchColor=${queryString}&page=${pagination.current}&limit=${pagination.pageSize}`
+        );
+        console.log("API response:", res.data.data);
+  
+        // Update state with API response
+        setDatas(res.data.data);
+        setPagination({
+          current: res.data.currentPage, // update current page
+          total: res.data.totalDocuments, // total fish count
+          pageSize: 10,
+        });
       }
-      const res = await api.get(
-        `v1/fish/search?searchColor=${queryString}&page=${pagination.current}&limit=${pagination.pageSize}`
-      );
-      console.log("respone API " + res.data.data);
-
-      setDatas(res.data.data);
-      setPagination({
-        current: res.data.currentPage, // cập nhật trang hiện tại
-        total: res.data.totalDocuments, // tổng số cá
-        pageSize: 10,
-      });
     } catch (err) {
-      if (err.status === 404) {
+      console.error(err);
+      if (err.response?.status === 404) {
         toast.error("Error 404: Resource not found");
+      } else {
+        toast.error("An error occurred");
       }
-      toast.error(err.res);
     }
   };
 
@@ -276,7 +290,7 @@ function ManageKoiFish() {
       title: "Image",
       dataIndex: "image",
       key: "image",
-      render: (image) => <img src={image} alt="Koi" style={{ width: 100 }} />,
+      render: (image) => <Image src={image} alt="Koi" style={{ width: 100 }} />,
     },
 
     {
@@ -296,6 +310,7 @@ function ManageKoiFish() {
           <Button
             type="primary"
             onClick={() => {
+              setImagePreview(koi.image);
               setShowModal(true);
               form.setFieldsValue(koi);
             }}
@@ -358,10 +373,8 @@ function ManageKoiFish() {
                 <Select.Option value="Black">Black</Select.Option>
                 <Select.Option value="Yellow">Yellow</Select.Option>
                 <Select.Option value="Blue">Blue</Select.Option>
-                <Select.Option value="Orange">Orange</Select.Option>
                 <Select.Option value="Green">Green</Select.Option>
-                <Select.Option value="Silver">Silver</Select.Option>
-                <Select.Option value="Gold">Gold</Select.Option>
+             
               </Select>
             </Form.Item>
           </Form>
@@ -448,10 +461,7 @@ function ManageKoiFish() {
               <Select.Option value="Black">Black</Select.Option>
               <Select.Option value="Yellow">Yellow</Select.Option>
               <Select.Option value="Blue">Blue</Select.Option>
-              <Select.Option value="Orange">Orange</Select.Option>
               <Select.Option value="Green">Green</Select.Option>
-              <Select.Option value="Silver">Silver</Select.Option>
-              <Select.Option value="Gold">Gold</Select.Option>
             </Select>
           </Form.Item>
           <Form.Item
@@ -467,33 +477,41 @@ function ManageKoiFish() {
               <Select.Option value="5">Earth</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item name="image" label="Image">
+          <Form.Item
+            name="image"
+            label="Image"
+            rules={[{ required: true, message: "Please upload an image!" }]}
+          >
             <Upload
-              action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-              listType="picture-card"
-              fileList={fileList}
-              onPreview={handlePreview}
-              onChange={handleChange}
+              name="file"
+              showUploadList={false}
+              beforeUpload={(file) => {
+                setIsUploading(true); // show uploading state
+                uploadImage(file); // upload image to Cloudinary
+                return false; // prevent auto upload behavior
+              }}
             >
-              {fileList.length >= 8 ? null : uploadButton}
+              <Button icon={<FaCamera />}>Upload Image</Button>
             </Upload>
+
+            {/* Image Preview */}
+            {imagePreview && (
+              <div style={{ marginTop: "10px" }}>
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  style={{
+                    width: "100px",
+                    height: "150px",
+                    objectFit: "cover",
+                  }}
+                />
+              </div>
+            )}
           </Form.Item>
         </Form>
       </Modal>
 
-      {previewImage && (
-        <Image
-          wrapperStyle={{
-            display: "none",
-          }}
-          preview={{
-            visible: previewOpen,
-            onVisibleChange: (visible) => setPreviewOpen(visible),
-            afterOpenChange: (visible) => !visible && setPreviewImage(""),
-          }}
-          src={previewImage}
-        />
-      )}
     </div>
   );
 }

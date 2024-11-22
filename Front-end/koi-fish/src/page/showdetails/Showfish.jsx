@@ -296,7 +296,7 @@ const ShowFish = () => {
                     }}
                     className="mt-4 px-4 py-2 max-[768px]:px-1 max-[768px]:py-1 text-black border-2 border-gray-300 rounded-lg bg-rounded-lg hover:bg-gray-200"
                   >
-                    assess
+                    Assess
                   </button>
 
                   <div className="show-suitable w-full  outline-1">
@@ -321,13 +321,14 @@ const ShowFish = () => {
           {visibleCount < fishs.length && (
             <button
               onClick={handleShowMore}
-              className="mt-10 px-4 py-2 text-black border rounded-lg hover:bg-gray-200"
+              className="mt-10 px-4 py-2 text-black border border-gray-500 hover:border-gray-800 rounded-lg hover:bg-gray-200"
             >
               Show More
             </button>
           )}
           {/* Modal */}
         </div>
+        
       </AnimationReveal>
       <Footer />
     </div>
@@ -335,3 +336,5 @@ const ShowFish = () => {
 };
 
 export default ShowFish;
+
+
