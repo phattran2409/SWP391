@@ -57,7 +57,7 @@ function SuitableQuantity({ element }) {
 
             <div className="flex flex-col items-start px-6">
                 <Button color="danger" variant="solid" onClick={showModal} className="w-72">
-                    Calculate
+                Advise
                 </Button>
             </div>
 
@@ -68,9 +68,9 @@ function SuitableQuantity({ element }) {
                 footer={[
                     <Button key="back" color="danger" variant="outlined" onClick={handleCancel}>
                         Close
-                    </Button>,
+                    </Button>,  
                     <Button key="submit" color="danger" variant="solid" onClick={adviseKoiAmount}>
-                        Calculate
+                        Advise
                     </Button>,
                 ]}
                 width={800}

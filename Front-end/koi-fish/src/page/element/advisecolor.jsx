@@ -5,6 +5,7 @@ function AdviseColor({ element }) {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [advice, setAdvice] = useState([]);
     const [colors, setColors] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -15,39 +16,44 @@ function AdviseColor({ element }) {
     };
 
     const adviseKoiAmount = () => {
+        setLoading(true);  // Bắt đầu loading
+
         let result = "";
         let colorOptions = [];
 
-        // Check the element and give advice on the appropriate koi colors
-        switch (element.name) {
-            case "Metal":
-                result = "Recommended Koi colors:";
-                colorOptions = ["white", "gold", "silver"];  // Multiple colors for Kim
-                break;
-            case "Wood":
-                result = "Recommended Koi colors:";
-                colorOptions = ["green", "blue", "black"];  // Multiple colors for Mộc
-                break;
-            case "Water":
-                result = "Recommended Koi colors:";
-                colorOptions = ["blue", "black", "white"];  // Multiple colors for Thủy
-                break;
-            case "Fire":
-                result = "Recommended Koi colors:";
-                colorOptions = ["red", "orange", "yellow", "pink", "purple"];  // Multiple colors for Hỏa
-                break;
-            case "Earth":
-                result = "Recommended Koi colors:"; 
-                colorOptions = ["orange", "brown", "yellow", "red", "purple"];  // Multiple colors for Thổ
-                break;
-            default:
-                result = "No advice available for this element.";
-                colorOptions = ["gray"]; // Default color if no element matched
-        }
+        // Giả lập quá trình xử lý mất 3 giây
+        setTimeout(() => {
+            // Check the element and give advice on the appropriate koi colors
+            switch (element.name) {
+                case "Metal":
+                    result = "Recommended Koi colors:";
+                    colorOptions = ["white", "gold", "silver"];
+                    break;
+                case "Wood":
+                    result = "Recommended Koi colors:";
+                    colorOptions = ["green", "blue", "black"];
+                    break;
+                case "Water":
+                    result = "Recommended Koi colors:";
+                    colorOptions = ["blue", "black", "white"];
+                    break;
+                case "Fire":
+                    result = "Recommended Koi colors:";
+                    colorOptions = ["red", "orange", "yellow", "pink", "purple"];
+                    break;
+                case "Earth":
+                    result = "Recommended Koi colors:"; 
+                    colorOptions = ["orange", "brown", "yellow", "red", "purple"];
+                    break;
+                default:
+                    result = "No advice available for this element.";
+                    colorOptions = ["gray"];
+            }
 
-        setAdvice(result); // Update the advice state with the result
-        setColors(colorOptions); // Update the colors state with the options
-
+            setAdvice(result);  // Cập nhật lời khuyên
+            setColors(colorOptions);  // Cập nhật màu sắc
+            setLoading(false);  // Tắt loading sau khi có kết quả
+        }, 3000);  // Đặt thời gian delay là 3 giây (3000ms)
     };
 
     return (
@@ -60,8 +66,13 @@ function AdviseColor({ element }) {
             </h2>
 
             <div className="flex flex-col items-start px-6">
-                <Button color="danger" variant="solid" onClick={showModal} className="w-72">
-                    Calculate
+                <Button 
+                    color="danger" 
+                    variant="solid" 
+                    onClick={showModal} 
+                    className="w-72"
+                >
+                    Advise
                 </Button>
             </div>
 
@@ -73,8 +84,14 @@ function AdviseColor({ element }) {
                     <Button key="back" color="danger" variant="outlined" onClick={handleCancel}>
                         Close
                     </Button>,
-                    <Button key="submit" color="danger" variant="solid" onClick={adviseKoiAmount}>
-                        Calculate
+                    <Button 
+                        key="submit" 
+                        color="danger" 
+                        variant="solid" 
+                        onClick={adviseKoiAmount}
+                        loading={loading}  // Hiển thị hiệu ứng loading khi đang xử lý
+                    >
+                        Advise
                     </Button>,
                 ]}
                 width={800}
