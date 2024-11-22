@@ -187,14 +187,15 @@ const fishController = {
     try {
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 20;
-
+      console.log(req.params.id);
       const skip = (page - 1) * limit;
       const koi = await fishkois
-      .find({ elementID: req.params.id})
-    
+      .find( {elementID :req.params.id})
       .skip(skip)
       .limit(limit);
-    const totalDocuments = await fishkois.countDocuments({ elementID: req.params.id });
+        console.log(koi);
+      
+    const totalDocuments = await fishkois.countDocuments({ elementID:   req.params.id} );
         res.status(200).json({
       currentPage: page,
       totalPages: Math.ceil(totalDocuments / limit),

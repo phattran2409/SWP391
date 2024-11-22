@@ -112,7 +112,9 @@ const useController = {
 
       console.log(idUser);
 
-      console.log(updateData);
+      console.log(updateData);  
+
+      return;
       // kiểm tra xem password có hash ko
       const regex = /^\$2[ayb]\$.{56}$/;
 
@@ -145,7 +147,8 @@ const useController = {
     try {
         const idUser = req.params.id
         const updateData = req.body
-     
+        console.log(updateData);
+    
         
          const updateUsr = await User.findByIdAndUpdate(idUser , updateData ,  {
           new : true , 
@@ -672,7 +675,7 @@ const useController = {
           const result  = await mutal.find( { 
             elementID_koi :  req.body.elementID_koi ,  
             elementID_user : req.body.elementID_user,
-          
+            
           })
           if (result.length  === 0) {
             return res.status(404).json({succes : 0 , Message : "not suitable"});
@@ -779,7 +782,7 @@ const useController = {
   }
 },
  
-getWishlist: async (req, res) => {
+getWishlist: async (req, res) => { 
   try {
     const userID = req.user.id;
     const wishlistType = req.query.wishlistType; 
