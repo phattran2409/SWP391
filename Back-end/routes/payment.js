@@ -29,7 +29,7 @@ router.post("/paymentMomo", async (req, res) => {
   var requestId = partnerCode + new Date().getTime(); ;
   var orderId =  requestId;   
   var orderInfo = "pay with MoMo";
-  var redirectUrl = "http://fengshuikoi.vercel.app/memberPackage/thankyou";
+  var redirectUrl = "http://localhost:5173/memberPackage/thankyou";
    var ipnUrl = "https://saved-saved-honeybee.ngrok-free.app/v1/pay/callback";
 
   // var ipnUrl = redirectUrl = "https://webhook.site/454e7b77-f177-4ece-8236-ddf1c26ba7f8";
