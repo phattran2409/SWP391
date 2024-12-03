@@ -27,23 +27,23 @@ function AdviseColor({ element }) {
             switch (element.name) {
                 case "Metal":
                     result = "Recommended Koi colors:";
-                    colorOptions = ["white", "gold", "silver"];
+                    colorOptions = ["blue", "gold", "silver", "black"];
                     break;
                 case "Wood":
                     result = "Recommended Koi colors:";
-                    colorOptions = ["green", "blue", "black"];
+                    colorOptions = ["green", "blue", "black", "red"];
                     break;
                 case "Water":
                     result = "Recommended Koi colors:";
-                    colorOptions = ["blue", "black", "white"];
+                    colorOptions = ["blue", "black", "silver", "green"];
                     break;
                 case "Fire":
                     result = "Recommended Koi colors:";
-                    colorOptions = ["red", "orange", "yellow", "pink", "purple"];
+                    colorOptions = ["red", "gold", "green",];
                     break;
                 case "Earth":
                     result = "Recommended Koi colors:"; 
-                    colorOptions = ["orange", "brown", "yellow", "red", "purple"];
+                    colorOptions = ["gold", "silver", "red" ];
                     break;
                 default:
                     result = "No advice available for this element.";

@@ -50,6 +50,7 @@ function MemberPackage() {
   // mỗi lần load page sẽ lấy về user trong local Stroage
   useEffect(() => {
     const savedMember = localStorage.getItem("user");
+    
 
     if (savedMember) {
       setUser(JSON.parse(savedMember)); // Set member from localStorage if available
@@ -98,6 +99,7 @@ function MemberPackage() {
           window.location.href = redirectUrl;
         } else {
           throw new Error("Redirect URL not found in payment response");
+          
         }
       }
     } catch (err) {

@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-unused-vars
-import React from "react";
+import React, { useEffect } from "react";
 import AuthenTemplate from "../../components/authen-template/authenTemplate";
 import { Form, Input, Button, Divider, Typography } from "antd";
 
@@ -34,7 +34,7 @@ function LoginPage() {
       if (admin) {
         navigate("/dashboard");
       } else {
-        navigate("/");
+        navigate("/?status=login_gg_success");
       }
     } catch (err) {
       console.log(err);
@@ -62,13 +62,15 @@ function LoginPage() {
 
   // show message login success
 
-  
-  const status = searchParams.get("status");
-  console.log(status); 
-  if (status === "register_success") {
-    toast.success("Register success");
-  } 
- 
+  useEffect(() => {
+      const status = searchParams.get("status");
+      console.log(status);
+      if (status === "register_success") {
+        toast.success("Register success");
+      } 
+
+  } , [])
+
   
   const sendTokenToAPI = async (data) => {
     console.log(import.meta.env.API_SIGNIN);
@@ -112,11 +114,7 @@ function LoginPage() {
 
         <Form labelCol={{ span: 24 }} onFinish={handleLogin}>
           <Form.Item
-            label={
-              <label className="text-gray-500 mb-1 block">
-                Username
-              </label>
-            }
+            label={<label className="text-gray-500 mb-1 block">Username</label>}
             name="userName" // cho nay dang de phone de test xong se doi lai member
             rules={[
               {
@@ -143,24 +141,26 @@ function LoginPage() {
             <Input.Password className="py-2" />
           </Form.Item>
 
-          <div className="footer-links">
-            <div className="account-info">
+          <div className="flex flex-col footer-links ">
+            <div className="flex justify-end w-full font-bold ">
+              <Typography.Link
+                onClick={handleLinktoForgetPass}
+                style={{ color: "black", textDecoration: "underline" }}
+              >
+                Forgot Password?
+              </Typography.Link>
+            </div>
+            <div className="flex flex-row justify-between w-full account-info mt-4">
               <label>Do not have an account?</label>
 
               <Typography.Link
                 onClick={handleLinktoSignUp}
-                style={{ color: "black", textDecoration: "underline" }}
+                style={{ color: "black", textDecoration: "underline"  }}
+                className="font-bold"
               >
                 Sign up
-                
               </Typography.Link>
             </div>
-            <Typography.Link
-              onClick={handleLinktoForgetPass}
-              style={{ color: "black", textDecoration: "underline" }}
-            >
-              Forgot Password?
-            </Typography.Link>
           </div>
 
           <Button

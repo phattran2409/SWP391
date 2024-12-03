@@ -185,13 +185,15 @@ function RegisterPage() {
               rules={[
                 { required: true, message: "Please input your username!" },
                 {
-                  pattern: /^[a-zA-Z]+$/,
-                  message: "Username can only contain letters from a-z and A-Z without spaces or accents!",
+                  pattern: /^[a-zA-Z0-9]+$/,
+                  message:
+                    "Username can only contain letters and number without spaces or accents!",
                 },
                 {
                   min: 2,
                   max: 40,
-                  message: "Username must be at least 2, at most 40 characters!",
+                  message:
+                    "Username must be at least 2, at most 40 characters!",
                 },
               ]}
             >
@@ -207,6 +209,11 @@ function RegisterPage() {
                   max: 40,
                   message: "Name must be at most 40 characters!",
                 },
+                {
+                  pattern: /^[a-zA-Z\s]+$/,
+                  message:
+                    "Fullname can only contain letters from a-z and A-Z without accents!",
+                },
               ]}
             >
               <Input onChange={(e) => setName(e.target.value)} />
@@ -220,7 +227,10 @@ function RegisterPage() {
               >
                 <Select
                   placeholder="Select"
-                  onChange={(value) => { setGender(value); setIsBlockBirthDate(false)}}
+                  onChange={(value) => {
+                    setGender(value);
+                    setIsBlockBirthDate(false);
+                  }}
                 >
                   <Option value="0">Male</Option>
                   <Option value="1">Female</Option>
@@ -234,7 +244,7 @@ function RegisterPage() {
                   {
                     required: true,
                   },
-                
+
                   {
                     validator: (_, value) => {
                       if (!value) {
@@ -259,7 +269,6 @@ function RegisterPage() {
                   },
                 ]}
               >
-
                 {/* <Input
                   placeholder="YYYY"
                   onChange={(e) => setYear(e.target.value)}
@@ -270,16 +279,18 @@ function RegisterPage() {
                     onFinish(value);
                   }}
                   format={"DD-MM-YYYY"}
-                  disabled = {isBlockBirthDate}
+                  disabled={isBlockBirthDate}
                 />
                 {/* Show element */}
-              </Form.Item> 
-              <Form.Item name="elementID"
+              </Form.Item>
+              <Form.Item
+                name="elementID"
                 label={<span className="custom-label">Element</span>}
                 className={`w-1/2 ${_elementUser ? "block" : "hidden"}`}
-              > 
-                 <Tag color={elementColor(_elementUser?.elementID)}>{_elementUser?.element}</Tag>  
-
+              >
+                <Tag color={elementColor(_elementUser?.elementID)}>
+                  {_elementUser?.element}
+                </Tag>
               </Form.Item>
             </div>
             <Form.Item
@@ -346,7 +357,7 @@ function RegisterPage() {
               <Input.Password onChange={(e) => setPassword(e.target.value)} />
             </Form.Item>
             <Form.Item
-              name="password"
+              name="c_password"
               label={<span className="custom-label ">Confirm password</span>}
               rules={[
                 {
@@ -368,7 +379,6 @@ function RegisterPage() {
             >
               <Input.Password onChange={(e) => setPassword(e.target.value)} />
             </Form.Item>
-
 
             {/* // <Form.Item style={{ marginTop: "28px" }}>
             //   <Button

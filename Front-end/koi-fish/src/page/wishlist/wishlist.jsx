@@ -87,55 +87,54 @@ function WishList() {
     <>
       <Navbar />
       <div className="flex min-h-screen bg-gray-100">
-      <div className="hidden lg:block w-64 bg-white p-6 border-r">
+        <div className="hidden lg:block w-64 bg-white p-6 border-r">
           <div className="flex flex-col items-center mb-6">
-          {users?.avatar ? (
-            <img
-              src={users.avatar}
-              className="w-20 h-20 rounded-full bg-gray-400 mb-2"
-              alt="User Avatar"
-            />
-          ) : (
-            <div className="w-20 h-20 rounded-full bg-gray-400 mb-2"></div>
-          )}
-          {users?.name ? (
-            <h2 className="font-semibold">{users.name}</h2>
-          ) : (
-            <h2 className="font-semibold">User</h2>
-          )}
+            {users?.avatar ? (
+              <img
+                src={users.avatar}
+                className="w-20 h-20 rounded-full bg-gray-400 mb-2"
+                alt="User Avatar"
+              />
+            ) : (
+              <div className="w-20 h-20 rounded-full bg-gray-400 mb-2"></div>
+            )}
+            {users?.name ? (
+              <h2 className="font-semibold">{users.name}</h2>
+            ) : (
+              <h2 className="font-semibold">User</h2>
+            )}
             <p className="text-sm text-gray-600">
               {new Date(users?.birthDate).toLocaleDateString()}
             </p>
             <div className="bg-gray-50 text-black-700 px-3 py-1 rounded-full text-sm mt-2">
-              { userElement?.elementID ? (
-              <div className="text-sm flex items-center">
-                      <span>Element:</span>
-                      {fitWithElements[userElement.elementID - 1]?.icon && (
-                        <div className="flex items-center ml-2">
-                          {React.createElement(
-                            fitWithElements[userElement.elementID - 1].icon,
-                            {
-                              size: 20,
-                              style: {
-                                color:
-                                  fitWithElements[userElement.elementID - 1]
-                                    .color,
-                              },
-                            }
-                          )}
-                          <span
-                            style={{
-                              color:
-                                fitWithElements[userElement.elementID - 1].color,
-                              marginLeft: "8px",
-                              fontSize: "1rem",
-                            }}
-                          >
-                            {fitWithElements[userElement.elementID - 1].name}
-                          </span>
-                        </div>
+              {userElement?.elementID ? (
+                <div className="text-sm flex items-center">
+                  <span>Element:</span>
+                  {fitWithElements[userElement.elementID - 1]?.icon && (
+                    <div className="flex items-center ml-2">
+                      {React.createElement(
+                        fitWithElements[userElement.elementID - 1].icon,
+                        {
+                          size: 20,
+                          style: {
+                            color:
+                              fitWithElements[userElement.elementID - 1].color,
+                          },
+                        }
                       )}
+                      <span
+                        style={{
+                          color:
+                            fitWithElements[userElement.elementID - 1].color,
+                          marginLeft: "8px",
+                          fontSize: "1rem",
+                        }}
+                      >
+                        {fitWithElements[userElement.elementID - 1].name}
+                      </span>
                     </div>
+                  )}
+                </div>
               ) : (
                 <span>Element: Not set</span>
               )}
@@ -154,7 +153,6 @@ function WishList() {
           </div>
         </div>
 
-
         <div className="flex-1 p-6">
           <h1 className="text-2xl font-bold mb-6">My Favorites</h1>
           {/* Two buttons to toggle between koi fish and koi pond */}
@@ -164,7 +162,6 @@ function WishList() {
               type={wishlistType === "fishkois" ? "primary" : "default"}
               onClick={() => setWishlistType("fishkois")}
             >
-              
               Koi Fish
             </Button>
             <Button
@@ -194,69 +191,62 @@ function WishList() {
                 <div className="ml-4 flex-1">
                   <h3 className="font-semibold">
                     {wishlistType === "fishkois" ? "Koi Fish" : "Koi Pond"}
-                    </h3>
+                  </h3>
                   <div className="items-center mt-1">
                     <span className="text-lg font-bold">
-                      {wishlistType === "fishkois" ? item.item.koiName : item.item.shape}
-                  
+                      {wishlistType === "fishkois"
+                        ? item.item.koiName
+                        : item.item.shape}
                     </span>
                     <div className="text-sm flex items-center">
                       <span>Element:</span>
-                      {fitWithElements[item.item.elementID - 1]?.icon && (
+                      {item.item.elementID.length > 0 ? (
+                        <div className="flex flex-row">
+                          {item.item.elementID.map((element) => (
+                            <div className="flex  items-center ml-2">
+                              {React.createElement(
+                                fitWithElements[element - 1].icon,
+                                { size: 20 }
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
                         <div className="flex items-center ml-2">
                           {React.createElement(
                             fitWithElements[item.item.elementID - 1].icon,
-                            {
-                              size: 20,
-                              style: {
-                                color:
-                                  fitWithElements[item.item.elementID - 1]
-                                    .color,
-                              },
-                            }
+                            { size: 20 }
                           )}
-                          <span
-                            style={{
-                              color:
-                                fitWithElements[item.item.elementID - 1].color,
-                              marginLeft: "8px",
-                              fontSize: "1rem",
-                            }}
-                          >
-                            {fitWithElements[item.item.elementID - 1].name}
-                          </span>
                         </div>
                       )}
                     </div>
                   </div>
                 </div>
-                <div
-    className="flex flex-col lg:flex-row items-start lg:items-center space-y-4 lg:space-y-0 lg:space-x-4"
-  >
-    <Button
-      onClick={() =>
-        navigate(
-          wishlistType === "fishkois"
-            ? `/koidetail/${item.item._id}`
-            : `/ponddetail/${item.item._id}`
-        )
-      }
-      className="w-full lg:w-auto"
-    >
-      View Details
-    </Button>
-    <Popconfirm
-      title="Delete the task"
-      description="Are you sure to delete this task?"
-      okText="Yes"
-      cancelText="No"
-      onConfirm={() => handleDelete(item.item._id, wishlistType)}
-    >
-      <Button danger className="w-full lg:w-auto">
-        Remove
-      </Button>
-    </Popconfirm>
-  </div>
+                <div className="flex flex-col lg:flex-row items-start lg:items-center space-y-4 lg:space-y-0 lg:space-x-4">
+                  <Button
+                    onClick={() =>
+                      navigate(
+                        wishlistType === "fishkois"
+                          ? `/koidetail/${item.item._id}`
+                          : `/ponddetail/${item.item._id}`
+                      )
+                    }
+                    className="w-full lg:w-auto"
+                  >
+                    View Details
+                  </Button>
+                  <Popconfirm
+                    title="Delete the task"
+                    description="Are you sure to delete this task?"
+                    okText="Yes"
+                    cancelText="No"
+                    onConfirm={() => handleDelete(item.item._id, wishlistType)}
+                  >
+                    <Button danger className="w-full lg:w-auto">
+                      Remove
+                    </Button>
+                  </Popconfirm>
+                </div>
               </Card>
             ))}
           </div>

@@ -95,7 +95,7 @@ export default function SuitableHistory( { user  ,showModal , setShowModal  }) {
 
               <div className="space-y-2">
                 <div className="flex flex-col items-center">
-                <div className="w-30 h-30 outline">
+                <div className="w-30 h-30 ">
                   <img
                     src={item.item.fishkoi.image }
                     style={{width:"100px",height:"100%"}}

@@ -147,17 +147,19 @@ const fitWithElements = [
     name: "Metal",
     color: "#696969",
     icon: GiMetalBar,
-    imageUrl: "https://res.cloudinary.com/ddqgjy50x/image/upload/v1732168795/metal_ji36bm.png",
+    imageUrl:
+      "https://res.cloudinary.com/ddqgjy50x/image/upload/v1732168795/metal_ji36bm.png",
     description:
       "People with the Metal Element should prioritize using colors like white, yellow, metallic items, and materials that are strong to enhance positive energy. Additionally, the West and Northwest directions are good positions to activate fortune. For a harmonious and luckier life, you can refer to Feng Shui items such as metallic wind chimes, tiger statues, white quartz, as well as lucky numbers like 4, 7, and 9. Note: Feng Shui is a profound science, and applying it to life requires thorough research. Combine Feng Shui knowledge with a healthy lifestyle to achieve the best results.",
-    compatible: ["Earth", "Wood"],
-    conflicting: ["Fire", "Water"],
+    compatible: ["Earth", "Water","Metal"],
+    conflicting: ["Fire", "Wood"],
   },
   {
     name: "Wood",
     color: "#008000",
     icon: MdGrass,
-    imageUrl: "https://res.cloudinary.com/ddqgjy50x/image/upload/v1732169366/wood_oxj9kj.png",
+    imageUrl:
+      "https://res.cloudinary.com/ddqgjy50x/image/upload/v1732169366/wood_oxj9kj.png",
     description:
       "People with the Wood Element should prioritize using colors like green, blue, natural wood items, and plants to enhance positive energy. Additionally, the East and Southeast directions are good positions to activate fortune. For a harmonious and luckier life, you can refer to Feng Shui items, lucky numbers, and ways to resolve misfortune. Note: Feng Shui is a profound science, and applying it to life requires thorough research. Combine Feng Shui knowledge with a healthy lifestyle to achieve the best results.",
     compatible: ["Water", "Fire", "Wood"],
@@ -167,7 +169,8 @@ const fitWithElements = [
     name: "Water",
     color: "#00A8E3",
     icon: MdWater,
-    imageUrl: "https://res.cloudinary.com/ddqgjy50x/image/upload/v1732168785/water_kpml8h.png",
+    imageUrl:
+      "https://res.cloudinary.com/ddqgjy50x/image/upload/v1732168785/water_kpml8h.png",
     description:
       "People with the Water Element should prioritize using colors like blue, black, glass items, aquariums, and materials that are soft to enhance positive energy. Additionally, the North and Northeast directions are good positions to activate fortune. For a harmonious and luckier life, you can refer to Feng Shui items such as ocean landscape paintings, koi fish statues, black quartz, as well as lucky numbers like 1, 6, and 7. Note: Feng Shui is a profound science, and applying it to life requires thorough research. Combine Feng Shui knowledge with a healthy lifestyle to achieve the best results.",
     compatible: ["Fire", "Metal", "Water"],
@@ -177,7 +180,8 @@ const fitWithElements = [
     name: "Fire",
     color: "#FF4500",
     icon: MdLocalFireDepartment,
-    imageUrl: "https://res.cloudinary.com/ddqgjy50x/image/upload/v1732168782/flame_l1pmsj.png",
+    imageUrl:
+      "https://res.cloudinary.com/ddqgjy50x/image/upload/v1732168782/flame_l1pmsj.png",
     description:
       "People with the Fire Element should prioritize using colors like red, orange, ceramic items, candles, and materials that are warm to enhance positive energy. Additionally, the South direction is a good position to activate fortune. For a harmonious and luckier life, you can refer to Feng Shui items such as sun landscape paintings, phoenix statues, red quartz, as well as lucky numbers like 3 and 9. Note: Feng Shui is a profound science, and applying it to life requires thorough research. Combine Feng Shui knowledge with a healthy lifestyle to achieve the best results.",
     compatible: ["Wood", "Earth", "Fire"],
@@ -187,7 +191,8 @@ const fitWithElements = [
     name: "Earth",
     color: "#8B4513",
     icon: MdLandscape,
-    imageUrl: "https://res.cloudinary.com/ddqgjy50x/image/upload/v1732168799/ground_r1nbmp.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/ddqgjy50x/image/upload/v1732168799/ground_r1nbmp.jpg",
     description:
       "People with the Earth Element should prioritize using colors like light yellow, brown, ceramic items, natural stones, and materials that are stable to enhance positive energy. Additionally, the Southwest and Center directions are good positions to activate fortune. For a harmonious and luckier life, you can refer to Feng Shui items, lucky numbers, and ways to resolve misfortune. Note: Feng Shui is a profound science, and applying it to life requires thorough research. Combine Feng Shui knowledge with a healthy lifestyle to achieve the best results.",
     compatible: ["Metal", "Fire", "Earth"],

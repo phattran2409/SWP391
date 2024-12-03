@@ -82,7 +82,7 @@ function SuitableElement({ compatible, conflicting }) {
             placement: 'topRight',
           });
         }
-      }, 1000); // Đảm bảo việc thông báo chỉ diễn ra sau khi đã tính toán xong
+      }, 0); // Đảm bảo việc thông báo chỉ diễn ra sau khi đã tính toán xong
     }
   };
 
