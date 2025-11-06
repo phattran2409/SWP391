@@ -5,12 +5,12 @@ import { notification } from "antd";
 
 const URL = {
 
-  DEPLOY_URL: "https://swp391-jruy.onrender.com/",
+  DEPLOY_URL: "https://feng-shui.onrender.com/",
 
   LOCALHOST: "http://localhost:8081/",
 };
 
-const BASE_URL = URL.LOCALHOST;
+const BASE_URL = URL.DEPLOY_URL;
 
 
 
