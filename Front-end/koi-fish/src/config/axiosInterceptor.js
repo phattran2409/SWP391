@@ -21,7 +21,7 @@ const refreshAccessToken = async () => {
 };
 
 const URL = {
-  DEPLOY_URL: "https://feng-shui.onrender.com",
+  DEPLOY_URL: "https://feng-shui.onrender.com/",
   LOCALHOST: "http://localhost:8081/",
 };
 
@@ -87,3 +87,4 @@ const useAxiosInterceptor = () => {
 };
 
 export default useAxiosInterceptor;
+
