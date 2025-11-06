@@ -9,9 +9,9 @@ import { CartContext } from "../../components/context/Cart";
 import Cart from "../../components/Cart.jsx";
 import { Card } from "antd";
 import { yellow } from "@mui/material/colors";
-import { Link , redirect , useNavigate} from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import {  Tag } from "antd";
+import { Tag } from "antd";
 import Item from "antd/es/list/Item.js";
 import { HardDrive } from "lucide-react";
 const ShowFish = () => {
@@ -19,15 +19,15 @@ const ShowFish = () => {
   const [visibleCount, setVisibleCount] = useState(6);
   const { cartItems, addToCart } = useContext(CartContext);
   const [showModal, setshowModal] = useState(false);
-  const [activeItemId , setActiveItemId] = useState(null);
-  const  navigate = new useNavigate();  
-  const [elementUser ,setElementUser] = useState();
-  const [selectedCard , setSelectedCard] = useState([]); 
-  const [selectNotSuitable , setSelectNotSuitable]  = useState([]);
-  const [ selectedElement , setSelectedElement] = useState();  
-  const [ indexElement , setIndexElement] = useState(); 
-  const [indexCard , setIndexCard] = useState(); 
- // Tao ra temp 
+  const [activeItemId, setActiveItemId] = useState(null);
+  const navigate = useNavigate();
+  const [elementUser, setElementUser] = useState();
+  const [selectedCard, setSelectedCard] = useState([]);
+  const [selectNotSuitable, setSelectNotSuitable] = useState([]);
+  const [selectedElement, setSelectedElement] = useState();
+  const [indexElement, setIndexElement] = useState();
+  const [indexCard, setIndexCard] = useState();
+  // Tao ra temp
   // Fetch Koi Fish from API
   const fetchKoiFish = async () => {
     try {
@@ -42,51 +42,56 @@ const ShowFish = () => {
       );
     }
   };
-  //  Call api toi de thuc hien coi co phu hop voi ban menh cuar minh hay ko 
+  //  Call api toi de thuc hien coi co phu hop voi ban menh cuar minh hay ko
   console.log(selectedElement);
-  const suitableKoi = async(item) => {  
-    
-     const elementID_koi = selectedElement;
-    const elementID_user = elementUser
+  const suitableKoi = async (item) => {
+    const elementID_koi = selectedElement;
+    const elementID_user = elementUser;
     console.log(elementID_koi);
     console.log(elementID_user);
-    
-    if  (selectedElement == null) { 
+
+    if (selectedElement == null) {
       toast.info("Please select element");
       return;
-    }   
-    if(elementUser == null) { 
+    }
+    if (elementUser == null) {
       toast.info("Please  to Consulting page find your element");
       return;
-    }  
+    }
     try {
-       const res = await api.post("v1/user/suitableKoi?object=1" , {elementID_koi , elementID_user});
-       console.log(res.data);
+      const res = await api.post("v1/user/suitableKoi?object=1", {
+        elementID_koi,
+        elementID_user,
+      });
+      console.log(res.data);
       toast.success(res.data.message);
-    
-      setSelectedCard((prevSelected ) => prevSelected.includes(item._id) ? prevSelected.filter((cardID) => cardID !== item._id) : [...prevSelected  , item._id]);
-      
+
+      setSelectedCard((prevSelected) =>
+        prevSelected.includes(item._id)
+          ? prevSelected.filter((cardID) => cardID !== item._id)
+          : [...prevSelected, item._id]
+      );
     } catch (error) {
       console.log(error);
-      toast.info("Not Suitable")
-      console.log("message error : "+ error.message);
-      setSelectNotSuitable((prevSelected) =>  [...prevSelected , item._id]  )
-    }finally {
+      toast.info("Not Suitable");
+      console.log("message error : " + error.message);
+      setSelectNotSuitable((prevSelected) => [...prevSelected, item._id]);
+    } finally {
       setSelectedElement(null);
       setIndexElement(null);
       setIndexCard(null);
     }
-  }
+  };
 
   useEffect(() => {
     fetchKoiFish();
-     const user = JSON.parse(localStorage.getItem("user"))
-     if (user != null) {
-       return  setElementUser(user?.elementID); 
-     }else {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user != null) {
+      return setElementUser(user?.elementID);
+    } else {
       const elementGuest = JSON.parse(localStorage.getItem("elementUser"));
       setElementUser(elementGuest?.elementID);
-     }
+    }
   }, []);
 
   if (!fishs.length) {
@@ -110,16 +115,16 @@ const ShowFish = () => {
     };
     return colorMap[color] || "#000";
   };
-  const  elementName = (id) =>  {
+  const elementName = (id) => {
     const name = {
-      "1" : "Metal",
-      "2" : "Wood",
-      "3" : "Water",
-      "4" : "Fire",
-      "5" : "Earth",
-    }
+      1: "Metal",
+      2: "Wood",
+      3: "Water",
+      4: "Fire",
+      5: "Earth",
+    };
     return name[id] || "";
-  }
+  };
   const colorElement = (id) => {
     const name = {
       1: "Gray",
@@ -129,39 +134,39 @@ const ShowFish = () => {
       5: "#d1a906",
     };
     return name[id] || "";
-  }
+  };
 
   const handleShowMore = () => {
     setVisibleCount((prevCount) => prevCount + 6);
   };
-  const handleActiveItem = (id) => { 
-    setActiveItemId(id)
-  }
+  const handleActiveItem = (id) => {
+    setActiveItemId(id);
+  };
 
-  const handleAddToCart = (item , index) => { 
+  const handleAddToCart = (item, index) => {
     if (index != indexCard) {
       toast.error("You selected not correct element of koi");
       return;
     }
-    
-    if (selectedElement==null) {
+
+    if (selectedElement == null) {
       toast.error("You need select element tag before assess");
       return;
     }
-    
-    addToCart({...item , elementID : selectedElement });
+
+    addToCart({ ...item, elementID: selectedElement });
     setSelectedElement(null);
     setIndexElement(null);
-    setIndexCard(null); 
-  }
+    setIndexCard(null);
+  };
   const toggle = () => {
     console.log(showModal);
 
     setshowModal(!showModal);
   };
 
-  console.log( "active  item id " + activeItemId);
-  
+  console.log("active  item id " + activeItemId);
+
   return (
     <div>
       <Navbar />
@@ -251,7 +256,7 @@ const ShowFish = () => {
                     <span className="font-semibold max-[768px]:text-base">
                       Color:
                     </span>
-                    {item.colors.map((color, idx) => (
+                    {(item.colors || []).map((color, idx) => (
                       <span
                         key={idx}
                         className="ml-2 w-4 h-4 max-[768px]rounded-full border border-black"
@@ -263,18 +268,26 @@ const ShowFish = () => {
                     <p className="font-semibold max-[768px]:text-base">
                       Element:
                     </p>
-                    <div className="flex flex-row gap-2"  >
-                      {item.elementID.map((element, idx) => (
+                    <div className="flex flex-row gap-2">
+                      {(item.elementID || []).map((element, idx) => (
                         <div
                           key={idx}
-                          className={`items-center justify-center ${indexElement === idx && indexCard === index ? " flex w-full p-1 items-center justify-center  outline outline-2 outline-red-500 rounded-lg text-center" : ""}`}
+                          className={`items-center justify-center ${
+                            indexElement === idx && indexCard === index
+                              ? " flex w-full p-1 items-center justify-center  outline outline-2 outline-red-500 rounded-lg text-center"
+                              : ""
+                          }`}
                         >
-                          <Tag className="cursor-pointer m-0" onClick={() => { setSelectedElement(element) ; setIndexElement(idx) , setIndexCard(index)}} color={colorElement(element)} >
-                            { 
-                              elementName(element)
-                            }
-
-                            </Tag>
+                          <Tag
+                            className="cursor-pointer m-0"
+                            onClick={() => {
+                              setSelectedElement(element);
+                              setIndexElement(idx), setIndexCard(index);
+                            }}
+                            color={colorElement(element)}
+                          >
+                            {elementName(element)}
+                          </Tag>
                         </div>
                       ))}
                     </div>
@@ -286,12 +299,11 @@ const ShowFish = () => {
                     }}
                     className="mt-4 px-4 py-2 max-[768px]:px-1 max-[768px]:py-1 text-black border-2 border-gray-300 rounded-lg bg-rounded-lg hover:bg-gray-200"
                   >
-                    Calculate suitable  
+                    Calculate suitable
                   </button>
                   <button
                     onClick={() => {
-                  
-                      handleAddToCart(item ,index);
+                      handleAddToCart(item, index);
                       handleActiveItem(item._id);
                     }}
                     className="mt-4 px-4 py-2 max-[768px]:px-1 max-[768px]:py-1 text-black border-2 border-gray-300 rounded-lg bg-rounded-lg hover:bg-gray-200"
@@ -328,7 +340,6 @@ const ShowFish = () => {
           )}
           {/* Modal */}
         </div>
-        
       </AnimationReveal>
       <Footer />
     </div>
@@ -336,5 +347,3 @@ const ShowFish = () => {
 };
 
 export default ShowFish;
-
-

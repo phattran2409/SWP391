@@ -5,7 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import { FaHeartCirclePlus } from "react-icons/fa6";
 import { IoBookSharp } from "react-icons/io5";
 import CardDetail from "../../../components/card-detail/carddetails";
-import {  Tooltip } from "antd";
+import { Tooltip } from "antd";
 import {
   MdArrowBack,
   MdKeyboardArrowLeft,
@@ -37,7 +37,7 @@ const koiDetails = () => {
     { name: "Earth", color: "#8B4513", icon: MdLandscape },
   ];
 
-  const [koiDetail, setKoiDetail] = useState([]);
+  const [koiDetail, setKoiDetail] = useState({});
   const [loading, setLoading] = useState(true);
   const [relatedKoiLoading, setRelatedKoiLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -48,9 +48,8 @@ const koiDetails = () => {
   });
   const { id } = useParams();
   const [datas, setDatas] = useState([]);
-  const [selectedElement, setSelectedElement] = useState(); 
-  const [selectIndex, setSelectIndex] = useState(null);  
-  
+  const [selectedElement, setSelectedElement] = useState();
+  const [selectIndex, setSelectIndex] = useState(null);
 
   const style = {
     width: "300vw",
@@ -63,7 +62,8 @@ const koiDetails = () => {
   const koiById = async () => {
     try {
       const response = await api.get(`v1/fish/getKoiById/${id}`);
-      setKoiDetail(response.data); // Save the fetched object
+      // Normalize API response: prefer response.data.data, fallback to response.data or empty object
+      setKoiDetail(response.data?.data || response.data || {}); // Save the fetched object
     } catch (err) {
       setError(err.message);
     } finally {
@@ -73,8 +73,10 @@ const koiDetails = () => {
 
   const addToWishlist = async () => {
     try {
-      const response = await api.post(`v1/user/addToWishList?itemId=${id}&wishlistType=fishkois`);
-  
+      const response = await api.post(
+        `v1/user/addToWishList?itemId=${id}&wishlistType=fishkois`
+      );
+
       if (response.status === 400) {
         toast.info("Item already exists in your favorite list");
       } else if (response.status === 200) {
@@ -91,7 +93,6 @@ const koiDetails = () => {
       }
     }
   };
-  
 
   useEffect(() => {
     setLoading(true);
@@ -106,32 +107,28 @@ const koiDetails = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedElement, pagination.current, pagination.pageSize]);
 
-
-   React.useEffect(() => {
-     document.documentElement.scrollTop = document.documentElement.clientHeight;
-     document.documentElement.scrollLeft = document.documentElement.clientWidth;
-   }, []);
+  React.useEffect(() => {
+    document.documentElement.scrollTop = document.documentElement.clientHeight;
+    document.documentElement.scrollLeft = document.documentElement.clientWidth;
+  }, []);
 
   const relatedKoi = async (
     page = pagination.current,
     limit = pagination.pageSize
   ) => {
     try {
-    
-      
-    const  response = await api.get(
+      const response = await api.get(
         `v1/fish/getKoiElement/${selectedElement}?page=${page}&limit=${limit}`
-        );
-      
+      );
 
       // Update state with fetched data
-      setDatas(response.data.data);
+      setDatas(response.data?.data || []);
 
-      // Update pagination info
+      // Update pagination info with safe fallbacks
       setPagination((prev) => ({
         ...prev,
-        current: response.data.currentPage,
-        total: response.data.totalDocuments,
+        current: response.data?.currentPage ?? prev.current,
+        total: response.data?.totalDocuments ?? prev.total,
         pageSize: limit,
       }));
     } catch (err) {
@@ -188,50 +185,50 @@ const koiDetails = () => {
                   </h1>
                   {/* select element button */}
                   <div className="element-container flex  ">
-                 
-                      <Tooltip title="please select element to view suitable koi " open={!selectedElement ? true : false }>
-                        <div className="flex flex-row">
-                          {koiDetail.elementID.map((element, index) => (
-                            <span
-                              onClick={() => {
-                                setSelectedElement(element);
-                                setSelectIndex(index);
-                              }}
-                              className={`cursor-pointer ml-2 mr-5 mb-5 flex p-2  hover:outline hover:outline-2 hover:shadow-lg hover:outline-red-600 rounded-lg transition-all ${
-                                selectIndex === index
-                                  ? "outline outline-2 outline-red-600 shadow-lg"
-                                  : ""
-                              }`}
-                            >
-                              {fitWithElements[element - 1]?.icon && (
-                                <>
-                                  {React.createElement(
-                                    fitWithElements[element - 1].icon,
-                                    {
-                                      size: 40,
-                                      style: {
-                                        color:
-                                          fitWithElements[element - 1].color,
-                                      },
-                                    }
-                                  )}
-                                  <span
-                                    className=" cursor-pointer"
-                                    style={{
+                    <Tooltip
+                      title="please select element to view suitable koi "
+                      open={!selectedElement ? true : false}
+                    >
+                      <div className="flex flex-row">
+                        {(koiDetail.elementID || []).map((element, index) => (
+                          <span
+                            onClick={() => {
+                              setSelectedElement(element);
+                              setSelectIndex(index);
+                            }}
+                            className={`cursor-pointer ml-2 mr-5 mb-5 flex p-2  hover:outline hover:outline-2 hover:shadow-lg hover:outline-red-600 rounded-lg transition-all ${
+                              selectIndex === index
+                                ? "outline outline-2 outline-red-600 shadow-lg"
+                                : ""
+                            }`}
+                          >
+                            {fitWithElements[element - 1]?.icon && (
+                              <>
+                                {React.createElement(
+                                  fitWithElements[element - 1].icon,
+                                  {
+                                    size: 40,
+                                    style: {
                                       color: fitWithElements[element - 1].color,
-                                      marginLeft: "8px",
-                                      fontSize: "1.5rem",
-                                    }}
-                                  >
-                                    {fitWithElements[element - 1].name}
-                                  </span>
-                                </>
-                              )}
-                            </span>
-                          ))}
-                        </div>
-                      </Tooltip>
-                    
+                                    },
+                                  }
+                                )}
+                                <span
+                                  className=" cursor-pointer"
+                                  style={{
+                                    color: fitWithElements[element - 1].color,
+                                    marginLeft: "8px",
+                                    fontSize: "1.5rem",
+                                  }}
+                                >
+                                  {fitWithElements[element - 1].name}
+                                </span>
+                              </>
+                            )}
+                          </span>
+                        ))}
+                      </div>
+                    </Tooltip>
                   </div>
                   <button
                     onClick={addToWishlist}
@@ -294,24 +291,25 @@ const koiDetails = () => {
               Related Kois
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {datas.map((koi, index) => (
+              {(datas || []).map((koi, index) => (
                 <Link
                   key={koi._id || index}
                   to={`/koidetail/${koi._id}`}
                   className="bg-white p-6 rounded-lg shadow-lg transition-transform hover:scale-105"
                 >
                   <img
-                    src={koi.image}
-                    alt={`Image of ${koi.koiName}`}
+                    src={koi.image || ''}
+                    alt={`Image of ${koi.koiName || ''}`}
                     className="w-full h-64 object-contain rounded-lg mb-4"
                   />
                   <h3 className="text-xl font-semibold mb-2 text-gray-700">
                     {koi.koiName}
                   </h3>
                   <p className="text-gray-600">
-                    {koi.description.length > 70
-                      ? `${koi.description.slice(0, 70)}...`
-                      : koi.description}
+                    {(() => {
+                      const desc = koi.description || "";
+                      return desc.length > 70 ? `${desc.slice(0, 70)}...` : desc;
+                    })()}
                   </p>
                 </Link>
               ))}

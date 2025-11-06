@@ -21,7 +21,7 @@ router.get("/getPostByElementID/:id", postController.getPostByElemet);
 router.delete("/deletePost/:id", middlewareController.verifyTokenMember, postController.deletePost);
 
 //Create Post
-router.post( "/createPost",middlewareController.verifyTokenMember, postController.createPost);
+router.post( "/createPost", postController.createPost);
 
 
 //Upload Image

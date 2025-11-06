@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 const CommentSystem = ({ postId }) => {
   const user = JSON.parse(localStorage.getItem("user"));
   const [comments, setComments] = useState([]);
-  const [countComments, setCountComments] = useState([]);
+  const [countComments, setCountComments] = useState(0);
   const [newComment, setNewComment] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [editCommentId, setEditCommentId] = useState(null);
@@ -21,8 +21,9 @@ const CommentSystem = ({ postId }) => {
   const fetchData = async () => {
     try {
       const res = await api.get(`v1/comment/${postId}`);
-      setComments(res.data.data);
-      setCountComments(res.data.count);
+      // Guard against unexpected API shapes
+      setComments(res.data?.data || []);
+      setCountComments(res.data?.count ?? 0);
     } catch (err) {
       console.error(err);
     }
@@ -199,7 +200,7 @@ const CommentSystem = ({ postId }) => {
         <h2 className="text-xl flex font-semibold mb-10 ml-5">
           Comments ({countComments})
         </h2>
-        {comments.slice(0, visibleComments).map((comment) => (
+        {(comments || []).slice(0, visibleComments).map((comment) => (
           <div key={comment._id} className="mb-4 border-b border-gray-300 pb-4">
             <div className="flex justify-between items-center">
               <div className="flex items-center">
@@ -268,7 +269,7 @@ const CommentSystem = ({ postId }) => {
               <IoArrowUndoOutline className="mr-1" />
               {showReplies[comment._id]
                 ? "Hide Replies"
-                : `Show ${comment.repliesCount} Replies`}
+                : `Show ${comment.repliesCount || 0} Replies`}
             </button>
 
             {/* Reply section */}
@@ -300,11 +301,11 @@ const CommentSystem = ({ postId }) => {
                   </div>
                 )}
                 {/* Render replies */}
-                {comment.replies.length > 0 && (
+                {(comment.replies || []).length > 0 && (
                   <div className="mt-4 ml-8">
                     <h3 className="flex text-sm font-semibold mb-5">Replies</h3>
 
-                    {comment.replies.map((reply) => (
+                    {(comment.replies || []).map((reply) => (
                       <div
                         key={reply._id}
                         className="border-b border-gray-300 pb-2 mb-2"

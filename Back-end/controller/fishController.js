@@ -33,7 +33,7 @@ const fishController = {
       // if (result.currentPage > result.totalPages) {
       //   return res.status(404).json("Not Found Data");
       // }
-  
+      console.log(result);
       return res.status(200).json({
         currentPage: page,
         totalPages: Math.ceil(totalDocuments / limit),
@@ -205,6 +205,41 @@ const fishController = {
        res.status(500).json(error);
     }
   },
+
+  getKoiByElementId: async (req, res) => {
+  try {
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 20;
+    const skip = (page - 1) * limit;
+
+    // parse id to number when appropriate
+    // decide whether element id in DB is number or string
+    // try to parse number; fallback to original string
+    const rawId = req.params.id;
+    const maybeNumberId = Number(rawId);
+    const elementId = Number.isNaN(maybeNumberId) ? rawId : maybeNumberId;
+
+    // Use $in to match whether elementID is stored as array or single value
+    const filter = { elementID: { $in: [elementId] } };
+
+    const koi = await fishkois.find(filter).skip(skip).limit(limit);
+    const totalDocuments = await fishkois.countDocuments(filter);
+
+    return res.status(200).json({
+      currentPage: page,
+      totalPages: Math.ceil(totalDocuments / limit),
+      totalDocuments,
+      data: Array.isArray(koi) ? koi : [],
+    });
+  } catch (error) {
+    console.error('getKoiByElementId error', error);
+    // return consistent error shape
+    return res.status(500).json({
+      error: error.message || 'Internal server error',
+      data: [],
+    });
+  }
+},
 
   getKoiById: async (req, res) => {
     try {
