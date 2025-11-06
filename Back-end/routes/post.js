@@ -18,7 +18,7 @@ router.get("/getPost/:id", postController.getApprovedPost);
 router.get("/getPostByElementID/:id", postController.getPostByElemet);
 
 //Delete Post
-router.delete("/deletePost/:id", middlewareController.verifyTokenMember, postController.deletePost);
+router.delete("/deletePost/:id", postController.deletePost);
 
 //Create Post
 router.post( "/createPost", postController.createPost);
